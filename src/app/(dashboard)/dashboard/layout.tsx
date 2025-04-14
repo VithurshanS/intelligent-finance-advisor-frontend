@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 import {Bell, LogOut} from "lucide-react"
 import {ModeToggle} from "@/components/ThemeProvider";
+import {Button} from "@/components/ui/button";
 
 export default function DashboardLayout({children}: { children: React.ReactNode }) {
     return (
@@ -27,16 +28,16 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
                         <Separator
                             orientation="vertical"
                             className="data-[orientation=vertical]:h-4"/>
-                        <button className="p-2 rounded-lg hover:bg-gray-100">
+                        <Button variant={"ghost"} size={"icon"} >
                             <Bell size={16}/>
-                        </button>
+                        </Button>
                         <Separator
                             orientation="vertical"
                             className="data-[orientation=vertical]:h-4"
                         />
-                        <button className="p-2 rounded-lg hover:bg-gray-100">
+                        <Button variant={'ghost'} size={'icon'} >
                             <LogOut size={16}/>
-                        </button>
+                        </Button>
                     </div>
                 </header>
                 {children}
