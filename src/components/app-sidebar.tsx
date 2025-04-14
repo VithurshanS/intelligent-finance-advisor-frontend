@@ -14,7 +14,7 @@ import {
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { SidebarHeading } from "@/components/sidebar-heading"
 import {
   Sidebar,
   SidebarContent,
@@ -30,13 +30,6 @@ const data = {
     email: "you@example.com",
     avatar: "/avatars/you.jpg",
   },
-  teams: [
-    {
-      name: "Group 40",
-      logo: Scale,
-      plan: "Compliance",
-    },
-  ],
   navMain: [
     {
       title: "Market Prediction",
@@ -141,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
-          <TeamSwitcher teams={data.teams} />
+          <SidebarHeading/>
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={data.navMain} />
