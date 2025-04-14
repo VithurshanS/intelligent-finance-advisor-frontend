@@ -70,7 +70,7 @@ app/
 The sidebar is located at:
 
 ```
-src/components/app-sidebar.tsx
+src/app/(dashboard)/_components/app-sidebar.tsx
 ```
 
 To add a new page for a group:

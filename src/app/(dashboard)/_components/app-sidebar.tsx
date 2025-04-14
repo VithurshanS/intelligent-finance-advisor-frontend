@@ -11,10 +11,10 @@ import {
   Users,
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { SidebarHeading } from "@/components/sidebar-heading"
+import { NavMain } from "@/app/(dashboard)/_components/nav-main"
+import { NavGuides } from "@/app/(dashboard)/_components/nav-guides"
+import { NavUser } from "@/app/(dashboard)/_components/nav-user"
+import { SidebarHeading } from "@/app/(dashboard)/_components/sidebar-heading"
 import {
   Sidebar,
   SidebarContent,
@@ -116,15 +116,15 @@ const data = {
       ],
     },
   ],
-  projects: [
+  guides: [
     {
       name: "ML Model Notebook",
       url: "/notebooks",
       icon: FolderGit2,
     },
     {
-      name: "Users & Permissions",
-      url: "/users",
+      name: "Documentation",
+      url: "/docs",
       icon: Users,
     },
   ],
@@ -138,7 +138,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={data.navMain} />
-          <NavProjects projects={data.projects} />
+          <NavGuides projects={data.guides} />
         </SidebarContent>
         <SidebarFooter>
           <NavUser user={data.user} />
