@@ -1,8 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Here’s your updated and cleaner `README.md` with all the requested customizations and guidelines:
+
+---
+
+```md
+# Intelligent Advisor for Personal Finance & Investment
+
+This is a Next.js project designed for Group 40 – **Financial Risk & Compliance Monitoring**, part of the AI-based Investment Assistant.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+To start the development server:
 
 ```bash
 npm run dev
@@ -14,23 +23,82 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure & Guidelines
 
-## Learn More
+### 🗂️ App Directory Convention
 
-To learn more about Next.js, take a look at the following resources:
+Each group (37, 38, 39, 40) should maintain their own working area inside the `app/` folder. Inside their group folder:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Create:
+   - `_components/` – for UI components
+   - `_utils/` – for helper functions
+   - `_services/` – for API or data fetching logic (if needed)
+   - `_types/` – for custom TypeScript interfaces/types
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This modular separation helps maintain code isolation and avoids merge conflicts.
 
-## Deploy on Vercel
+Example:
+```
+app/
+└── group-40/
+    ├── page.tsx
+    ├── _components/
+    ├── _utils/
+    ├── _services/
+    └── _types/
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 🧩 UI & Tooling Guidelines
+
+- **Use [Shadcn/ui](https://ui.shadcn.com)** components as much as possible for consistent and modern UI.
+- **⚠️ Note:** Avoid using Shadcn dropdowns inside Dialogs (both AlertDialog and Dialog) – they currently have a bug. Use a custom or alternative dropdown in those cases.
+- Use **[Lucide Icons](https://lucide.dev/icons)** for all icons (`lucide-react`). Only fallback to `react-icons` if a specific icon is unavailable.
+- Use **[Recharts](https://recharts.org/en-US)** for visualizations.
+- Use **[React Toastify](https://fkhadra.github.io/react-toastify/introduction)** for toast notifications.
+
+---
+
+## Editing the Sidebar
+
+The sidebar is located at:
+
+```
+src/components/app-sidebar.tsx
+```
+
+To add a new page for a group:
+
+1. Edit the `data.navMain` array.
+2. Include a `title`, `url`, and `icon` for each group.
+3. Add sub-sections using the `items` array under each page.
+
+Example:
+
+```ts
+{
+  title: "Group 40 - Risk & Compliance",
+  url: "/group-40",
+  icon: Scale,
+  items: [
+    {
+      title: "Risk Analysis",
+      url: "/group-40/risk",
+    },
+    {
+      title: "Fairness & Bias",
+      url: "/group-40/fairness",
+    },
+  ],
+}
+```
+
+---
+
+Let’s build something smart and explainable! 🚀
+```
