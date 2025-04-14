@@ -6,8 +6,8 @@ import React from "react";
 import {ToastContainer} from "react-toastify";
 
 export const metadata: Metadata = {
-    title: "Patient Management System",
-    description: "Patient Management System",
+    title: "Intelligent Personal Finance Assistant",
+    description: "Intelligent Personal Finance Assistant",
 };
 
 const montserrat = Montserrat({
