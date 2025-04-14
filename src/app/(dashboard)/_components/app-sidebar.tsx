@@ -4,7 +4,7 @@ import * as React from "react"
 import {
     Bot,
     DollarSign,
-    FolderGit2,
+    FolderGit2, LayoutGrid,
     PieChart,
     Scale,
     Settings2,
@@ -35,7 +35,7 @@ const data: SidebarData = {
         {
             title: "Dashboard",
             url: "/dashboard",
-            icon: FolderGit2,
+            icon: LayoutGrid,
         },
         {
             title: "Market Prediction",
