@@ -5,7 +5,6 @@ import {
   Forward,
   MoreHorizontal,
   Trash2,
-  type LucideIcon,
 } from "lucide-react"
 
 import {
@@ -24,15 +23,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import {GuideItem} from "@/app/(dashboard)/_utils/types";
 
 export function NavGuides({
   projects,
 }: {
-  projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
+  projects: GuideItem[]
 }) {
   const { isMobile } = useSidebar()
 
