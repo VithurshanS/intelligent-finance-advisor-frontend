@@ -61,6 +61,7 @@ app/
 - Use **[Lucide Icons](https://lucide.dev/icons)** for all icons (`lucide-react`). Only fallback to `react-icons` if a specific icon is unavailable.
 - Use **[Recharts](https://recharts.org/en-US)** for visualizations.
 - Use **[React Toastify](https://fkhadra.github.io/react-toastify/introduction)** for toast notifications.
+- Use **[Framer Motion](https://www.framer.com/docs/introduction/)** for animations.
 
 ---
 
