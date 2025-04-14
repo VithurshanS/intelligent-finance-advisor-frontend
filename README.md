@@ -1,8 +1,3 @@
-Here’s your updated and cleaner `README.md` with all the requested customizations and guidelines:
-
----
-
-```md
 # Intelligent Advisor for Personal Finance & Investment
 
 This is a Next.js project designed for Group 40 – **Financial Risk & Compliance Monitoring**, part of the AI-based Investment Assistant.
@@ -306,4 +301,3 @@ By following these guidelines, you'll maintain a consistent, accessible, and vis
 ---
 
 Let’s build something smart and explainable! 🚀
-```
