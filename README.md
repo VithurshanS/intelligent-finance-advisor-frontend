@@ -57,6 +57,7 @@ app/
 - Use **[Recharts](https://recharts.org/en-US)** for visualizations.
 - Use **[React Toastify](https://fkhadra.github.io/react-toastify/introduction)** for toast notifications.
 - Use **[Framer Motion](https://www.framer.com/docs/introduction/)** for animations.
+- Use **[Date-fns](https://date-fns.org/)** for date formatting and manipulation.
 
 ---
 
