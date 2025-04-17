@@ -4,10 +4,10 @@ import {redirect} from "next/navigation";
 import {cookies} from 'next/headers';
 import AxiosInstance from "@/lib/axiosInstance";
 import axios from "axios";
-import {HTTPValidationError, LoginResponse} from "@/lib/types";
+import {HTTPValidationError, LoginResponse, User} from "@/lib/types";
 
 async function createSession(loginResponse: LoginResponse) {
-	const {token, username, role} = loginResponse;
+	const {token, username} = loginResponse;
 
 	// Set secure HTTP-only cookies instead of localStorage
 	const cookieStore = await cookies();
@@ -22,7 +22,6 @@ async function createSession(loginResponse: LoginResponse) {
 
 	cookieStore.set('user', JSON.stringify({
 		username: username,
-		role: role,
 		name: 'John Doe', // Placeholder, replace with actual name if available
 		email: 'testmail@example.com',
 	}), {
@@ -79,6 +78,17 @@ export async function login(_previousState: string, formData: FormData): Promise
 		}
 		throw error;
 	}
+}
+
+export async function getUser() {
+	const cookieStore = await cookies();
+	const userCookie = cookieStore.get('user')?.value;
+	if (!userCookie) {
+		return null;
+	}
+
+	const user: User = JSON.parse(userCookie);
+	return user;
 }
 
 export async function logout(): Promise<void> {

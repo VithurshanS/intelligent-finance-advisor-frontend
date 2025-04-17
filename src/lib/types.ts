@@ -1,7 +1,6 @@
 export type LoginResponse = {
 	username: string;
 	token: string;
-	role: string;
 }
 
 export interface ValidationError {
@@ -12,4 +11,11 @@ export interface ValidationError {
 
 export interface HTTPValidationError {
 	detail: ValidationError[];
+}
+
+export interface User {
+	username: string;
+	name: string;
+	email: string;
+	avatar?: string;
 }
