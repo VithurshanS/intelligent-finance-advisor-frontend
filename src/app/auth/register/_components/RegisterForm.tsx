@@ -86,7 +86,7 @@ function RegisterForm() {
     if (state.success) {
         return (
             <div className="flex flex-col items-center justify-center gap-6 p-8">
-                <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-md">
+                <div className="bg-card border border-card-foreground text-card-foreground p-4 rounded-md">
                     <p className="font-medium">Registration successful!</p>
                     <p className="mt-2">You can now login to your account.</p>
                 </div>
