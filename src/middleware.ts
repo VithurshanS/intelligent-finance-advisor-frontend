@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import {cookies} from "next/headers";
 import {decodeJwt} from "jose";
 
-const publicRoutes = ["/", "/auth/login", "/auth/forgot-password", "/auth/reset-password"];
+const publicRoutes = ["/", "/auth/login", "/auth/forgot-password", "/auth/reset-password", "/auth/register"];
 
 export default async function middleware(req: NextRequest) {
 	const path = req.nextUrl.pathname;
@@ -35,5 +35,5 @@ export default async function middleware(req: NextRequest) {
 
 // Routes Middleware should not run on
 export const config = {
-	matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+	matcher: ["/((?!api|_next/static|_next/image|.*\\.png$|.*\\.jpg$).*)"],
 };
