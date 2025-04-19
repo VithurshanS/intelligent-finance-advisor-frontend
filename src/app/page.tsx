@@ -2,6 +2,7 @@ import React from 'react';
 import {ModeToggle} from "@/components/ThemeProvider";
 import {ArrowRight, LineChart, Shield, Target, Wallet, ArrowUpRight, LucideIcon} from 'lucide-react';
 import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 const FeatureCard = ({icon, title, description, color}: {
     icon: LucideIcon,
@@ -50,14 +51,14 @@ const GroupSection = ({number, title, technologies, description}: {
 
 export default function Home() {
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="flex flex-col min-h-screen w-full">
             {/* Navigation Bar */}
-            <header className="border-b sticky top-0 z-50 w-full bg-background/95 backdrop-blur px-4">
-                <div className="container flex h-16 items-center justify-between">
-                    <div className="flex items-center gap-2">
+            <header className="border-b sticky top-0 z-50 bg-background/95 backdrop-blur w-full px-4">
+                <div className="flex h-16 items-center justify-between w-full">
+                    <Link href={'/'} className="flex items-center gap-2">
                         <Wallet className="h-6 w-6 text-primary"/>
                         <span className="font-bold text-xl">IntelliFinance</span>
-                    </div>
+                    </Link>
                     <nav className="hidden md:flex items-center gap-6">
                         <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Features</a>
                         <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Groups</a>
@@ -79,7 +80,7 @@ export default function Home() {
             </header>
 
             {/* Hero Section */}
-            <section className="py-20 md:py-32 container">
+            <section className="py-20 md:py-32 container px-10">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div>
                         <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">
@@ -138,7 +139,7 @@ export default function Home() {
             </section>
 
             {/* Features Section */}
-            <section className="py-16 bg-secondary/5">
+            <section className="py-16 bg-secondary/5 px-8">
                 <div className="container">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold mb-4">Powerful Financial Intelligence</h2>
@@ -177,7 +178,7 @@ export default function Home() {
             </section>
 
             {/* Groups Section */}
-            <section className="py-16 container">
+            <section className="py-16 container px-8">
                 <div className="mb-12">
                     <h2 className="text-3xl font-bold mb-4">Project Groups</h2>
                     <p className="text-muted-foreground">
@@ -233,12 +234,12 @@ export default function Home() {
 
             {/* Footer */}
             <footer className="py-8 border-t mt-auto">
-                <div className="container">
-                    <div className="flex flex-col md:flex-row justify-between items-center">
-                        <div className="flex items-center gap-2 mb-4 md:mb-0">
+                <div className="flex flex-col w-full">
+                    <div className="flex flex-col md:flex-row justify-between items-center px-4">
+                        <Link href={'/'} className="flex items-center gap-2 mb-4 md:mb-0">
                             <Wallet className="h-6 w-6 text-primary"/>
                             <span className="font-bold text-xl">IntelliFinance</span>
-                        </div>
+                        </Link>
                         <div className="flex gap-6">
                             <a href="#" className="text-sm text-muted-foreground hover:text-primary">Privacy Policy</a>
                             <a href="#" className="text-sm text-muted-foreground hover:text-primary">Terms of Use</a>

@@ -27,7 +27,7 @@ export function SidebarHeading() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
                         >
-                            <span className="font-bold text-base">Spend Wise</span>
+                            <span className="font-bold text-base">IntelliFinance</span>
                             <span className="text-xs text-muted-foreground">Smart money management</span>
                         </motion.div>
                     )}

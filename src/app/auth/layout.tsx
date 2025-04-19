@@ -1,6 +1,7 @@
 import React from "react";
 import { Wallet } from "lucide-react"
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AuthLayout({children}: {
     children: React.ReactNode
@@ -9,10 +10,10 @@ export default function AuthLayout({children}: {
         <div className="grid min-h-svh lg:grid-cols-2">
             <div className="flex flex-col gap-4 p-6 md:p-6">
                 <div className="flex justify-start gap-2">
-                    <div className="flex items-center gap-2">
+                    <Link href={'/'} className="flex items-center gap-2">
                         <Wallet className="h-6 w-6 text-primary"/>
                         <span className="font-bold text-xl">IntelliFinance</span>
-                    </div>
+                    </Link>
                 </div>
                 {children}
             </div>
