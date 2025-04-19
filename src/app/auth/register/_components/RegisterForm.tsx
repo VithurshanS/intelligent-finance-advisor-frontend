@@ -262,6 +262,7 @@ function RegisterForm() {
                             className={`w-full pl-10 pr-4 py-2 ${errors?.avatar ? 'border-destructive' : ''}`}
                             placeholder="https://example.com/your-avatar.jpg"
                             aria-invalid={errors?.avatar ? "true" : "false"}
+                            disabled
                         />
                     </div>
                     {errors?.avatar && (
