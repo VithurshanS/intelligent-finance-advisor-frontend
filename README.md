@@ -329,6 +329,17 @@ You can also use opacity modifiers:
 <div className="bg-primary/90">Semi-transparent</div>
 ```
 
+---
+
+## 🌱Seed data
+
+Currently when reset-database called there will be a dummy user created with the following credentials:
+
+- **Username:** `jhondoe`
+- **Password:** `123`
+
+---
+
 ## Best Practices
 
 1. **Use semantic colors** instead of hardcoded hex values
