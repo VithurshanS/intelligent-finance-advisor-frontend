@@ -12,7 +12,7 @@ export enum Role {
 export type TokenPayload = {
     sub: string; // username
     exp: number; // expiration time
-    // role: Role;
+    role: Role;
 }
 
 export interface User {
