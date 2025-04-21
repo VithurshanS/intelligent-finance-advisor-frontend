@@ -16,11 +16,11 @@ import {
 import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar} from "@/components/ui/sidebar"
 import {Skeleton} from "@/components/ui/skeleton"
 import {getCurrentUser} from "@/actions/auth"
-import {UserModel} from "@/lib/types/user";
+import {User} from "@/lib/types/user";
 
 export function NavUser() {
     const {isMobile} = useSidebar()
-    const [user, setUser] = useState<UserModel | null>(null)
+    const [user, setUser] = useState<User | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export function NavUser() {
             }
         }
 
-        fetchUser().then(() => console.log('Fetched user for NavUser'))
+        fetchUser()
     }, [])
 
     return (
