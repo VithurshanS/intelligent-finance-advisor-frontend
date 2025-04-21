@@ -4,8 +4,9 @@ import {redirect} from "next/navigation";
 import {cookies} from 'next/headers';
 import AxiosInstance from "@/lib/axiosInstance";
 import axios from "axios";
-import {HTTPValidationError, LoginResponse, User} from "@/lib/types";
-import {FormState, RegisterResponse, registerSchema} from "@/actions/authTypes";
+import {LoginResponse} from "@/lib/types/login";
+import {User, UserModel} from "@/lib/types/user";
+import {FormState, HTTPValidationError, RegisterResponse, registerSchema} from "@/lib/types/register";
 
 async function createSession(loginResponse: LoginResponse) {
     const {token} = loginResponse;
@@ -80,17 +81,6 @@ export async function login(_previousState: string, formData: FormData): Promise
         }
         throw error;
     }
-}
-
-export async function getUser() {
-    const cookieStore = await cookies();
-    const userCookie = cookieStore.get('user')?.value;
-    if (!userCookie) {
-        return null;
-    }
-
-    const user: User = JSON.parse(userCookie);
-    return user;
 }
 
 export const registerUser = async (
@@ -172,4 +162,49 @@ export const registerUser = async (
 export async function logout(): Promise<void> {
     await deleteSession();
     redirect('/login');
+}
+
+/**
+ * Verifies a user by making a request to the backend API
+ * @param user_id The ID of the user to verify
+ * @returns User object if successful, null if not authenticated
+ */
+export async function verifyUser(user_id: string): Promise<User | null> {
+    try {
+        // The Axios instance will automatically attach the token from cookies
+        const response = await AxiosInstance.post('/auth/verify', {user_id});
+
+        // Assuming the backend returns the user object in response.data
+        return response.data;
+    } catch (error) {
+        // Handle different types of errors
+        if (axios.isAxiosError(error)) {
+            // Handle specific status codes
+            if (error.response?.status === 401) {
+                console.error("Authentication failed: Token invalid or expired");
+                // Optionally clear the invalid token
+                (await cookies()).delete("token");
+            } else if (error.response?.status === 404) {
+                console.error("User not found");
+            } else {
+                console.error("API error:", error.response?.data || error.message);
+            }
+        } else {
+            console.error("Unexpected error during user verification:", error);
+        }
+
+        return null;
+    }
+}
+
+export async function getCurrentUser() {
+    const cookieStore = await cookies();
+    const userCookie = cookieStore.get('user')?.value;
+
+    if (!userCookie) {
+        return null;
+    }
+
+    const user: User = JSON.parse(userCookie);
+    return new UserModel(user);
 }
