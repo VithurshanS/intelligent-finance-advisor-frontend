@@ -57,13 +57,18 @@ Example:
 
 ```
 app/
-└── group-40/
+└── forecast/
     ├── page.tsx
     ├── _components/
     ├── _utils/
     ├── _services/
     └── _types/
 ```
+---
+
+## 🔷 Types
+
+Common types used for the project are located in `src/lib/types/*`. This file contains:
 
 ---
 
@@ -333,10 +338,77 @@ You can also use opacity modifiers:
 
 ## 🌱Seed data
 
-Currently when reset-database called there will be a dummy user created with the following credentials:
+Currently when reset-database called there will be two dummy user created with the following credentials:
+
+### User
 
 - **Username:** `johndoe`
 - **Password:** `123`
+
+### Admin
+
+- **Username:** `johnsmith`
+- **Password:** `admin123`
+
+---
+
+## 🔒Authentication helper functions
+
+The frontend includes two utility functions to help manage user authentication using cookies and backend verification.
+
+### `getCurrentUser() - src/actions/auth.ts`
+
+This function reads the `user` cookie and parses it to retrieve the current logged-in user's data.
+
+**Usage:**
+
+- Use this when you just need to access the **locally stored** user details (e.g., to conditionally render UI, get username, or role).
+- This does **not** contact the backend, so it **doesn't verify** if the user session is valid on the server.
+
+**Note:**  
+If the cookie is missing or invalid, the function will automatically call `logout()` and throw an error.
+
+---
+
+### `verifyUser() - src/actions/auth.ts`
+
+This function:
+1. Gets the current user from the cookie using `getCurrentUser()`.
+2. Sends a POST request to `/auth/verify` on the backend to **validate** the user's session and data (e.g., user ID, username, role).
+3. Returns the verified user if everything matches; otherwise, logs out the user.
+
+**Usage:**
+
+- Call this when you need to ensure that the user is **genuinely authenticated** and the cookie hasn't been tampered with.
+- Useful for **protected pages**, **role validation**, and **critical operations**.
+
+**Important:**  
+As of now, the backend `/auth/verify` route is **not yet implemented**, so this function will fail until the backend logic is ready. You can still safely use `getCurrentUser()` until then.
+
+---
+
+### 🔁 When to Use Which
+
+| Scenario | Function to Use |
+|----------|------------------|
+| Displaying user info (username, avatar, role) | `getCurrentUser()` |
+| Protecting a page or verifying user identity | `verifyUser()` |
+| Ensuring cookie data hasn't been tampered with | `verifyUser()` |
+
+
+---
+
+## 👤Role Access Control
+
+There is a `src/middleware.ts` file. In that file, there are three arrays:
+
+- `publicRoutes` – contains the routes that are accessible to all users
+- `userRoutes` – contains the routes that are accessible to users with the role of `user`
+- `adminOnlyRoutes` – contains the routes that are only accessible to users with the role of `admin`
+
+**Admins** can access both **user** and **admin** routes. This means they can also access features like portfolio optimization, etc.
+
+If you are introducing a new route, make sure to update the `middleware.ts` file accordingly.
 
 ---
 
@@ -351,6 +423,12 @@ Currently when reset-database called there will be a dummy user created with the
 
 By following these guidelines, you'll maintain a consistent, accessible, and visually appealing UI that adapts well to
 both light and dark modes.
+
+---
+
+## ⚠️Important
+- Before pull requests please make sure the app is building fine
+- Make sure to run `npm run lint`, `npm run build && npm start` will run correnclt without any issues
 
 ---
 

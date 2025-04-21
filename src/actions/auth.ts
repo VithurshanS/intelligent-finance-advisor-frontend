@@ -4,8 +4,9 @@ import {redirect} from "next/navigation";
 import {cookies} from 'next/headers';
 import AxiosInstance from "@/lib/axiosInstance";
 import axios from "axios";
-import {HTTPValidationError, LoginResponse, User} from "@/lib/types";
-import {FormState, RegisterResponse, registerSchema} from "@/actions/authTypes";
+import {LoginResponse} from "@/lib/types/login";
+import {User} from "@/lib/types/user";
+import {FormState, HTTPValidationError, RegisterResponse, registerSchema} from "@/lib/types/register";
 
 async function createSession(loginResponse: LoginResponse) {
     const {token} = loginResponse;
@@ -53,7 +54,6 @@ export async function login(_previousState: string, formData: FormData): Promise
             username,
             password
         });
-        console.log(response);
 
         await createSession(response.data);
 
@@ -80,17 +80,6 @@ export async function login(_previousState: string, formData: FormData): Promise
         }
         throw error;
     }
-}
-
-export async function getUser() {
-    const cookieStore = await cookies();
-    const userCookie = cookieStore.get('user')?.value;
-    if (!userCookie) {
-        return null;
-    }
-
-    const user: User = JSON.parse(userCookie);
-    return user;
 }
 
 export const registerUser = async (
@@ -173,3 +162,78 @@ export async function logout(): Promise<void> {
     await deleteSession();
     redirect('/login');
 }
+
+export async function getCurrentUser(): Promise<User> {
+    const cookieStore = await cookies();
+    const userCookie = cookieStore.get('user')?.value;
+
+    if (!userCookie) {
+        await logout();
+        throw new Error('User not found');
+    }
+
+    try {
+        const user: User = JSON.parse(userCookie);
+        if (!user) {
+            await logout();
+            throw new Error('User not found');
+        }
+        return user;
+    } catch (error) {
+        await logout();
+        if (error instanceof Error) {
+            console.error(error.message);
+        }
+        throw new Error('Invalid user data in cookie');
+    }
+}
+
+/**
+ * Verifies a user by making a request to the backend API
+ * @returns User object if successful, null if not authenticated
+ */
+export async function verifyUser(): Promise<User | null> {
+    try {
+        // Get the current user from cookies
+        const currentUser = await getCurrentUser();
+
+        // Verify with backend
+        const response = await AxiosInstance.post<User>('/auth/verify', {
+            username: currentUser.username
+        });
+
+        const verifiedUser = response.data;
+
+        // Optional: Check if the verified user matches the cookie user
+        // You can adjust these checks based on what fields you want to compare
+        if (verifiedUser.user_id !== currentUser.user_id || verifiedUser.username !== currentUser.username || verifiedUser.role !== currentUser.role) {
+            console.warn('User mismatch between cookie and server');
+            await logout();
+            return null;
+        }
+
+        return verifiedUser;
+    } catch (error) {
+        // Handle different types of errors
+        if (axios.isAxiosError(error)) {
+            // Handle specific status codes
+            if (error.response?.status === 401) {
+                console.error("Authentication failed: Token invalid or expired");
+                await logout();
+            } else if (error.response?.status === 404) {
+                console.error("User not found");
+                await logout();
+            } else {
+                console.error("API error:", error.response?.data || error.message);
+            }
+        } else if (error instanceof Error && error.message.includes('User not found')) {
+            // Already handled in getCurrentUser
+            console.error("User not found in cookies");
+        } else {
+            console.error("Unexpected error during user verification:", error);
+        }
+
+        return null;
+    }
+}
+
