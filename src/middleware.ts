@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {cookies} from "next/headers";
 import {decodeJwt} from "jose";
-import {TokenPayload, Role} from "@/lib/types/user";
+import {Role, TokenPayload} from "@/lib/types/user";
 
 // Route configurations based on access level
 const publicRoutes = [
@@ -20,6 +20,7 @@ const userRoutes = [
 
 const adminRoutes = [
     "/users",
+    "/dashboard",
     // Add more admin-only routes
 ];
 
@@ -28,8 +29,6 @@ export default async function middleware(req: NextRequest) {
 
     // Check which category the current path belongs to
     const isPublicRoute = publicRoutes.includes(path);
-    const isUserRoute = userRoutes.includes(path);
-    const isAdminRoute = adminRoutes.includes(path);
 
     // Get token from cookies
     const cookie = (await cookies()).get("token")?.value;
@@ -50,26 +49,26 @@ export default async function middleware(req: NextRequest) {
         }
     }
 
+    // Redirect authenticated users away from login page
+    if (session?.sub && path === "/auth/login") {
+        return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+    }
+
     // Authentication check: Redirect to login if accessing protected route without a session
     if (!isPublicRoute && !session?.sub) {
         return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
     }
 
-    // Authorization checks based on user role
+    // Authorization checks based on path and user role
     if (session?.sub) {
-        // Admin routes check
-        if (isAdminRoute && session?.role !== Role.ADMIN) {
+        if (adminRoutes.includes(path) && session?.role !== Role.ADMIN) {
+            console.log(`Access denied: User role ${session?.role} tried to access admin route ${path}`);
             return NextResponse.redirect(new URL("/unauthorized", req.nextUrl));
         }
 
-        // User routes check
-        if (isUserRoute && ![Role.USER, Role.ADMIN].includes(session?.role)) {
+        if (userRoutes.includes(path) && !adminRoutes.includes(path) && session?.role !== Role.USER) {
+            console.log(`Access denied: Admin role ${session?.role} tried to access user-only route ${path}`);
             return NextResponse.redirect(new URL("/unauthorized", req.nextUrl));
-        }
-
-        // Redirect authenticated users away from login page
-        if (path === "/auth/login") {
-            return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
         }
     }
 
