@@ -24,7 +24,7 @@ export async function AppSidebar({...props}: React.ComponentProps<typeof Sidebar
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <SidebarHeading/>
+                <SidebarHeading role={user.role}/>
             </SidebarHeader>
             <SidebarContent>
                 <AppSidebarLinks role={user.role}/>

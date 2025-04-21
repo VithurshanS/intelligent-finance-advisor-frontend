@@ -130,6 +130,94 @@ const adminSidebar: SidebarData = {
             icon: LayoutGrid,
         },
         {
+            title: "Market Prediction",
+            url: "/group-37",
+            icon: Bot,
+            items: [
+                {
+                    title: "Price Forecast",
+                    url: "/group-37/forecast",
+                },
+                {
+                    title: "Model Metrics",
+                    url: "/group-37/metrics",
+                },
+            ],
+        },
+        {
+            title: "Budget Tracking",
+            url: "/group-38",
+            icon: DollarSign,
+            items: [
+                {
+                    title: "Categorization",
+                    url: "/group-38/categorization",
+                },
+                {
+                    title: "Budget Analysis",
+                    url: "/group-38/analysis",
+                },
+            ],
+        },
+        {
+            title: "Portfolio Optimization",
+            url: "/group-39",
+            icon: PieChart,
+            items: [
+                {
+                    title: "Investment Plan",
+                    url: "/group-39/investment",
+                },
+                {
+                    title: "Monte Carlo Sim",
+                    url: "/group-39/monte-carlo",
+                },
+                {
+                    title: "Markowitz Model",
+                    url: "/group-39/markowitz",
+                },
+            ],
+        },
+        {
+            title: "Risk & Compliance",
+            url: "/group-40",
+            icon: Scale,
+            items: [
+                {
+                    title: "Risk Analysis",
+                    url: "/group-40/risk",
+                },
+                {
+                    title: "Fairness & Bias",
+                    url: "/group-40/fairness",
+                },
+                {
+                    title: "Explainability",
+                    url: "/group-40/explain",
+                },
+            ],
+        },
+        {
+            title: "Settings",
+            url: "/settings",
+            icon: Settings2,
+            items: [
+                {
+                    title: "General",
+                    url: "/settings/general",
+                },
+                {
+                    title: "Team",
+                    url: "/settings/team",
+                },
+            ],
+        },
+        {
+            title: "Dashboard",
+            url: "/dashboard",
+            icon: LayoutGrid,
+        },
+        {
             title: "Stock symbols",
             url: '/stock-symbol',
             icon: ChartCandlestickIcon,

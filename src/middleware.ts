@@ -13,21 +13,27 @@ const publicRoutes = [
     "/unauthorized"
 ];
 
+// Routes that regular users can access
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const userRoutes = [
     "/dashboard",
+    "/profile",
+    "/settings",
     // Add more user-accessible routes
 ];
 
-const adminRoutes = [
+// Routes that only admins can access
+const adminOnlyRoutes = [
     "/users",
-    "/dashboard",
+    "/admin-settings",
+    "/analytics",
     // Add more admin-only routes
 ];
 
 export default async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
 
-    // Check which category the current path belongs to
+    // Check if the current path is public
     const isPublicRoute = publicRoutes.includes(path);
 
     // Get token from cookies
@@ -61,15 +67,21 @@ export default async function middleware(req: NextRequest) {
 
     // Authorization checks based on path and user role
     if (session?.sub) {
-        if (adminRoutes.includes(path) && session?.role !== Role.ADMIN) {
-            console.log(`Access denied: User role ${session?.role} tried to access admin route ${path}`);
+        // Check if the user is trying to access an admin-only route
+        if (adminOnlyRoutes.includes(path) && session?.role !== Role.ADMIN) {
+            console.log(`Access denied: User role ${session?.role} tried to access admin-only route ${path}`);
             return NextResponse.redirect(new URL("/unauthorized", req.nextUrl));
         }
 
-        if (userRoutes.includes(path) && !adminRoutes.includes(path) && session?.role !== Role.USER) {
+        // Check if an admin is trying to access a user-only route
+        // This is commented out since we've decided admins can access user routes
+        // If you want to restrict admins from certain user routes, uncomment this
+        /*
+        if (userOnlyRoutes.includes(path) && session?.role !== Role.USER) {
             console.log(`Access denied: Admin role ${session?.role} tried to access user-only route ${path}`);
             return NextResponse.redirect(new URL("/unauthorized", req.nextUrl));
         }
+        */
     }
 
     return NextResponse.next();
