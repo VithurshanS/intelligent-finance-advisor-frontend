@@ -335,7 +335,7 @@ You can also use opacity modifiers:
 
 Currently when reset-database called there will be a dummy user created with the following credentials:
 
-- **Username:** `jhondoe`
+- **Username:** `johndoe`
 - **Password:** `123`
 
 ---
