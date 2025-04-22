@@ -27,7 +27,6 @@ const userRoutes = [
 
 // Routes that only admins can access
 const adminOnlyRoutes = [
-    "/portfolio",
     "users",
     "/users/:id",
     "/portfolio/:id",
