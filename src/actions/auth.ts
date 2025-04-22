@@ -2,11 +2,11 @@
 
 import {redirect} from "next/navigation";
 import {cookies} from 'next/headers';
-import AxiosInstance from "@/lib/axiosInstance";
-import axios from "axios";
 import {LoginResponse} from "@/lib/types/login";
 import {User} from "@/lib/types/user";
 import {FormState, HTTPValidationError, RegisterResponse, registerSchema} from "@/lib/types/register";
+import AxiosInstance from "@/lib/server-fetcher";
+import axios from "axios";
 
 async function createSession(loginResponse: LoginResponse) {
     const {token} = loginResponse;
@@ -55,8 +55,8 @@ export async function login(_previousState: string, formData: FormData): Promise
             password
         });
 
+        console.log(response);
         await createSession(response.data);
-
 
         // Redirect to dashboard after successful login
         redirect('/dashboard');
