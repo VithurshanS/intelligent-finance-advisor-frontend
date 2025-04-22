@@ -17,24 +17,52 @@ const publicRoutes = [
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const userRoutes = [
     "/dashboard",
+    "/dashboard/:path*", // Support for /dashboard/any/nested/route
     "/profile",
+    "/profile/:id", // Support for dynamic profile routes
     "/settings",
+    "/settings/:section",
     // Add more user-accessible routes
 ];
 
 // Routes that only admins can access
 const adminOnlyRoutes = [
-    "/users",
-    "/admin-settings",
-    "/analytics",
+    "/portfolio",
+    "users",
+    "/users/:id",
+    "/portfolio/:id",
     // Add more admin-only routes
 ];
+
+/**
+ * Checks if a given URL path matches a route pattern
+ * Supports dynamic segments with :parameter and wildcard paths with :path*
+ */
+function matchesPattern(path: string, pattern: string): boolean {
+    // Handle exact matches first
+    if (path === pattern) return true;
+
+    // Convert route pattern to regex
+    const regexPattern = pattern
+        .replace(/:[^/]+\*/g, '(?:/.*)?') // Replace :path* with optional wildcard
+        .replace(/:[^/]+/g, '[^/]+');     // Replace :id with any segment pattern
+
+    const regex = new RegExp(`^${regexPattern}$`);
+    return regex.test(path);
+}
+
+/**
+ * Checks if the path matches any of the patterns in the routes array
+ */
+function matchesAnyRoute(path: string, routes: string[]): boolean {
+    return routes.some(pattern => matchesPattern(path, pattern));
+}
 
 export default async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
 
     // Check if the current path is public
-    const isPublicRoute = publicRoutes.includes(path);
+    const isPublicRoute = matchesAnyRoute(path, publicRoutes);
 
     // Get token from cookies
     const cookie = (await cookies()).get("token")?.value;
@@ -62,22 +90,23 @@ export default async function middleware(req: NextRequest) {
 
     // Authentication check: Redirect to login if accessing protected route without a session
     if (!isPublicRoute && !session?.sub) {
-        return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
+        const callbackUrl = encodeURIComponent(req.nextUrl.pathname);
+        return NextResponse.redirect(new URL(`/auth/login?callbackUrl=${callbackUrl}`, req.nextUrl));
     }
 
     // Authorization checks based on path and user role
     if (session?.sub) {
         // Check if the user is trying to access an admin-only route
-        if (adminOnlyRoutes.includes(path) && session?.role !== Role.ADMIN) {
+        if (matchesAnyRoute(path, adminOnlyRoutes) && session?.role !== Role.ADMIN) {
             console.log(`Access denied: User role ${session?.role} tried to access admin-only route ${path}`);
             return NextResponse.redirect(new URL("/unauthorized", req.nextUrl));
         }
 
-        // Check if an admin is trying to access a user-only route
-        // This is commented out since we've decided admins can access user routes
-        // If you want to restrict admins from certain user routes, uncomment this
+        // For future use: Check if an admin is trying to access user-only routes
+        // (currently admins can access user routes by default)
         /*
-        if (userOnlyRoutes.includes(path) && session?.role !== Role.USER) {
+        const isUserOnlyRoute = matchesAnyRoute(path, userRoutes) && !matchesAnyRoute(path, adminOnlyRoutes);
+        if (isUserOnlyRoute && session?.role !== Role.USER) {
             console.log(`Access denied: Admin role ${session?.role} tried to access user-only route ${path}`);
             return NextResponse.redirect(new URL("/unauthorized", req.nextUrl));
         }

@@ -398,7 +398,7 @@ As of now, the backend `/auth/verify` route is **not yet implemented**, so this 
 
 ---
 
-## 👤Role Access Control
+## 👤 Role Access Control
 
 There is a `src/middleware.ts` file. In that file, there are three arrays:
 
@@ -408,7 +408,41 @@ There is a `src/middleware.ts` file. In that file, there are three arrays:
 
 **Admins** can access both **user** and **admin** routes. This means they can also access features like portfolio optimization, etc.
 
-If you are introducing a new route, make sure to update the `middleware.ts` file accordingly.
+### 🔄 Dynamic Route Patterns
+
+The middleware now supports dynamic route patterns using two special syntaxes:
+
+- `:parameter` – matches a single URL segment (e.g., `/users/:id` matches `/users/123`)
+- `:path*` – matches multiple nested segments (e.g., `/dashboard/:path*` matches `/dashboard/reports/quarterly/2025`)
+
+Examples of properly formatted route patterns:
+```javascript
+// Single parameter routes
+"/users/:id"           // Matches: /users/123
+"/profile/:username"   // Matches: /profile/johndoe
+
+// Nested/wildcard routes
+"/dashboard/:path*"    // Matches: /dashboard, /dashboard/stats, /dashboard/reports/annual
+"/settings/:section"   // Matches: /settings/account, /settings/privacy
+```
+
+### 🔐 Adding New Routes
+
+When introducing a new route, add it to the appropriate array in `middleware.ts`:
+
+1. If the route should be accessible without authentication, add it to `publicRoutes`
+2. If the route should be accessible to regular users, add it to `userRoutes`
+3. If the route should be accessible only to admins, add it to `adminOnlyRoutes`
+
+Be sure to include any dynamic variations of the route using the pattern syntax above.
+
+### 🚦 Route Access Logic
+
+- Public routes: Accessible to everyone
+- User routes: Require authentication with any role
+- Admin routes: Require authentication with admin role
+
+Remember that users with the admin role can access all routes in both `userRoutes` and `adminOnlyRoutes`.
 
 ---
 
