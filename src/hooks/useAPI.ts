@@ -1,21 +1,19 @@
 // hooks/useAPI.ts
-import useSWR from 'swr';
-import {clientFetch as fetcher_function} from '@/lib/client-fetcher';
+import useSWR, {SWRResponse} from 'swr';
+import ClientAxiosInstance from '@/lib/client-fetcher';
+import {AxiosError, AxiosRequestConfig} from 'axios';
 
 export function useAPI<T = unknown>(
     endpoint: string,
-    options?: RequestInit,
-) {
-    const fetcher = async (url: string) => {
-        return await fetcher_function<T>(url, options);
+    options?: AxiosRequestConfig
+): SWRResponse<T, AxiosError> {
+    const fetcher = async (url: string): Promise<T> => {
+        const response = await ClientAxiosInstance({
+            url,
+            ...options
+        });
+        return response.data;
     };
 
-    const {data, error, isLoading, mutate} = useSWR<T>(endpoint, fetcher);
-
-    return {
-        data,
-        error,
-        isLoading,
-        mutate, // use this to revalidate/refetch manually
-    };
+    return useSWR<T, AxiosError>(endpoint, fetcher);
 }

@@ -392,175 +392,124 @@ logic is ready. You can still safely use `getCurrentUser()` until then.
 
 ## 🛜 Data Fetching
 
-This project uses a **unified approach** for data fetching from a FastAPI backend using `fetch` under the hood, split
-between:
+This project provides two different approaches for data fetching:
 
-- `fetchFromAPI` for **server components**
-- `clientFetch` for **client components**
-- `useAPI` for **React hooks inside client components** (with SWR)
+1. **Client-side fetching** - For components running in the browser
+2. **Server-side fetching** - For Server Components and Server Actions
 
-### 🔧 Setup
+## Setup
 
-#### 📁 `lib/server-fetcher.ts` – Server Fetcher
+All API utilities are preconfigured to handle authentication headers and error states automatically.
 
-Fetches data securely using HTTP-only cookies (set on login). Ideal for **Server Components**.
+## Client-side Data Fetching
 
-```ts
-import {cookies} from 'next/headers';
+Use the `useAPI` hook in client components for data fetching with SWR's caching and revalidation capabilities.
 
-const BASE_URL = process.env.BACKEND_BASE_URL!;
-
-export async function serverFetcher<T>(
-    endpoint: string,
-    options: RequestInit = {}
-): Promise<T> {
-    const token = (await cookies()).get('token')?.value;
-
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
-        ...options,
-        headers: {
-            Authorization: token ? `Bearer ${token}` : '',
-            'Content-Type': 'application/json',
-            ...(options.headers || {}),
-        },
-        cache: 'no-store',
-    });
-
-    if (!res.ok) {
-        const errorBody = await res.text();
-        throw new Error(`Fetch failed: ${res.status} - ${errorBody}`);
-    }
-
-    return res.json() as Promise<T>;
-}
-```
-
----
-
-#### 📁 `lib/client-fetcher.ts` – Client Fetcher
-
-Fetches from the client using `credentials: 'include'`, which allows cookies like HTTP-only `token` to be sent.
-
-```ts
-const BASE_URL = 'http://localhost:8000'; // or your backend URL
-
-export async function clientFetcher<T>(
-    endpoint: string,
-    options: RequestInit = {}
-): Promise<T> {
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
-        ...options,
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            ...(options.headers || {}),
-        },
-    });
-
-    if (!res.ok) {
-        const errorBody = await res.text();
-        throw new Error(`Client fetch failed: ${res.status} - ${errorBody}`);
-    }
-
-    return res.json() as Promise<T>;
-}
-```
-
----
-
-#### 📁 `hooks/useAPI.ts` – Reusable Hook (Client)
-
-A flexible and type-safe hook for **client-side data fetching** using SWR.
-
-```ts
+```typescript
+// Client Component
 'use client';
 
-import useSWR from 'swr';
-import {clientFetch} from '@/lib/client-fetcher';
+import { useAPI } from '@/hooks/useAPI';
 
-export function useAPI<T = unknown>(
-    endpoint: string,
-    options?: RequestInit
-) {
-    const fetcher = async (url: string): Promise<T> => {
-        return await clientFetch<T>(url, options);
-    };
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
-    const {data, error, isLoading, mutate} = useSWR<T>(endpoint, fetcher);
+export default function Profile() {
+  // Basic usage
+  const { data, error, isLoading } = useAPI<User>('/api/users/profile');
+  
+  // With query parameters
+  const { data: posts } = useAPI<Post[]>('/api/posts', {
+    params: { limit: 10 }
+  });
 
-    return {
-        data,
-        error,
-        isLoading,
-        mutate, // use to refresh data
-    };
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  
+  return (
+    <div>
+      <h1>Welcome, {data?.name}</h1>
+      {/* Rest of your component */}
+    </div>
+  );
 }
 ```
 
----
+For one-off requests or mutations, you can use the Axios client directly:
 
-### 🔍 Testing
+```typescript
+import ClientAxiosInstance from '@/lib/client-axios';
 
-A sample client-side page is set up at:
-
-```
-/test
-```
-
-This page demonstrates how to:
-
-- Fetch a message using the `useAPI` hook
-- Handle loading and error states
-- Access a protected route using cookie-based auth
-
-#### Example Output
-
-```tsx
-'use client';
-
-import {useAPI} from '@/hooks/useAPI';
-
-export default function Page() {
-    const {data: message, isLoading, error} = useAPI<string>('/');
-
-    if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
-
-    return <div>{message}</div>;
+// Example POST request
+async function createPost(postData) {
+  try {
+    const response = await ClientAxiosInstance.post('/api/posts', postData);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to create post:', error);
+    throw error;
+  }
 }
 ```
 
----
+See a complete example at `localhost:3000/test` in the application.
 
-### ✅ Benefits
+## Server-side Data Fetching
 
-- **Type-safe** with generics (`<T>`)
-- **Modular** and consistent usage across server/client
-- **Token handled automatically**
-- **HTTP-only cookie support**
-- **SWR** adds caching, revalidation, and `mutate()` for refetching
-- Cleaner code → logic is in one place instead of every component
+For Server Components or Server Actions, use the server-side Axios instance:
 
----
+```typescript
+// Server Component or Server Action
+'use server';
 
-### 🧠 Tips
+import AxiosInstance from '@/lib/server-axios';
 
-- Use `fetchFromAPI` in **Server Components** or Route Handlers.
-- Use `useAPI` in **Client Components**.
-- Make sure your backend sets the `token` cookie as `HttpOnly`, `SameSite=Strict`, and `Secure` in production.
-- Avoid `localStorage` or exposing tokens to the browser for better security.
+// Example GET request
+export async function getServerSideData() {
+  try {
+    const response = await AxiosInstance.get('/api/protected-data');
+    return response.data;
+  } catch (error) {
+    console.error('Server fetch failed:', error);
+    throw error;
+  }
+}
 
----
+// Example POST request with data
+export async function submitFormAction(formData: FormData) {
+  try {
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email')
+    };
+    
+    const response = await AxiosInstance.post('/api/users', data);
+    return response.data;
+  } catch (error) {
+    console.error('Form submission failed:', error);
+    throw error;
+  }
+}
+```
 
-### 🔁 When to Use Which
+For more examples of server-side fetching, see `src/actions/auth.ts`.
 
-| Scenario                                       | Function to Use    |
-|------------------------------------------------|--------------------|
-| Displaying user info (username, avatar, role)  | `getCurrentUser()` |
-| Protecting a page or verifying user identity   | `verifyUser()`     |
-| Ensuring cookie data hasn't been tampered with | `verifyUser()`     |
+## Which One to Use?
 
----
+- **Use client-side fetching** (`useAPI` hook or `ClientAxiosInstance`) for:
+  - Interactive UI components that need real-time data
+  - Data that changes frequently
+  - User-specific content that requires client-side state
+  - Forms and mutations in client components
+
+- **Use server-side fetching** (`AxiosInstance`) for:
+  - Initial page data loading (improves SEO and performance)
+  - Protected API routes that require server-side authentication
+  - Server Actions processing form submissions
+  - Data pre-fetching for Server Components
 
 ## 👤 Role Access Control
 

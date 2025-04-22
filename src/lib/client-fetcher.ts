@@ -1,24 +1,38 @@
-// lib/client-fetcher.ts
+import axios from "axios";
+import {getCurrentUser} from "@/actions/auth";
 
-const BASE_URL = "http://localhost:8000";
+// Axios Interceptor Instance
+const AxiosInstance = axios.create({
+    baseURL: 'http://localhost:8000',
+});
 
-export async function clientFetch<T>(
-    endpoint: string,
-    options: RequestInit = {}
-): Promise<T> {
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
-        ...options,
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            ...(options.headers || {}),
-        },
-    });
+// Request Interceptor
+AxiosInstance.interceptors.request.use(
+    async (config) => {
+        const token = (await getCurrentUser())?.token;
 
-    if (!res.ok) {
-        const errorBody = await res.text(); // more helpful error message
-        throw new Error(`Client fetch failed: ${res.status} - ${errorBody}`);
+        // If token is present, add it to request's Authorization Header
+        if (token) {
+            if (config.headers) config.headers.token = token;
+        }
+        return config;
+    },
+    (error) => {
+        // Handle request errors here
+        return Promise.reject(error);
     }
+);
 
-    return await res.json() as Promise<T>;
-}
+// Axios Interceptor: Response Method
+AxiosInstance.interceptors.response.use(
+    (response) => {
+        // Can be modified response
+        return response;
+    },
+    (error) => {
+        // Handle response errors here
+        return Promise.reject(error);
+    }
+);
+
+export default AxiosInstance;
