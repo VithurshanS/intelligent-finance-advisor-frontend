@@ -56,22 +56,8 @@ const userSidebar: SidebarData = {
         },
         {
             title: "Portfolio Optimization",
-            url: "/group-39",
+            url: "/portfolio",
             icon: PieChart,
-            items: [
-                {
-                    title: "Investment Plan",
-                    url: "/group-39/investment",
-                },
-                {
-                    title: "Monte Carlo Sim",
-                    url: "/group-39/monte-carlo",
-                },
-                {
-                    title: "Markowitz Model",
-                    url: "/group-39/markowitz",
-                },
-            ],
         },
         {
             title: "Risk & Compliance",
@@ -161,22 +147,8 @@ const adminSidebar: SidebarData = {
         },
         {
             title: "Portfolio Optimization",
-            url: "/group-39",
+            url: "/portfolio",
             icon: PieChart,
-            items: [
-                {
-                    title: "Investment Plan",
-                    url: "/group-39/investment",
-                },
-                {
-                    title: "Monte Carlo Sim",
-                    url: "/group-39/monte-carlo",
-                },
-                {
-                    title: "Markowitz Model",
-                    url: "/group-39/markowitz",
-                },
-            ],
         },
         {
             title: "Risk & Compliance",

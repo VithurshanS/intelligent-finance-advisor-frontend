@@ -33,7 +33,7 @@ export default function UnauthorizedPage() {
                     <div className="flex flex-col gap-4 w-full">
                         <Button
                             onClick={() => router.push("/dashboard")}
-                            className="w-full bg-primary hover:bg-primary/90"
+                            className="w-full"
                         >
                             Go to Dashboard
                         </Button>
@@ -41,7 +41,7 @@ export default function UnauthorizedPage() {
                         <Button
                             variant="outline"
                             onClick={() => router.back()}
-                            className="w-full border-border text-muted-foreground hover:bg-accent"
+                            className="w-full"
                         >
                             <ArrowLeft className="mr-2 h-4 w-4"/>
                             Go Back
