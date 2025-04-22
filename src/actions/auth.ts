@@ -163,28 +163,25 @@ export async function logout(): Promise<void> {
     redirect('/login');
 }
 
-export async function getCurrentUser(): Promise<User> {
+export async function getCurrentUser(): Promise<User | null> {
     const cookieStore = await cookies();
     const userCookie = cookieStore.get('user')?.value;
 
     if (!userCookie) {
-        await logout();
-        throw new Error('User not found');
+        return null;
     }
 
     try {
         const user: User = JSON.parse(userCookie);
         if (!user) {
-            await logout();
-            throw new Error('User not found');
+            return null;
         }
         return user;
     } catch (error) {
-        await logout();
         if (error instanceof Error) {
             console.error(error.message);
         }
-        throw new Error('Invalid user data in cookie');
+        return null;
     }
 }
 
@@ -196,6 +193,11 @@ export async function verifyUser(): Promise<User | null> {
     try {
         // Get the current user from cookies
         const currentUser = await getCurrentUser();
+
+        // If no user in cookies, return null immediately
+        if (!currentUser) {
+            return null;
+        }
 
         // Verify with backend
         const response = await AxiosInstance.post<User>('/auth/verify', {
@@ -226,9 +228,6 @@ export async function verifyUser(): Promise<User | null> {
             } else {
                 console.error("API error:", error.response?.data || error.message);
             }
-        } else if (error instanceof Error && error.message.includes('User not found')) {
-            // Already handled in getCurrentUser
-            console.error("User not found in cookies");
         } else {
             console.error("Unexpected error during user verification:", error);
         }
@@ -236,4 +235,3 @@ export async function verifyUser(): Promise<User | null> {
         return null;
     }
 }
-
