@@ -7,6 +7,7 @@ import axios from "axios";
 import {LoginResponse} from "@/lib/types/login";
 import {User} from "@/lib/types/user";
 import {FormState, HTTPValidationError, RegisterResponse, registerSchema} from "@/lib/types/register";
+import {serverFetcher} from "@/lib/server-fetcher";
 
 async function createSession(loginResponse: LoginResponse) {
     const {token} = loginResponse;
@@ -50,13 +51,21 @@ export async function login(_previousState: string, formData: FormData): Promise
     }
 
     try {
-        const response = await AxiosInstance.post<LoginResponse>('/auth/login', {
-            username,
-            password
-        });
+        // const response = await AxiosInstance.post<LoginResponse>('/auth/login', {
+        //     username,
+        //     password
+        // });
 
-        await createSession(response.data);
+        const response = await serverFetcher<LoginResponse>('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({
+                username,
+                password
+            }),
+        })
 
+        console.log(response);
+        await createSession(response);
 
         // Redirect to dashboard after successful login
         redirect('/dashboard');

@@ -64,6 +64,7 @@ app/
     ├── _services/
     └── _types/
 ```
+
 ---
 
 ## 🔷 Types
@@ -362,39 +363,202 @@ This function reads the `user` cookie and parses it to retrieve the current logg
 
 **Usage:**
 
-- Use this when you just need to access the **locally stored** user details (e.g., to conditionally render UI, get username, or role).
+- Use this when you just need to access the **locally stored** user details (e.g., to conditionally render UI, get
+  username, or role).
 - This does **not** contact the backend, so it **doesn't verify** if the user session is valid on the server.
-
-**Note:**  
-If the cookie is missing or invalid, the function will automatically call `logout()` and throw an error.
 
 ---
 
 ### `verifyUser() - src/actions/auth.ts`
 
 This function:
+
 1. Gets the current user from the cookie using `getCurrentUser()`.
-2. Sends a POST request to `/auth/verify` on the backend to **validate** the user's session and data (e.g., user ID, username, role).
+2. Sends a POST request to `/auth/verify` on the backend to **validate** the user's session and data (e.g., user ID,
+   username, role).
 3. Returns the verified user if everything matches; otherwise, logs out the user.
 
 **Usage:**
 
-- Call this when you need to ensure that the user is **genuinely authenticated** and the cookie hasn't been tampered with.
+- Call this when you need to ensure that the user is **genuinely authenticated** and the cookie hasn't been tampered
+  with.
 - Useful for **protected pages**, **role validation**, and **critical operations**.
 
 **Important:**  
-As of now, the backend `/auth/verify` route is **not yet implemented**, so this function will fail until the backend logic is ready. You can still safely use `getCurrentUser()` until then.
+As of now, the backend `/auth/verify` route is **not yet implemented**, so this function will fail until the backend
+logic is ready. You can still safely use `getCurrentUser()` until then.
+
+---
+
+## 🛜 Data Fetching
+
+This project uses a **unified approach** for data fetching from a FastAPI backend using `fetch` under the hood, split
+between:
+
+- `fetchFromAPI` for **server components**
+- `clientFetch` for **client components**
+- `useAPI` for **React hooks inside client components** (with SWR)
+
+### 🔧 Setup
+
+#### 📁 `lib/server-fetcher.ts` – Server Fetcher
+
+Fetches data securely using HTTP-only cookies (set on login). Ideal for **Server Components**.
+
+```ts
+import {cookies} from 'next/headers';
+
+const BASE_URL = process.env.BACKEND_BASE_URL!;
+
+export async function serverFetcher<T>(
+    endpoint: string,
+    options: RequestInit = {}
+): Promise<T> {
+    const token = (await cookies()).get('token')?.value;
+
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+        ...options,
+        headers: {
+            Authorization: token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json',
+            ...(options.headers || {}),
+        },
+        cache: 'no-store',
+    });
+
+    if (!res.ok) {
+        const errorBody = await res.text();
+        throw new Error(`Fetch failed: ${res.status} - ${errorBody}`);
+    }
+
+    return res.json() as Promise<T>;
+}
+```
+
+---
+
+#### 📁 `lib/client-fetcher.ts` – Client Fetcher
+
+Fetches from the client using `credentials: 'include'`, which allows cookies like HTTP-only `token` to be sent.
+
+```ts
+const BASE_URL = 'http://localhost:8000'; // or your backend URL
+
+export async function clientFetcher<T>(
+    endpoint: string,
+    options: RequestInit = {}
+): Promise<T> {
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+        ...options,
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(options.headers || {}),
+        },
+    });
+
+    if (!res.ok) {
+        const errorBody = await res.text();
+        throw new Error(`Client fetch failed: ${res.status} - ${errorBody}`);
+    }
+
+    return res.json() as Promise<T>;
+}
+```
+
+---
+
+#### 📁 `hooks/useAPI.ts` – Reusable Hook (Client)
+
+A flexible and type-safe hook for **client-side data fetching** using SWR.
+
+```ts
+'use client';
+
+import useSWR from 'swr';
+import {clientFetch} from '@/lib/client-fetcher';
+
+export function useAPI<T = unknown>(
+    endpoint: string,
+    options?: RequestInit
+) {
+    const fetcher = async (url: string): Promise<T> => {
+        return await clientFetch<T>(url, options);
+    };
+
+    const {data, error, isLoading, mutate} = useSWR<T>(endpoint, fetcher);
+
+    return {
+        data,
+        error,
+        isLoading,
+        mutate, // use to refresh data
+    };
+}
+```
+
+---
+
+### 🔍 Testing
+
+A sample client-side page is set up at:
+
+```
+/test
+```
+
+This page demonstrates how to:
+
+- Fetch a message using the `useAPI` hook
+- Handle loading and error states
+- Access a protected route using cookie-based auth
+
+#### Example Output
+
+```tsx
+'use client';
+
+import {useAPI} from '@/hooks/useAPI';
+
+export default function Page() {
+    const {data: message, isLoading, error} = useAPI<string>('/');
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
+
+    return <div>{message}</div>;
+}
+```
+
+---
+
+### ✅ Benefits
+
+- **Type-safe** with generics (`<T>`)
+- **Modular** and consistent usage across server/client
+- **Token handled automatically**
+- **HTTP-only cookie support**
+- **SWR** adds caching, revalidation, and `mutate()` for refetching
+- Cleaner code → logic is in one place instead of every component
+
+---
+
+### 🧠 Tips
+
+- Use `fetchFromAPI` in **Server Components** or Route Handlers.
+- Use `useAPI` in **Client Components**.
+- Make sure your backend sets the `token` cookie as `HttpOnly`, `SameSite=Strict`, and `Secure` in production.
+- Avoid `localStorage` or exposing tokens to the browser for better security.
 
 ---
 
 ### 🔁 When to Use Which
 
-| Scenario | Function to Use |
-|----------|------------------|
-| Displaying user info (username, avatar, role) | `getCurrentUser()` |
-| Protecting a page or verifying user identity | `verifyUser()` |
-| Ensuring cookie data hasn't been tampered with | `verifyUser()` |
-
+| Scenario                                       | Function to Use    |
+|------------------------------------------------|--------------------|
+| Displaying user info (username, avatar, role)  | `getCurrentUser()` |
+| Protecting a page or verifying user identity   | `verifyUser()`     |
+| Ensuring cookie data hasn't been tampered with | `verifyUser()`     |
 
 ---
 
@@ -406,7 +570,8 @@ There is a `src/middleware.ts` file. In that file, there are three arrays:
 - `userRoutes` – contains the routes that are accessible to users with the role of `user`
 - `adminOnlyRoutes` – contains the routes that are only accessible to users with the role of `admin`
 
-**Admins** can access both **user** and **admin** routes. This means they can also access features like portfolio optimization, etc.
+**Admins** can access both **user** and **admin** routes. This means they can also access features like portfolio
+optimization, etc.
 
 ### 🔄 Dynamic Route Patterns
 
@@ -416,6 +581,7 @@ The middleware now supports dynamic route patterns using two special syntaxes:
 - `:path*` – matches multiple nested segments (e.g., `/dashboard/:path*` matches `/dashboard/reports/quarterly/2025`)
 
 Examples of properly formatted route patterns:
+
 ```javascript
 // Single parameter routes
 "/users/:id"           // Matches: /users/123
@@ -461,6 +627,7 @@ both light and dark modes.
 ---
 
 ## ⚠️Important
+
 - Before pull requests please make sure the app is building fine
 - Make sure to run `npm run lint`, `npm run build && npm start` will run correnclt without any issues
 
