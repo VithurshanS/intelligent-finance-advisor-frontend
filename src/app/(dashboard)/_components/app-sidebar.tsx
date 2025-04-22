@@ -1,3 +1,5 @@
+'use server'
+
 import * as React from "react"
 import {NavUser} from "@/app/(dashboard)/_components/nav-user"
 import {SidebarHeading} from "@/app/(dashboard)/_components/sidebar-heading"
