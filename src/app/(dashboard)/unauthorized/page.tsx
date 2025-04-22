@@ -2,13 +2,14 @@
 
 import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
-import {Shield, AlertTriangle, ArrowLeft} from "lucide-react";
+import {Shield, AlertTriangle, ArrowLeft, LogOut} from "lucide-react";
+import {logout} from "@/actions/auth";
 
 export default function UnauthorizedPage() {
     const router = useRouter();
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex h-full items-center justify-center bg-background">
             <div className="w-full max-w-md rounded-lg border border-border p-6 shadow-sm">
                 <div className="flex flex-col items-center text-center">
                     <div className="mb-4 rounded-full bg-destructive/10 p-3">
@@ -32,10 +33,10 @@ export default function UnauthorizedPage() {
 
                     <div className="flex flex-col gap-4 w-full">
                         <Button
-                            onClick={() => router.push("/dashboard")}
+                            onClick={logout}
                             className="w-full bg-primary hover:bg-primary/90"
                         >
-                            Go to Dashboard
+                            <LogOut className={'mr-2 h-4 w-4'}/>Logout
                         </Button>
 
                         <Button
