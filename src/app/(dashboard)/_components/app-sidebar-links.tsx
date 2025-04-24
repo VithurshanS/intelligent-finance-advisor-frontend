@@ -116,6 +116,17 @@ const adminSidebar: SidebarData = {
             icon: LayoutGrid,
         },
         {
+            title: "Assets",
+            url: '/assets',
+            icon: ChartCandlestickIcon,
+            items: [
+                {
+                    title: "Global market",
+                    url: "/assets/global",
+                }
+            ]
+        },
+        {
             title: "Market Prediction",
             url: "/group-37",
             icon: Bot,
@@ -168,25 +179,6 @@ const adminSidebar: SidebarData = {
                     url: "/group-40/explain",
                 },
             ],
-        },
-        {
-            title: "Stock symbols",
-            url: '/stock-symbol',
-            icon: ChartCandlestickIcon,
-            items: [
-                {
-                    title: "All symbols",
-                    url: "/stock-symbol/all",
-                },
-                {
-                    title: "Risks",
-                    url: "/stock-symbol/risk",
-                },
-                {
-                    title: "Blacklist",
-                    url: "/stock-symbol/blacklist",
-                }
-            ]
         },
         {
             title: "Compliance rules",

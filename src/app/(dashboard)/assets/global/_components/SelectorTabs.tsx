@@ -1,0 +1,58 @@
+'use client';
+
+import React from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {Toggle} from "@/components/ui/toggle";
+import {ScreenerType} from '../_utils/definitions';
+
+interface ScreenerSelectorProps {
+    filter?: string;
+    include?: ScreenerType[];
+}
+
+export function ScreenerSelector({
+                                     filter = ScreenerType.MOST_ACTIVES,
+                                     include = []
+                                 }: ScreenerSelectorProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Create an array of screener types excluding any that should be hidden
+    const screenerTypes = Object.values(ScreenerType).filter(
+        type => include.includes(type as ScreenerType)
+    );
+
+    const handleToggleChange = (type: ScreenerType) => {
+        // Create a new URLSearchParams object
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('filter', type);
+
+        // Update the URL with the new filter
+        router.push(`?${params.toString()}`);
+    };
+
+    // Helper function to format screener types for display
+    const formatScreenerName = (type: string): string => {
+        return type
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    };
+
+    return (
+        <div className="flex flex-wrap gap-2 my-4">
+            {screenerTypes.map((type) => (
+                <Toggle
+                    key={type}
+                    pressed={filter === type}
+                    onPressedChange={() => handleToggleChange(type as ScreenerType)}
+                    variant="outline"
+                    size="sm"
+                    className="data-[state=on]:bg-muted data-[state=on]:text-muted-foreground"
+                >
+                    {formatScreenerName(type)}
+                </Toggle>
+            ))}
+        </div>
+    );
+}
