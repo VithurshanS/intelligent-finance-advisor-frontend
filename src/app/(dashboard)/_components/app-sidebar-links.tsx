@@ -170,21 +170,6 @@ const adminSidebar: SidebarData = {
             ],
         },
         {
-            title: "Settings",
-            url: "/settings",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "/settings/general",
-                },
-                {
-                    title: "Team",
-                    url: "/settings/team",
-                },
-            ],
-        },
-        {
             title: "Stock symbols",
             url: '/stock-symbol',
             icon: ChartCandlestickIcon,
