@@ -40,7 +40,7 @@ export function ScreenerSelector({
     };
 
     return (
-        <div className="flex flex-wrap gap-2 my-4">
+        <div className="flex flex-wrap gap-2">
             {screenerTypes.map((type) => (
                 <Toggle
                     key={type}
@@ -48,7 +48,7 @@ export function ScreenerSelector({
                     onPressedChange={() => handleToggleChange(type as ScreenerType)}
                     variant="outline"
                     size="sm"
-                    className="data-[state=on]:bg-muted data-[state=on]:text-muted-foreground"
+                    className="data-[state=on]:bg-primary/30 data-[state=on]:text-primary dark:data-[state=on]:text-primary-foreground"
                 >
                     {formatScreenerName(type)}
                 </Toggle>

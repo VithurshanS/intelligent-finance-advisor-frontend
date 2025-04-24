@@ -17,3 +17,10 @@ export enum ScreenerType {
     TOP_MUTUAL_FUNDS = "top_mutual_funds",
     CUSTOM = "custom"  // For custom queries
 }
+
+export type ScreenRequest = {
+    screen_type: ScreenerType;
+    offset: number;
+    size: number;
+    minimal?: boolean;
+}
