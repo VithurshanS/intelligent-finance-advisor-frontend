@@ -21,7 +21,7 @@ const ScreenTableSkeleton = () => {
                 <TableBody>
                     {Array.from({length: 7}).map((_, index) => (
                         <TableRow key={index} className={'h-[50px]'}>
-                            {Array.from({length: 7}).map((_, cellIndex) => (
+                            {Array.from({length: 8}).map((_, cellIndex) => (
                                 <TableCell key={cellIndex} className="text-center">
                                     <Skeleton className="h-5 w-full"/>
                                 </TableCell>
