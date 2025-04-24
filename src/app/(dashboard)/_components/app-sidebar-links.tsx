@@ -185,11 +185,6 @@ const adminSidebar: SidebarData = {
             ],
         },
         {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: LayoutGrid,
-        },
-        {
             title: "Stock symbols",
             url: '/stock-symbol',
             icon: ChartCandlestickIcon,
