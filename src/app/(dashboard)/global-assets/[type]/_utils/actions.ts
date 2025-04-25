@@ -1,8 +1,8 @@
 'use server'
 
-import {calculateOffset} from "@/app/(dashboard)/assets/global/_utils/utils";
+import {calculateOffset} from "./utils";
 import AxiosInstance from "@/lib/server-fetcher";
-import {ScreenerType} from "@/app/(dashboard)/assets/global/_utils/definitions";
+import {ScreenerType} from "./definitions";
 import {revalidatePath} from "next/cache";
 import axios from "axios";
 import {HTTPValidationError} from "@/lib/types/register";

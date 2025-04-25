@@ -14,8 +14,8 @@ import {Button} from '@/components/ui/button';
 import {CircleCheck, PlusCircle} from 'lucide-react';
 import {toast} from 'react-toastify';
 import {createStockAction, MinimalStockInfo} from "../_utils/actions";
-import RiskBadge from "../_components/RiskBadge;
 import {formatMarketCap} from "../_utils/utils";
+import RiskBadge from "./RiskBadge";
 
 const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolean }): JSX.Element => {
     const [isOpen, setIsOpen] = React.useState(false);

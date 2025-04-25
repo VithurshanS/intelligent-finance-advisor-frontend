@@ -116,14 +116,18 @@ const adminSidebar: SidebarData = {
             icon: LayoutGrid,
         },
         {
-            title: "Assets",
+            title: "Global - Assets",
             url: '/assets',
             icon: ChartCandlestickIcon,
             items: [
                 {
-                    title: "Global Screens",
-                    url: "/assets/global",
-                }
+                    title: "Top Screens",
+                    url: "/global-assets/top-screens",
+                },
+                {
+                    title: "Sectors",
+                    url: "/global-assets/sectors",
+                },
             ]
         },
     ],
