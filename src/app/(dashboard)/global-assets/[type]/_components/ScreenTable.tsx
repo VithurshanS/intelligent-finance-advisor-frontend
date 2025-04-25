@@ -7,12 +7,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {getScreenStocks} from "@/app/(dashboard)/assets/global/_utils/actions";
-import {ScreenerType} from "@/app/(dashboard)/assets/global/_utils/definitions";
-import RiskBadge from "@/app/(dashboard)/assets/global/_components/RiskBadge";
-import AddStockDialog from "@/app/(dashboard)/assets/global/_components/AddStockDialog";
-import {formatMarketCap, formatPercent} from "@/app/(dashboard)/assets/global/_utils/utils";
-import RatingDisplay from "@/app/(dashboard)/assets/global/_components/RatingDisplay";
+import {getScreenStocks} from "../_utils/actions";
+import {ScreenerType} from "../_utils/definitions";
+import RiskBadge from "./RiskBadge";
+import AddStockDialog from "./AddStockDialog";
+import {formatMarketCap, formatPercent} from "../_utils/utils";
+import RatingDisplay from "./RatingDisplay";
 
 // Price change component
 const PriceChange = ({change}: { change: number | null }): JSX.Element => {

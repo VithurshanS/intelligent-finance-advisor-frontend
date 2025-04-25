@@ -1,7 +1,6 @@
 'use client';
 
 import React, {JSX} from 'react';
-import {createStockAction, MinimalStockInfo} from '@/app/(dashboard)/assets/global/_utils/actions';
 import {
     Dialog,
     DialogContent,
@@ -13,9 +12,10 @@ import {
 } from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
 import {CircleCheck, PlusCircle} from 'lucide-react';
-import RiskBadge from '@/app/(dashboard)/assets/global/_components/RiskBadge';
-import {formatMarketCap} from '@/app/(dashboard)/assets/global/_utils/utils';
 import {toast} from 'react-toastify';
+import {createStockAction, MinimalStockInfo} from "../_utils/actions";
+import RiskBadge from "../_components/RiskBadge;
+import {formatMarketCap} from "../_utils/utils";
 
 const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolean }): JSX.Element => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -74,10 +74,10 @@ const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolea
         <>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                    { !in_db ? (
-                    <Button size="sm" variant="outline" className="h-8">
-                        <PlusCircle className="h-4 w-4 mr-1"/> Add
-                    </Button>) : (
+                    {!in_db ? (
+                        <Button size="sm" variant="outline" className="h-8">
+                            <PlusCircle className="h-4 w-4 mr-1"/> Add
+                        </Button>) : (
                         <Button size="sm" variant="outline" className="h-8" disabled>
                             <CircleCheck className="h-4 w-4 mr-1"/> Added
                         </Button>

@@ -15,7 +15,18 @@ export enum ScreenerType {
     SOLID_LARGE_GROWTH_FUNDS = "solid_large_growth_funds",
     SOLID_MIDCAP_GROWTH_FUNDS = "solid_midcap_growth_funds",
     TOP_MUTUAL_FUNDS = "top_mutual_funds",
-    CUSTOM = "custom"  // For custom queries
+    CUSTOM = "custom",
+    TECHNOLOGY = "technology",
+    HEALTHCARE = "healthcare",
+    FINANCIAL = "financial",
+    CONSUMER_CYCLICAL = "consumer_cyclical",
+    INDUSTRIALS = "industrials",
+    COMMUNICATION_SERVICES = "communication_services",
+    UTILITIES = "utilities",
+    CONSUMER_DEFENSIVE = "consumer_defensive",
+    ENERGY = "energy",
+    REAL_ESTATE = "real_estate",
+    BASIC_MATERIALS = "basic_materials",
 }
 
 export type ScreenRequest = {
