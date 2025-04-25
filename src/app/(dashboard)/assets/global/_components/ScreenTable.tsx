@@ -22,7 +22,7 @@ const PriceChange = ({change}: { change: number | null }): JSX.Element => {
 
     const isPositive = change >= 0;
     return (
-        <div className={isPositive ? "up" : "down"}>
+        <div className={isPositive ? "text-green-500" : "text-red-500"}>
             {formatPercent(change)}
         </div>
     );
@@ -36,7 +36,7 @@ interface ScreenTableProps {
 
 // Main component
 const ScreenTable = async ({filter, page}: ScreenTableProps): Promise<JSX.Element> => {
-    const result_per_page = 7;
+    const result_per_page = 10;
     const stocks = await getScreenStocks({result_per_page, filter, page});
 
     return (
@@ -75,7 +75,7 @@ const ScreenTable = async ({filter, page}: ScreenTableProps): Promise<JSX.Elemen
                                     </TableCell>
                                     <TableCell className="text-right">{formatMarketCap(stock.marketCap)}</TableCell>
                                     <TableCell>
-                                        <AddStockDialog stock={stock}/>
+                                        <AddStockDialog stock={stock} in_db={stock.in_db ? stock.in_db : false}/>
                                     </TableCell>
                                 </TableRow>
                             ))

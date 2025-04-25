@@ -3,6 +3,9 @@
 import {calculateOffset} from "@/app/(dashboard)/assets/global/_utils/utils";
 import AxiosInstance from "@/lib/server-fetcher";
 import {ScreenerType} from "@/app/(dashboard)/assets/global/_utils/definitions";
+import {revalidatePath} from "next/cache";
+import axios from "axios";
+import {HTTPValidationError} from "@/lib/types/register";
 
 // Define types for the response data based on the API response structure
 export interface MinimalStockInfo {
@@ -17,6 +20,7 @@ export interface MinimalStockInfo {
     exchange: string | null;
     market: string | null;
     riskLevel: string | null;
+    in_db: boolean | null;
 }
 
 export interface ScreenerResponse {
@@ -91,5 +95,64 @@ export async function getScreenStocks({
             error: errorMessage,
             statusCode
         };
+    }
+}
+
+type CreateStockResponse = {
+    success: boolean;
+    message: string;
+    data?: {
+        stock_id: number;
+        ticker_symbol: string;
+        asset_name: string;
+        exchange_name: string;
+        status: string;
+    };
+};
+
+export async function createStockAction(ticker: string): Promise<CreateStockResponse> {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+        const response = await AxiosInstance.post('/assets/create-stock', null, {
+            params: {ticker},
+        });
+
+        revalidatePath('/admin/stocks');
+
+        return {
+            success: true,
+            message: 'Stock created successfully!',
+            data: response.data,
+        };
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            const errorData = error.response?.data as HTTPValidationError | { detail?: string };
+
+            if (Array.isArray(errorData?.detail) && errorData.detail.length > 0) {
+                return {
+                    success: false,
+                    message: errorData.detail[0].msg,
+                };
+            } else if (typeof errorData?.detail === 'string') {
+                return {
+                    success: false,
+                    message: errorData.detail,
+                };
+            } else if (status === 404) {
+                return {
+                    success: false,
+                    message: 'No data found for this ticker',
+                };
+            } else {
+                console.error('Create stock API error:', error.response?.data);
+                return {
+                    success: false,
+                    message: 'Failed to create stock. Please try again.',
+                };
+            }
+        }
+
+        throw error; // Let unknown errors bubble up
     }
 }

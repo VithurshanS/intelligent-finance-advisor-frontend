@@ -26,6 +26,7 @@ export function ScreenerSelector({
         // Create a new URLSearchParams object
         const params = new URLSearchParams(searchParams.toString());
         params.set('filter', type);
+        params.set('page', '1'); // Reset to page 1 when changing filter
 
         // Update the URL with the new filter
         router.push(`?${params.toString()}`);

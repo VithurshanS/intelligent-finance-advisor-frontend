@@ -121,84 +121,10 @@ const adminSidebar: SidebarData = {
             icon: ChartCandlestickIcon,
             items: [
                 {
-                    title: "Global market",
+                    title: "Global Screens",
                     url: "/assets/global",
                 }
             ]
-        },
-        {
-            title: "Market Prediction",
-            url: "/group-37",
-            icon: Bot,
-            items: [
-                {
-                    title: "Price Forecast",
-                    url: "/group-37/forecast",
-                },
-                {
-                    title: "Model Metrics",
-                    url: "/group-37/metrics",
-                },
-            ],
-        },
-        {
-            title: "Budget Tracking",
-            url: "/group-38",
-            icon: DollarSign,
-            items: [
-                {
-                    title: "Categorization",
-                    url: "/group-38/categorization",
-                },
-                {
-                    title: "Budget Analysis",
-                    url: "/group-38/analysis",
-                },
-            ],
-        },
-        {
-            title: "Portfolio Optimization",
-            url: "/portfolio",
-            icon: PieChart,
-        },
-        {
-            title: "Risk & Compliance",
-            url: "/group-40",
-            icon: Scale,
-            items: [
-                {
-                    title: "Risk Analysis",
-                    url: "/group-40/risk",
-                },
-                {
-                    title: "Fairness & Bias",
-                    url: "/group-40/fairness",
-                },
-                {
-                    title: "Explainability",
-                    url: "/group-40/explain",
-                },
-            ],
-        },
-        {
-            title: "Compliance rules",
-            url: '/compliance-rules',
-            icon: Scale,
-        },
-        {
-            title: "Settings",
-            url: "/settings",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "/settings/general",
-                },
-                {
-                    title: "Team",
-                    url: "/settings/team",
-                },
-            ],
         },
     ],
     guides: [
