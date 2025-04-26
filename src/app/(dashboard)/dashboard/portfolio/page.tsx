@@ -1,5 +1,5 @@
 import React from 'react';
-import { PortfolioOptimizationForm } from "./_components/port-opt-form";
+import  PortfolioOptimizationForm  from "./_components/port-opt-form";
 
 const PortfolioPage = () => {
     return (
