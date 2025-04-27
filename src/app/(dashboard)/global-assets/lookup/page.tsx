@@ -6,6 +6,7 @@ import SkeletonTable from "@/app/(dashboard)/global-assets/[type]/_components/Sk
 import {ScreenTable} from "@/app/(dashboard)/global-assets/[type]/_components/ScreenTable";
 import {ScreenerType} from "@/app/(dashboard)/global-assets/[type]/_utils/definitions";
 import Link from "next/link";
+import {Separator} from "@/components/ui/separator";
 
 interface PageProps {
     searchParams: Promise<{
@@ -37,6 +38,7 @@ const Page = async ({searchParams}: PageProps) => {
                 {query && (
                     <Suspense fallback={<ResultsSkeleton/>} key={query}>
                         <ResultsSection query={query}/>
+                        <Separator/>
                     </Suspense>
                 )}
 
@@ -59,6 +61,7 @@ const Page = async ({searchParams}: PageProps) => {
                         </Link>
                     </div>
                 </div>
+                <Separator/>
                 <div className="flex flex-col gap-4 w-full">
                     <h1 className="text-2xl font-semibold mb-2">Top sectors</h1>
                     <ScreenerSelector

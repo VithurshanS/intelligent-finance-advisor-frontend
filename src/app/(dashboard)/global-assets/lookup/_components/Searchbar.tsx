@@ -1,17 +1,19 @@
 "use client";
 
 import {Input} from "@/components/ui/input";
-import {Search, Loader2} from "lucide-react";
+import {Search, Loader2, X} from "lucide-react";
 import Image from "next/image";
 import React, {useEffect, useState} from "react";
 import {useTheme} from "next-themes";
 import {useDebounce} from "use-debounce";
 import {Badge} from "@/components/ui/badge";
 import Link from "next/link";
-import {searchYahooFinance} from "../_utils/actions";
+import {searchYahooFinance} from "../_utils/client_actions";
 import {SearchResult} from "../_utils/definitions";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {useRouter, useSearchParams} from "next/navigation";
+import {Button} from "@/components/ui/button";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 function SearchBar({initialQuery = ''}: { initialQuery?: string }) {
     const {resolvedTheme} = useTheme();
@@ -41,7 +43,7 @@ function SearchBar({initialQuery = ''}: { initialQuery?: string }) {
             const response = await searchYahooFinance({
                 query,
                 newsCount: 3,
-                quoteCount: 5
+                quoteCount: 4
             });
 
             if (response.success) {
@@ -52,6 +54,7 @@ function SearchBar({initialQuery = ''}: { initialQuery?: string }) {
                 setSearchResults(null);
             }
         } catch (err) {
+            console.error(err);
             setError("An unexpected error occurred");
             setSearchResults(null);
         } finally {
@@ -62,7 +65,7 @@ function SearchBar({initialQuery = ''}: { initialQuery?: string }) {
     // Handle debounced query changes
     useEffect(() => {
         if (debouncedQuery.length >= 2) {
-            fetchSearchResults(debouncedQuery);
+            fetchSearchResults(debouncedQuery).then();
         } else {
             setIsOpen(false);
         }
@@ -77,11 +80,19 @@ function SearchBar({initialQuery = ''}: { initialQuery?: string }) {
         }
     };
 
+    const handleClearSearch = () => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("query");
+        router.push(`?${params.toString()}`, {scroll: false});
+        setSearchQuery("");
+        setIsOpen(false);
+    }
+
     const backgroundImage = "/search-backdrop-light.jpg";
 
     return (
         <section className="w-full bg-gradient-to-r from-blue-900 to-purple-900">
-            <div className="relative w-full h-64 md:h-80">
+            <div className="relative w-full h-44 md:h-48">
                 {/* Background Image */}
                 <div className="absolute inset-0">
                     <Image
@@ -97,7 +108,7 @@ function SearchBar({initialQuery = ''}: { initialQuery?: string }) {
 
                 {/* Content Container */}
                 <div className="relative h-full flex flex-col items-center justify-center px-4 py-8">
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
+                    <h2 className="text-xl md:text-3xl font-bold text-white mb-6">
                         Discover Stocks & Market Insights
                     </h2>
 
@@ -119,18 +130,28 @@ function SearchBar({initialQuery = ''}: { initialQuery?: string }) {
                                         <Search
                                             className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"/>
                                     )}
+                                    <Button
+                                        variant="ghost"
+                                        className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                                        onClick={handleClearSearch}
+                                        size={'icon'}
+                                    >
+                                        <X className={"h-5 w-5 text-gray-400"}/>
+                                    </Button>
                                 </div>
                             </PopoverTrigger>
                             <PopoverContent
-                                className="w-[calc(100vw-2rem)] max-w-2xl p-0 max-h-[70vh] overflow-y-auto"
+                                className="w-[calc(100vw-2rem)] max-w-2xl p-0 max-h-[70vh] overflow-auto overscroll-auto"
                                 align="start"
                                 onOpenAutoFocus={(e) => e.preventDefault()}
                             >
-                                <SearchResultsPopup
-                                    data={searchResults}
-                                    error={error}
-                                    onViewAllResults={handleViewAllResults}
-                                />
+                                <ScrollArea>
+                                    <SearchResultsPopup
+                                        data={searchResults}
+                                        error={error}
+                                        onViewAllResults={handleViewAllResults}
+                                    />
+                                </ScrollArea>
                             </PopoverContent>
                         </Popover>
                     </div>

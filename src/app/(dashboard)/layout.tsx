@@ -10,7 +10,7 @@ import {SidebarSkeleton} from "@/app/(dashboard)/_components/sidebar-skeleton";
 
 export default function DashboardLayout({children}: { children: React.ReactNode }) {
     return (
-        <SidebarProvider className={'h-screen w-screen flex overflow-hidden'}>
+        <SidebarProvider className={'h-screen w-screen flex overscroll-auto'}>
             <Suspense fallback={<SidebarSkeleton/>}>
                 <AppSidebar/>
             </Suspense>
