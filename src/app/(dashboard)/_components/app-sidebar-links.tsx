@@ -128,6 +128,10 @@ const adminSidebar: SidebarData = {
                     title: "Sectors",
                     url: "/global-assets/sectors",
                 },
+                {
+                    title: "Lookup",
+                    url: "/global-assets/lookup",
+                }
             ]
         },
     ],

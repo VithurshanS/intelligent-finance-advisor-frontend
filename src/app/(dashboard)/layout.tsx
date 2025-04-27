@@ -16,7 +16,7 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
             </Suspense>
             <SidebarInset>
                 <header
-                    className="flex h-16 shrink-0 items-center justify-between transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b-1 shadow-sm">
+                    className="flex h-16 items-center justify-between transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b-1 shadow-sm">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1"/>
                     </div>
