@@ -1,7 +1,5 @@
-'use server';
-
-import AxiosInstance from "@/lib/server-fetcher"; // Import your axios instance from wherever it's defined
-import {SearchProps, SearchResult, SearchSuccessResponse, SearchErrorResponse} from "./definitions";
+import AxiosInstance from "@/lib/client-fetcher";
+import {SearchResult, SearchProps, SearchSuccessResponse, SearchErrorResponse} from "./definitions";
 
 export async function searchYahooFinance(
     {query, newsCount = 8, quoteCount = 5}: SearchProps
@@ -26,6 +24,7 @@ export async function searchYahooFinance(
 
         // Extract basic error message if available
         if (error instanceof Error) {
+
             errorMessage = error.message;
         }
 

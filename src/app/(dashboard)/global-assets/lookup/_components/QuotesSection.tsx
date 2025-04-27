@@ -1,5 +1,5 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
-import {QuoteResponse} from "@/app/(dashboard)/global-assets/lookup/_utils/actions";
+import {QuoteResponse} from "../_utils/definitions";
 
 // ----- Quotes Section Component ----- //
 function QuotesSection({quotes, error}: { quotes: QuoteResponse[]; error: string | null }) {
@@ -13,7 +13,7 @@ function QuotesSection({quotes, error}: { quotes: QuoteResponse[]; error: string
 
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Quotes</h2>
+            <h2 className="text-2xl font-semibold">Quotes</h2>
 
             <Table>
                 <TableHeader>

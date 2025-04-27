@@ -121,6 +121,10 @@ const adminSidebar: SidebarData = {
             icon: ChartCandlestickIcon,
             items: [
                 {
+                    title: "Discover",
+                    url: "/global-assets/lookup",
+                },
+                {
                     title: "Top Screens",
                     url: "/global-assets/top-screens",
                 },
@@ -128,10 +132,7 @@ const adminSidebar: SidebarData = {
                     title: "Sectors",
                     url: "/global-assets/sectors",
                 },
-                {
-                    title: "Lookup",
-                    url: "/global-assets/lookup",
-                }
+
             ]
         },
     ],

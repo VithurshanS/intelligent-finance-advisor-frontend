@@ -13,7 +13,7 @@ const ResultsSection = async ({query}: { query: string }) => {
     });
 
     return (
-        <div className="space-y-8 px-5">
+        <div className="space-y-8">
             <QuotesSection quotes={searchResults.success ? searchResults.data.quotes : []}
                            error={searchResults.success ? null : searchResults.error}/>
             <Separator className="my-8"/>
@@ -25,7 +25,7 @@ const ResultsSection = async ({query}: { query: string }) => {
 
 const ResultsSkeleton = () => {
     return (
-        <div className="space-y-8 px-5">
+        <div className="space-y-8">
             <div className="animate-pulse space-y-4">
                 <Skeleton className={'h-6 w-1/3'} />
                 <Skeleton className={'h-64 w-full'} />

@@ -32,11 +32,11 @@ const PriceChange = ({change}: { change: number | null }): JSX.Element => {
 interface ScreenTableProps {
     filter: ScreenerType;
     page: number;
+    result_per_page?: number;
 }
 
 // Main component
-const ScreenTable = async ({filter, page}: ScreenTableProps): Promise<JSX.Element> => {
-    const result_per_page = 10;
+const ScreenTable = async ({filter, page, result_per_page = 10}: ScreenTableProps): Promise<JSX.Element> => {
     const stocks = await getScreenStocks({result_per_page, filter, page});
 
     return (

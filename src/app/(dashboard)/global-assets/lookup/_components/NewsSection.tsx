@@ -3,7 +3,7 @@ import Link from "next/link";
 import {Card, CardContent, CardFooter} from "@/components/ui/card";
 import {Badge} from "@/components/ui/badge";
 import Image from "next/image";
-import {NewsResponse} from "@/app/(dashboard)/global-assets/lookup/_utils/actions";
+import {NewsResponse} from "../_utils/definitions";
 
 function NewsSection({news, error}: { news: NewsResponse[]; error: string | null }) {
     if (error) {
@@ -14,11 +14,9 @@ function NewsSection({news, error}: { news: NewsResponse[]; error: string | null
         );
     }
 
-    console.log(news);
-
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold">News</h2>
+            <h2 className="text-2xl font-semibold">News</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {news.length > 0 ? (

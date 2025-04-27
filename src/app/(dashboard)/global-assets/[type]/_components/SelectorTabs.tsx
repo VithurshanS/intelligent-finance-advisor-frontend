@@ -8,11 +8,16 @@ import {ScreenerType} from '../_utils/definitions';
 interface ScreenerSelectorProps {
     filter?: string;
     include?: ScreenerType[];
+    filterName?: string;
+    pageName?: string;
 }
 
 export function ScreenerSelector({
                                      filter = ScreenerType.MOST_ACTIVES,
-                                     include = []
+                                     include = [],
+                                     filterName = 'filter',
+                                        pageName = 'page',
+
                                  }: ScreenerSelectorProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -25,11 +30,11 @@ export function ScreenerSelector({
     const handleToggleChange = (type: ScreenerType) => {
         // Create a new URLSearchParams object
         const params = new URLSearchParams(searchParams.toString());
-        params.set('filter', type);
-        params.set('page', '1'); // Reset to page 1 when changing filter
+        params.set(filterName, type);
+        params.set(pageName, '1'); // Reset to page 1 when changing filter
 
         // Update the URL with the new filter
-        router.push(`?${params.toString()}`);
+        router.push(`?${params.toString()}`, {scroll: false});
     };
 
     // Helper function to format screener types for display

@@ -14,11 +14,13 @@ import {
 export default function ScreenerPagination({
                                                totalItems,
                                                itemsPerPage = 10,
-                                               page
+                                               page,
+                                               parameterName = "page",
                                            }: {
     page: number;
     totalItems?: number;
-    itemsPerPage?: number
+    itemsPerPage?: number;
+    parameterName?: string;
 }) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -37,10 +39,10 @@ export default function ScreenerPagination({
         const params = new URLSearchParams(searchParams.toString());
 
         // Set the page parameter
-        params.set("page", newPage.toString());
+        params.set(parameterName, newPage.toString());
 
         // Update the URL with the new search params
-        router.push(`?${params.toString()}`);
+        router.push(`?${params.toString()}`, {scroll: false});
     };
 
     // Simplified version focusing on just current page, prev and next buttons
