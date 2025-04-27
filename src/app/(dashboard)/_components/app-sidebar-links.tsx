@@ -116,97 +116,24 @@ const adminSidebar: SidebarData = {
             icon: LayoutGrid,
         },
         {
-            title: "Market Prediction",
-            url: "/group-37",
-            icon: Bot,
-            items: [
-                {
-                    title: "Price Forecast",
-                    url: "/group-37/forecast",
-                },
-                {
-                    title: "Model Metrics",
-                    url: "/group-37/metrics",
-                },
-            ],
-        },
-        {
-            title: "Budget Tracking",
-            url: "/group-38",
-            icon: DollarSign,
-            items: [
-                {
-                    title: "Categorization",
-                    url: "/group-38/categorization",
-                },
-                {
-                    title: "Budget Analysis",
-                    url: "/group-38/analysis",
-                },
-            ],
-        },
-        {
-            title: "Portfolio Optimization",
-            url: "/portfolio",
-            icon: PieChart,
-        },
-        {
-            title: "Risk & Compliance",
-            url: "/group-40",
-            icon: Scale,
-            items: [
-                {
-                    title: "Risk Analysis",
-                    url: "/group-40/risk",
-                },
-                {
-                    title: "Fairness & Bias",
-                    url: "/group-40/fairness",
-                },
-                {
-                    title: "Explainability",
-                    url: "/group-40/explain",
-                },
-            ],
-        },
-        {
-            title: "Stock symbols",
-            url: '/stock-symbol',
+            title: "Global Assets",
+            url: '/assets',
             icon: ChartCandlestickIcon,
             items: [
                 {
-                    title: "All symbols",
-                    url: "/stock-symbol/all",
+                    title: "Discover",
+                    url: "/global-assets/lookup",
                 },
                 {
-                    title: "Risks",
-                    url: "/stock-symbol/risk",
+                    title: "Top Screens",
+                    url: "/global-assets/top-screens",
                 },
                 {
-                    title: "Blacklist",
-                    url: "/stock-symbol/blacklist",
-                }
+                    title: "Sectors",
+                    url: "/global-assets/sectors",
+                },
+
             ]
-        },
-        {
-            title: "Compliance rules",
-            url: '/compliance-rules',
-            icon: Scale,
-        },
-        {
-            title: "Settings",
-            url: "/settings",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "/settings/general",
-                },
-                {
-                    title: "Team",
-                    url: "/settings/team",
-                },
-            ],
         },
     ],
     guides: [
