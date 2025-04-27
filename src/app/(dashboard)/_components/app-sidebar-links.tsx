@@ -116,7 +116,7 @@ const adminSidebar: SidebarData = {
             icon: LayoutGrid,
         },
         {
-            title: "Global - Assets",
+            title: "Global Assets",
             url: '/assets',
             icon: ChartCandlestickIcon,
             items: [
