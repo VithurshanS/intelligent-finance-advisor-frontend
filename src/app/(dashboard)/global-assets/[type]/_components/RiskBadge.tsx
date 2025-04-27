@@ -1,13 +1,9 @@
 import React, {JSX} from "react";
+import {Badge} from "@/components/ui/badge";
 
 const RiskBadge = ({risk}: { risk: string | null }): JSX.Element => {
     if (risk === null) {
-        return (
-            <span
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300">
-        Unknown
-      </span>
-        );
+        return <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300">Unknown</Badge>;
     }
 
     const getColorByRisk = (risk: string): string => {
@@ -24,10 +20,9 @@ const RiskBadge = ({risk}: { risk: string | null }): JSX.Element => {
     };
 
     return (
-        <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getColorByRisk(risk)}`}>
-      {risk}
-    </span>
+        <Badge className={getColorByRisk(risk)}>
+            {risk}
+        </Badge>
     );
 };
 

@@ -14,6 +14,8 @@ function NewsSection({news, error}: { news: NewsResponse[]; error: string | null
         );
     }
 
+    console.log(news);
+
     return (
         <div className="space-y-4">
             <h2 className="text-xl font-semibold">News</h2>
