@@ -9,9 +9,9 @@ const PriceChange = ({ current, previous }: { current?: number; previous?: numbe
     const isPositive = change >= 0;
 
     return (
-        <div className={`flex items-center gap-1 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+        <div className={`flex items-center gap-1 ${isPositive ? 'dark:text-green-400 text-green-600' : 'dark:text-red-400 text-red-600'}`}>
             {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-            <span className="font-medium">
+            <span className="font-medium text-sm">
         {change.toFixed(2)} ({percentChange.toFixed(2)}%)
       </span>
         </div>

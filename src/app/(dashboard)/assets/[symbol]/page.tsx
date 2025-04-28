@@ -12,10 +12,10 @@ import Link from 'next/link';
 import {StockStatus} from "./_utils/definitions";
 import StatusBadge from "./_components/StatusBadge";
 import RiskBadge from "./_components/RiskBadge";
-import PriceChange from "./_components/PriceChange";
 import StatusManager from "./_components/StatusManager";
 import {Add} from "@/app/(dashboard)/assets/[symbol]/_components/Buttons";
 import {MarketDataSection, FinancialDataSection, CompanyInfoSection} from "./_components/AccordionItems";
+import PriceSection from './_components/PriceSection';
 
 // Main page component
 const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }) => {
@@ -77,11 +77,11 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
         <div className="container mx-auto py-8 px-4">
             {/* Header Section */}
             <Card className="mb-6">
-                <CardHeader className="pb-2">
+                <CardHeader className="pb-0">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
-                                <CardTitle className="text-2xl">{asset.name || symbol}</CardTitle>
+                                <CardTitle className="text-xl">{asset.name || symbol}</CardTitle>
                                 {asset.company_url && (
                                     <Link href={asset.company_url} target="_blank" rel="noopener noreferrer"
                                           className="text-blue-600 hover:text-blue-800">
@@ -89,7 +89,7 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                                     </Link>
                                 )}
                             </div>
-                            <div className="text-gray-500">
+                            <div className="text-muted-foreground text-sm">
                                 {asset.ticker} • {asset.exchange || 'Unknown Exchange'} • {asset.currency || 'Unknown Currency'}
                             </div>
                         </div>
@@ -104,14 +104,12 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                 <CardContent>
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
                         <div>
-                            <div className="text-3xl font-bold">
-                                {asset.last_price
-                                    ? `${asset.currency || '$'}${asset.last_price.toFixed(2)}`
-                                    : 'Price Unavailable'}
-                            </div>
-                            {asset.last_price && asset.prev_close && (
-                                <PriceChange current={asset.last_price} previous={asset.prev_close}/>
-                            )}
+                            <PriceSection ticker={symbol} initial={{
+                                currency: asset.currency,
+                                last_price: asset.last_price,
+                                prev_close: asset.last_price,
+                            }
+                            }/>
                         </div>
 
                         {/* DB Action Buttons */}
@@ -128,7 +126,7 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                         </div>
                     </div>
 
-                    <Separator className="my-4"/>
+                    <Separator/>
 
                     {/* Asset Details Accordion */}
                     <Accordion type="single" collapsible className="w-full">

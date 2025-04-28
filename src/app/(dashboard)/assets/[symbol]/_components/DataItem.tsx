@@ -11,7 +11,7 @@ interface DataItemProps {
  */
 export const DataItem: React.FC<DataItemProps> = ({ label, value }) => {
     return (
-        <Card className="overflow-hidden shadow-sm p-1">
+        <Card className="overflow-hidden shadow-sm p-1 bg-muted">
             <CardContent className="p-2 py-1.5">
                 <div className="text-xs text-muted-foreground">{label}</div>
                 <div className="font-medium text-sm">{value}</div>
