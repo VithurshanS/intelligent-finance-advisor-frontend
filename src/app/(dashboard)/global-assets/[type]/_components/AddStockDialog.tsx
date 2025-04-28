@@ -15,7 +15,7 @@ import {CircleCheck, PlusCircle} from 'lucide-react';
 import {toast} from 'react-toastify';
 import {createStockAction, MinimalStockInfo} from "../_utils/actions";
 import {formatMarketCap} from "../_utils/utils";
-import RiskBadge from "./RiskBadge";
+import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
 
 const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolean }): JSX.Element => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -98,7 +98,7 @@ const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolea
                         </div>
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Risk Level</p>
-                            <RiskBadge risk={stock.riskLevel}/>
+                            <RiskBadge score={stock.risk_score}/>
                         </div>
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Market Cap</p>

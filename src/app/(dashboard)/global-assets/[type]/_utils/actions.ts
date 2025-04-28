@@ -19,7 +19,7 @@ export interface MinimalStockInfo {
     priceChangePercent: number | null;
     exchange: string | null;
     market: string | null;
-    riskLevel: string | null;
+    risk_score: number | null;
     in_db: boolean | null;
 }
 

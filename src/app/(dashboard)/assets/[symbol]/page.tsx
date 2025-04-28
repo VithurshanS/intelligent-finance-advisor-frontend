@@ -11,7 +11,7 @@ import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import Link from 'next/link';
 import {StockStatus} from "./_utils/definitions";
 import StatusBadge from "./_components/StatusBadge";
-import RiskBadge from "./_components/RiskBadge";
+import RiskBadge from "../../_components/RiskBadge";
 import StatusManager from "./_components/StatusManager";
 import {Add} from "@/app/(dashboard)/assets/[symbol]/_components/Buttons";
 import {MarketDataSection, FinancialDataSection, CompanyInfoSection} from "./_components/AccordionItems";

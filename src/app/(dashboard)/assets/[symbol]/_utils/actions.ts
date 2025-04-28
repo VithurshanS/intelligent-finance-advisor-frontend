@@ -5,11 +5,11 @@ import {AxiosError} from "axios";
 
 // TypeScript interfaces based on the Pydantic models
 interface DBStock {
-    in_db?: boolean;
-    status?: string;
-    asset_id?: number;
-    risk_score?: number;
-    risk_score_updated?: string;
+    in_db: boolean | null;
+    status: string | null;
+    asset_id: number | null;
+    risk_score: number | null;
+    risk_score_updated: string | null;
 }
 
 export interface Asset {
@@ -21,23 +21,24 @@ export interface Asset {
     sector: string;
     industry: string;
     currency: string;
-    prev_close?: number;
-    open_price?: number;
-    last_price?: number;
-    day_high?: number;
-    day_low?: number;
-    volume?: number;
-    avg_volume?: number;
-    beta?: number;
-    market_cap?: number;
-    fifty_two_week_high?: number;
-    fifty_two_week_low?: number;
-    bid?: number;
-    ask?: number;
-    trailing_eps?: number;
-    trailing_pe?: number;
-    db?: DBStock;
+    prev_close: number | null;
+    open_price: number | null;
+    last_price: number | null;
+    day_high: number | null;
+    day_low: number | null;
+    volume: number | null;
+    avg_volume: number | null;
+    beta: number | null;
+    market_cap: number | null;
+    fifty_two_week_high: number | null;
+    fifty_two_week_low: number | null;
+    bid: number | null;
+    ask: number | null;
+    trailing_eps: number | null;
+    trailing_pe: number | null;
+    db: DBStock | null;
 }
+
 
 interface AssetErrorResponse {
     detail: string;
