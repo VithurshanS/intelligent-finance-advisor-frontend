@@ -5,9 +5,9 @@ import PriceChange from "@/app/(dashboard)/assets/[symbol]/_components/PriceChan
 import AxiosInstance from "@/lib/client-fetcher";
 
 interface AssetFastInfo {
-    currency?: string;
-    prev_close?: number;
-    last_price?: number;
+    currency: string | null;
+    prev_close: number | null;
+    last_price: number | null;
 }
 
 const PriceSection = ({ticker, initial}: { ticker: string, initial: AssetFastInfo }) => {
@@ -48,10 +48,10 @@ const PriceSection = ({ticker, initial}: { ticker: string, initial: AssetFastInf
         <div className="price-section">
             {loading && !asset.last_price && <div className="text-sm text-gray-500">Loading...</div>}
 
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-extrabold">
                 {asset.last_price
                     ?
-                    <span><span className="text-xl">{asset.currency || '$'}</span> {asset.last_price.toFixed(2)}</span>
+                    <span>{asset.last_price.toFixed(2)} <span className="text-xl font-semibold">{asset.currency || '$'}</span> </span>
                     : 'Price Unavailable'}
             </div>
 

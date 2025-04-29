@@ -2,32 +2,40 @@
 
 // Status management component
 import {Asset} from "../_utils/actions";
-import { StockStatus } from "../_utils/definitions";
+import {StockStatus} from "../_utils/definitions";
 import {useState} from "react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
 import {Trash2} from "lucide-react";
 
+// Handle status change (server action would go here in a real implementation)
+const handleStatusChange = async (status: StockStatus) => {
+    // This would call a server action to update the status
+    console.log(`Changing status to ${status}`);
+};
+
+// Handle remove (server action would go here in a real implementation)
+const handleRemove = async () => {
+    // This would call a server action to remove the asset from DB
+    console.log('Removing from DB');
+};
+
 const StatusManager = ({
                            asset,
-                           onStatusChange,
-                           onRemove
                        }: {
     asset: Asset;
-    onStatusChange: (status: StockStatus) => Promise<void>;
-    onRemove: () => Promise<void>
 }) => {
     const [loading, setLoading] = useState(false);
 
     const handleStatusChange = async (status: StockStatus) => {
         setLoading(true);
-        await onStatusChange(status);
+        await handleStatusChange(status);
         setLoading(false);
     };
 
     const handleRemove = async () => {
         setLoading(true);
-        await onRemove();
+        await handleRemove();
         setLoading(false);
     };
 
@@ -39,7 +47,7 @@ const StatusManager = ({
                 defaultValue={asset.db?.status || undefined}
             >
                 <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="Change Status" />
+                    <SelectValue placeholder="Change Status"/>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="ACTIVE">ACTIVE</SelectItem>
@@ -55,7 +63,7 @@ const StatusManager = ({
                 disabled={loading}
                 className="flex items-center gap-2"
             >
-                <Trash2 className="w-4 h-4" /> Remove from DB
+                <Trash2 className="w-4 h-4"/> Remove from DB
             </Button>
         </div>
     );

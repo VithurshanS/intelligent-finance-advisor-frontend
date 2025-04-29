@@ -118,6 +118,7 @@ export async function createStockAction(ticker: string): Promise<CreateStockResp
         });
 
         revalidatePath('/admin/stocks');
+        revalidatePath('/assets');
 
         return {
             success: true,

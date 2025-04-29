@@ -1,6 +1,6 @@
 import {getAssetByTicker} from './_utils/actions';
 import {Accordion} from '@/components/ui/accordion';
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardHeader} from '@/components/ui/card';
 import {
     AlertCircle,
     ExternalLink,
@@ -9,31 +9,18 @@ import {Separator} from '@/components/ui/separator';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import Link from 'next/link';
-import {StockStatus} from "./_utils/definitions";
 import StatusBadge from "./_components/StatusBadge";
 import RiskBadge from "../../_components/RiskBadge";
 import StatusManager from "./_components/StatusManager";
-import {Add} from "@/app/(dashboard)/assets/[symbol]/_components/Buttons";
 import {MarketDataSection, FinancialDataSection, CompanyInfoSection} from "./_components/AccordionItems";
 import PriceSection from './_components/PriceSection';
+import AddStock from "@/app/(dashboard)/assets/[symbol]/_components/AddStock";
+import {RiskScoreTooltip} from "@/app/(dashboard)/assets/[symbol]/_components/ShallowRiskTooltip";
 
 // Main page component
 const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }) => {
     const {symbol} = await params;
     const {data: asset, error} = await getAssetByTicker(symbol);
-
-
-    // Handle status change (server action would go here in a real implementation)
-    const handleStatusChange = async (status: StockStatus) => {
-        // This would call a server action to update the status
-        console.log(`Changing status to ${status}`);
-    };
-
-    // Handle remove (server action would go here in a real implementation)
-    const handleRemove = async () => {
-        // This would call a server action to remove the asset from DB
-        console.log('Removing from DB');
-    };
 
 
     // Error state
@@ -74,54 +61,53 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
     }
 
     return (
-        <div className="container mx-auto py-8 px-4">
+        <div className="container mx-auto py-8 px-8">
             {/* Header Section */}
-            <Card className="mb-6">
-                <CardHeader className="pb-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-2">
-                                <CardTitle className="text-xl">{asset.name || symbol}</CardTitle>
-                                {asset.company_url && (
-                                    <Link href={asset.company_url} target="_blank" rel="noopener noreferrer"
-                                          className="text-blue-600 hover:text-blue-800">
-                                        <ExternalLink size={16}/>
-                                    </Link>
-                                )}
-                            </div>
-                            <div className="text-muted-foreground text-sm">
-                                {asset.ticker} • {asset.exchange || 'Unknown Exchange'} • {asset.currency || 'Unknown Currency'}
-                            </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
+            <section className="mb-6">
+                <div className="flex flex-col items-center md:items-start gap-2 mb-4">
+                    <div className="text-muted-foreground text-sm">
+                        {asset.ticker} • {asset.exchange || 'Unknown Exchange'} • {asset.currency || 'Unknown Currency'}
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-2xl font-bold">{asset.name || symbol}</h1>
+                        {asset.company_url && (
+                            <Link href={asset.company_url} target="_blank" rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-800">
+                                <ExternalLink size={16}/>
+                            </Link>
+                        )}
+                        <div className="flex flex-wrap gap-2 items-center">
                             {asset.db?.status && <StatusBadge status={asset.db.status}/>}
                             {asset.db?.risk_score !== undefined && <RiskBadge score={asset.db.risk_score}/>}
+                            {asset.db?.risk_score !== null && <RiskScoreTooltip/>}
                         </div>
                     </div>
-                </CardHeader>
+                    <Separator/>
+                </div>
 
-                <CardContent>
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-                        <div>
-                            <PriceSection ticker={symbol} initial={{
-                                currency: asset.currency,
-                                last_price: asset.last_price,
-                                prev_close: asset.last_price,
-                            }
-                            }/>
-                        </div>
+                <div>
+                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
+                        <PriceSection ticker={symbol} initial={{
+                            currency: asset.currency,
+                            last_price: asset.last_price,
+                            prev_close: asset.last_price,
+                        }
+                        }/>
+
 
                         {/* DB Action Buttons */}
                         <div>
                             {asset.db?.in_db ? (
                                 <StatusManager
                                     asset={asset}
-                                    onStatusChange={handleStatusChange}
-                                    onRemove={handleRemove}
                                 />
                             ) : (
-                                <Add/>
+                                <div className={'flex flex-col items-end text-end max-w-52 gap-2'}>
+                                    <AddStock stock={asset}/>
+                                    <span className={'text-muted-foreground shadow-muted text-xs'}>
+                                        To view advanced analytics and risk metrics, please add this stock to the system.
+                                    </span>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -134,8 +120,8 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                         <FinancialDataSection asset={asset}/>
                         <CompanyInfoSection asset={asset}/>
                     </Accordion>
-                </CardContent>
-            </Card>
+                </div>
+            </section>
         </div>
     );
 };
