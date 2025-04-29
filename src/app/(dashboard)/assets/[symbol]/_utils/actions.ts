@@ -164,3 +164,61 @@ export async function updateStockStatusAction(
         };
     }
 }
+
+export async function deleteStockAction(stockId: number): Promise<{ success: boolean; message: string }> {
+    try {
+        const response = await AxiosInstance.delete(`/assets/${stockId}`);
+
+        // Revalidate relevant paths to refresh the UI
+        revalidatePath('/global-assets');
+        revalidatePath('/assets');
+
+        return {
+            success: true,
+            message: response.data.message,
+        };
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            const errorData = error.response?.data as HTTPValidationError | { detail?: string };
+
+            // Handle validation errors
+            if (Array.isArray(errorData?.detail) && errorData.detail.length > 0) {
+                return {
+                    success: false,
+                    message: errorData.detail[0].msg,
+                };
+            }
+            // Handle string error messages
+            else if (typeof errorData?.detail === 'string') {
+                return {
+                    success: false,
+                    message: errorData.detail,
+                };
+            }
+            // Handle 404 - stock not found
+            else if (status === 404) {
+                return {
+                    success: false,
+                    message: `Stock with ID ${stockId} not found`,
+                };
+            }
+            // Handle other errors
+            else {
+                console.error('Delete stock API error:', error.response?.data);
+                return {
+                    success: false,
+                    message: 'Failed to delete stock. Please try again.',
+                };
+            }
+        }
+
+        // Log non-Axios errors
+        console.error('Unexpected error deleting stock:', error);
+
+        return {
+            success: false,
+            message: 'An unexpected error occurred. Please try again.',
+        };
+    }
+}

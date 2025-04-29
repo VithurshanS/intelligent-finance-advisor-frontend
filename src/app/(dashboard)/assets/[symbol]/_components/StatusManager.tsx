@@ -1,12 +1,21 @@
 "use client";
 
-import {Asset, AssetStatus} from "../_utils/actions";
+import {Asset, AssetStatus, deleteStockAction} from "../_utils/actions";
 import {useState} from "react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
 import {Trash2, BadgeCheck, Clock, AlertTriangle, Ban} from "lucide-react";
 import {toast} from "react-toastify";
 import {updateStockStatusAction} from "../_utils/actions"; // Import the server action
+import {
+    Dialog, DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
 
 const statusOptions = [
     {value: "Active", label: "Active", icon: <BadgeCheck className="h-4 w-4 text-green-600 dark:text-green-400"/>},
@@ -78,6 +87,11 @@ const StatusManager = ({
     };
 
     const handleRemove = async () => {
+        if (!asset.db?.asset_id) {
+            toast.error("Cannot update status: Asset ID is missing");
+            return;
+        }
+
         // Show loading toast
         const toastId = toast.loading(`Removing ${asset.ticker} from database...`, {
             position: "bottom-right",
@@ -89,13 +103,9 @@ const StatusManager = ({
 
         try {
             // Implement your remove stock action here
-            // const result = await removeStockAction(asset.db?.id);
+            const result = await deleteStockAction(asset.db.asset_id);
 
-            // Placeholder for now
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const success = true; // Replace with actual result
-
-            if (success) {
+            if (result.success) {
                 toast.update(toastId, {
                     render: `${asset.ticker} removed successfully`,
                     type: "success",
@@ -148,14 +158,39 @@ const StatusManager = ({
                 </SelectContent>
             </Select>
 
-            <Button
-                variant="destructive"
-                onClick={handleRemove}
-                disabled={loading}
-                className="flex items-center gap-2"
-            >
-                <Trash2 className="w-4 h-4"/> Remove from DB
-            </Button>
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button
+                        variant="destructive"
+                        disabled={loading}
+                        className="flex items-center gap-2"
+                    >
+                        <Trash2 className="w-4 h-4"/> Remove from DB
+                    </Button>
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Confirm Deletion</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to remove <span className="font-medium">{asset.ticker}</span> from the
+                            database? This action is irreversible.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex justify-end gap-2">
+                        <DialogClose disabled={loading}>
+                            Cancel
+                        </DialogClose>
+                        <Button
+                            variant="destructive"
+                            onClick={handleRemove}
+                            disabled={loading}
+                        >
+                            Yes, Remove
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
