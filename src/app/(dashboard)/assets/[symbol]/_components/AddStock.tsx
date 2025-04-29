@@ -11,25 +11,26 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import {Button} from '@/components/ui/button';
-import {CircleCheck, PlusCircle} from 'lucide-react';
+import {PlusCircle} from 'lucide-react';
 import {toast} from 'react-toastify';
-import {createStockAction, MinimalStockInfo} from "../_utils/actions";
-import {formatMarketCap} from "../_utils/utils";
+import {createStockAction} from "@/app/(dashboard)/global-assets/[type]/_utils/actions";
+import {formatMarketCap} from "@/app/(dashboard)/global-assets/[type]/_utils/utils";
 import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
+import {Asset} from "../_utils/actions";
 
-const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolean }): JSX.Element => {
+
+const AddStock = ({stock}: { stock: Asset }): JSX.Element => {
     const [isOpen, setIsOpen] = React.useState(false);
 
     const handleAddStock = async () => {
         // Create loading toast
-        const toastId = toast.loading(`Adding ${stock.symbol}...`, {
-            position: "bottom-right",
+        const toastId = toast.loading(`Adding ${stock.ticker}...`, {
             pauseOnFocusLoss: false,
             autoClose: false,
         });
 
         try {
-            const result = await createStockAction(stock.symbol);
+            const result = await createStockAction(stock.ticker);
 
             if (result.success) {
                 // Update toast on success
@@ -50,17 +51,9 @@ const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolea
             }
         } catch (error) {
             // Handle unexpected errors
-            if (error instanceof Error) {
-                console.error('Error adding stock:', error);
-                toast.update(toastId, {
-                    render: `Failed to add ${stock.symbol}: ${error.message || 'Unknown error'}`,
-                    type: 'error',
-                    autoClose: 3000,
-                    isLoading: false
-                });
-            }
+            console.error('Error adding stock:', error);
             toast.update(toastId, {
-                render: `Failed to add ${stock.symbol}: ${error || 'Unknown error'}`,
+                render: `Failed to add ${stock.ticker}: ${error instanceof Error ? error.message : 'Unknown error'}`,
                 type: 'error',
                 autoClose: 3000,
                 isLoading: false
@@ -70,43 +63,48 @@ const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolea
         setIsOpen(false);
     };
 
+    // Safely format price with null handling
+    const formatPrice = (price: number | null): string => {
+        return price !== null ? `$${price.toFixed(2)}` : 'N/A';
+    };
+
+    // Safely format PE ratio with null handling
+    const formatPE = (pe: number | null): string => {
+        return pe !== null ? pe.toFixed(2) : 'N/A';
+    };
+
     return (
         <>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                    {!in_db ? (
-                        <Button size="sm" variant="outline" className="h-8">
-                            <PlusCircle className="h-4 w-4 mr-1"/> Add
-                        </Button>) : (
-                        <Button size="sm" variant="outline" className="h-8" disabled>
-                            <CircleCheck className="h-4 w-4 mr-1"/> Added
-                        </Button>
-                    )}
+                <DialogTrigger>
+                    <Button className="h-8">
+                        <PlusCircle className="h-4 w-4 mr-1"/> Add to system
+                    </Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Add Stock to System</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to add {stock.symbol} ({stock.name}) to the system?
+                            Are you sure you want to add {stock.ticker} ({stock.name}) to the system?
                             This will make it available for risk analysis and monitoring.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid grid-cols-2 gap-4 py-4">
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Symbol</p>
-                            <p className="font-medium">{stock.symbol}</p>
+                            <p className="font-medium">{stock.ticker}</p>
                         </div>
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Risk Level</p>
-                            <RiskBadge score={stock.risk_score}/>
+                            <RiskBadge score={stock.db?.risk_score ?? null}/>
                         </div>
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Market Cap</p>
-                            <p>{formatMarketCap(stock.marketCap)}</p>
+                            <p>{stock.market_cap !== null ? formatMarketCap(stock.market_cap) : 'N/A'}</p>
                         </div>
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Price</p>
-                            <p>${stock.price.toFixed(2)}</p>
+                            <p>{formatPrice(stock.last_price)}</p>
                         </div>
                         {stock.exchange && (
                             <div className="space-y-1">
@@ -114,10 +112,10 @@ const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolea
                                 <p>{stock.exchange}</p>
                             </div>
                         )}
-                        {stock.peRatio !== null && (
+                        {stock.trailing_pe !== null && (
                             <div className="space-y-1">
                                 <p className="text-sm font-medium text-gray-500">P/E Ratio</p>
-                                <p>{stock.peRatio.toFixed(2)}</p>
+                                <p>{formatPE(stock.trailing_pe)}</p>
                             </div>
                         )}
                     </div>
@@ -131,4 +129,4 @@ const AddStockDialog = ({stock, in_db}: { stock: MinimalStockInfo, in_db: boolea
     );
 };
 
-export default AddStockDialog;
+export default AddStock;
