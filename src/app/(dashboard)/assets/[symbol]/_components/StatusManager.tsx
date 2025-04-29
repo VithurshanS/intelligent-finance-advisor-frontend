@@ -1,6 +1,6 @@
 "use client";
 
-import {Asset, AssetStatus, deleteStockAction} from "../_utils/actions";
+import {deleteStockAction} from "../_utils/actions";
 import {useState} from "react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
+import {Asset, AssetStatus} from "@/app/(dashboard)/assets/[symbol]/_utils/definitions";
 
 const statusOptions = [
     {value: "Active", label: "Active", icon: <BadgeCheck className="h-4 w-4 text-green-600 dark:text-green-400"/>},

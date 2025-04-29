@@ -16,6 +16,7 @@ import {MarketDataSection, FinancialDataSection, CompanyInfoSection} from "./_co
 import PriceSection from './_components/PriceSection';
 import AddStock from "@/app/(dashboard)/assets/[symbol]/_components/AddStock";
 import {RiskScoreTooltip} from "@/app/(dashboard)/assets/[symbol]/_components/ShallowRiskTooltip";
+import RiskAnalysisSection from "@/app/(dashboard)/assets/[symbol]/_components/RiskAnalysisSection";
 
 // Main page component
 const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }) => {
@@ -61,10 +62,10 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
     }
 
     return (
-        <div className="container mx-auto py-8 px-8">
+        <div className="flex flex-col mx-auto py-8 px-8 gap-8">
             {/* Header Section */}
-            <section className="mb-6">
-                <div className="flex flex-col items-center md:items-start gap-2 mb-4">
+            <section>
+                <div className="flex flex-col items-center md:items-start gap-2">
                     <div className="text-muted-foreground text-sm">
                         {asset.ticker} • {asset.exchange || 'Unknown Exchange'} • {asset.currency || 'Unknown Currency'}
                     </div>
@@ -122,6 +123,8 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                     </Accordion>
                 </div>
             </section>
+            <Separator />
+            <RiskAnalysisSection ticker={asset.ticker} inDb={asset.db?.in_db || false} asset={asset}/>
         </div>
     );
 };

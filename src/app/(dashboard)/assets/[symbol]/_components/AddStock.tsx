@@ -16,7 +16,8 @@ import {toast} from 'react-toastify';
 import {createStockAction} from "@/app/(dashboard)/global-assets/[type]/_utils/actions";
 import {formatMarketCap} from "@/app/(dashboard)/global-assets/[type]/_utils/utils";
 import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
-import {Asset} from "../_utils/actions";
+
+import {Asset} from "@/app/(dashboard)/assets/[symbol]/_utils/definitions";
 
 
 const AddStock = ({stock}: { stock: Asset }): JSX.Element => {
