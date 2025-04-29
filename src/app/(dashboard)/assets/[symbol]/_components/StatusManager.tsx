@@ -1,24 +1,23 @@
 "use client";
 
-// Status management component
-import {Asset} from "../_utils/actions";
-import {StockStatus} from "../_utils/definitions";
+import {Asset, AssetStatus} from "../_utils/actions";
 import {useState} from "react";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
-import {Trash2} from "lucide-react";
+import {Trash2, BadgeCheck, Clock, AlertTriangle, Ban} from "lucide-react";
+import {toast} from "react-toastify";
+import {updateStockStatusAction} from "../_utils/actions"; // Import the server action
 
-// Handle status change (server action would go here in a real implementation)
-const handleStatusChange = async (status: StockStatus) => {
-    // This would call a server action to update the status
-    console.log(`Changing status to ${status}`);
-};
-
-// Handle remove (server action would go here in a real implementation)
-const handleRemove = async () => {
-    // This would call a server action to remove the asset from DB
-    console.log('Removing from DB');
-};
+const statusOptions = [
+    {value: "Active", label: "Active", icon: <BadgeCheck className="h-4 w-4 text-green-600 dark:text-green-400"/>},
+    {value: "Pending", label: "Pending", icon: <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400"/>},
+    {
+        value: "Warning",
+        label: "Warning",
+        icon: <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400"/>
+    },
+    {value: "BlackList", label: "BlackList", icon: <Ban className="h-4 w-4 text-red-600 dark:text-red-400"/>},
+];
 
 const StatusManager = ({
                            asset,
@@ -27,33 +26,125 @@ const StatusManager = ({
 }) => {
     const [loading, setLoading] = useState(false);
 
-    const handleStatusChange = async (status: StockStatus) => {
+    const handleStatusChange = async (status: AssetStatus) => {
+        if (!asset.db?.asset_id) {
+            toast.error("Cannot update status: Asset ID is missing");
+            return;
+        }
+
+        // Show loading toast
+        const toastId = toast.loading(`Updating ${asset.ticker} status to ${status}...`, {
+            position: "bottom-right",
+            pauseOnFocusLoss: false,
+            autoClose: false,
+        });
+
         setLoading(true);
-        await handleStatusChange(status);
-        setLoading(false);
+
+        try {
+            // Call the server action to update status
+            const result = await updateStockStatusAction(asset.db.asset_id, status);
+
+            if (result.success) {
+                // Update toast on success
+                toast.update(toastId, {
+                    render: result.message,
+                    type: "success",
+                    autoClose: 2000,
+                    isLoading: false
+                });
+            } else {
+                // Update toast on error
+                toast.update(toastId, {
+                    render: result.message,
+                    type: "error",
+                    autoClose: 3000,
+                    isLoading: false
+                });
+            }
+        } catch (error) {
+            // Handle unexpected errors
+            console.error('Error updating stock status:', error);
+
+            toast.update(toastId, {
+                render: `Failed to update ${asset.ticker} status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                type: "error",
+                autoClose: 3000,
+                isLoading: false
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleRemove = async () => {
+        // Show loading toast
+        const toastId = toast.loading(`Removing ${asset.ticker} from database...`, {
+            position: "bottom-right",
+            pauseOnFocusLoss: false,
+            autoClose: false,
+        });
+
         setLoading(true);
-        await handleRemove();
-        setLoading(false);
+
+        try {
+            // Implement your remove stock action here
+            // const result = await removeStockAction(asset.db?.id);
+
+            // Placeholder for now
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const success = true; // Replace with actual result
+
+            if (success) {
+                toast.update(toastId, {
+                    render: `${asset.ticker} removed successfully`,
+                    type: "success",
+                    autoClose: 2000,
+                    isLoading: false
+                });
+            } else {
+                toast.update(toastId, {
+                    render: `Failed to remove ${asset.ticker}`,
+                    type: "error",
+                    autoClose: 3000,
+                    isLoading: false
+                });
+            }
+        } catch (error) {
+            console.error('Error removing stock:', error);
+
+            toast.update(toastId, {
+                render: `Failed to remove ${asset.ticker}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                type: "error",
+                autoClose: 3000,
+                isLoading: false
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
             <Select
                 disabled={loading}
-                onValueChange={(value) => handleStatusChange(value as StockStatus)}
+                onValueChange={(value) => handleStatusChange(value as AssetStatus)}
                 defaultValue={asset.db?.status || undefined}
             >
-                <SelectTrigger className="w-full sm:w-48">
+                <SelectTrigger className="w-full sm:w-48 border-gray-300 dark:border-gray-600">
                     <SelectValue placeholder="Change Status"/>
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="ACTIVE">ACTIVE</SelectItem>
-                    <SelectItem value="PENDING">PENDING</SelectItem>
-                    <SelectItem value="WARNING">WARNING</SelectItem>
-                    <SelectItem value="BLACKLIST">BLACKLIST</SelectItem>
+                    {statusOptions.map(({value, label, icon}) => (
+                        <SelectItem
+                            key={value}
+                            value={value}
+                            className="flex items-center gap-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                        >
+                            {icon}
+                            {label}
+                        </SelectItem>
+                    ))}
                 </SelectContent>
             </Select>
 
