@@ -48,7 +48,7 @@ const NewsSection = ({
     });
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* News Articles Section */}
             <div>
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><Rss size={18}/> News Articles</h3>
@@ -176,8 +176,8 @@ const NewsSection = ({
                         </Card>
                     </div>
                 ) : newsSentiment ? (
-                    <div className="space-y-4 max-h-[800px] overflow-y-auto pr-2">
-                        <Card>
+                    <div className="flex space-y-4 h-[800px] pr-2">
+                        <Card className={'overflow-y-auto max-h-full w-full'}>
                             <CardHeader className="pb-2">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-base">Security Assessment</CardTitle>
