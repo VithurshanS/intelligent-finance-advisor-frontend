@@ -148,7 +148,7 @@ const NewsSection = ({
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <ScanText size={18}/>
                     Sentiment Analysis
-                    <GeminiLogo width="1.4rem" height="1.4rem"/>
+                    <GeminiLogo width="1.4rem" height="1.4rem" model={"Gemini 1.5 Flash"}/>
                 </h3>
 
                 {errorSentiment && (

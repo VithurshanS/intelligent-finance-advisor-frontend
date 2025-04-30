@@ -12,20 +12,22 @@ interface GeminiLogoProps {
     width?: number | string;
     height?: number | string;
     className?: string;
+    model?: string;
 }
 
 const GeminiLogo: React.FC<GeminiLogoProps> = ({
-                                                              width = 100,
-                                                              height = 100,
-                                                              className = ''
-                                                          }) => {
+                                                   width = 100,
+                                                   height = 100,
+                                                   className = '',
+                                                   model = 'Gemini',
+                                               }) => {
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <div
                         className={`${styles.logoContainer} ${className}`}
-                        style={{ width, height }}
+                        style={{width, height}}
                     >
                         <svg
                             fill="none"
@@ -57,7 +59,7 @@ const GeminiLogo: React.FC<GeminiLogoProps> = ({
                 </TooltipTrigger>
                 <TooltipContent className={styles.tooltipContent} side={'right'}>
                     <div>
-                        <div className={styles.gradientText}>Powered by Google Gemini 2.0 Flash</div>
+                        <div className={styles.gradientText}>Powered by Google {model}</div>
                         <div className={styles.cautionText}>AI can make mistakes. Use with caution.</div>
                     </div>
                 </TooltipContent>
