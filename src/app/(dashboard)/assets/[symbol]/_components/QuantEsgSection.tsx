@@ -269,7 +269,7 @@ const QuantEsgSection = ({
                                     <div className="mt-4 text-sm">
                                         <h4 className="font-semibold mb-2 flex items-center gap-2">
                                             Risk Analysis:
-                                            <GeminiLogo width="1.4rem" height="1.4rem" model={"Gemini 1.5 Lite"}/>
+                                            <GeminiLogo width="1.4rem" height="1.4rem" model={"Gemini 2.0 Lite"}/>
                                         </h4>
                                         <p className="text-muted-foreground">{quantRisk.risk_explanation}</p>
                                     </div>

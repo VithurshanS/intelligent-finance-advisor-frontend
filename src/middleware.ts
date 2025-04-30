@@ -29,7 +29,9 @@ const userRoutes = [
 const adminOnlyRoutes = [
     "users",
     "/users/:id",
-    "/portfolio/:id",
+    "/assets/:symbol",
+    "/global-assets/lookup",
+    "/global-assets/:type",
     // Add more admin-only routes
 ];
 
