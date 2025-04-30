@@ -9,6 +9,8 @@ import {Badge} from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
 import GeminiLogo from './GeminiLogo'
+import {formatDistanceToNow, parseISO} from 'date-fns';
+
 
 interface NewsSectionProps {
     loadingNews: boolean;
@@ -29,13 +31,21 @@ const NewsSection = ({
                      }: NewsSectionProps) => {
     const formatDate = (dateString: string | null | undefined) => {
         if (!dateString) return 'Unknown date';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
+        try {
+            const date = parseISO(dateString);
+            return formatDistanceToNow(date, {addSuffix: true});
+        } catch (error) {
+            console.error('Error parsing date:', error);
+            return 'Invalid date';
+        }
     };
+
+    // Sort news articles by publish date in descending order
+    const sortedNewsArticles = newsArticles?.sort((a, b) => {
+        const dateA = new Date(a.publish_date || 0);
+        const dateB = new Date(b.publish_date || 0);
+        return dateB.getTime() - dateA.getTime();
+    });
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -65,9 +75,9 @@ const NewsSection = ({
                             </Card>
                         ))}
                     </div>
-                ) : newsArticles && newsArticles.length > 0 ? (
+                ) : sortedNewsArticles && sortedNewsArticles.length > 0 ? (
                     <div className="space-y-4 max-h-[800px] overflow-y-auto pr-2">
-                        {newsArticles.map((article, idx) => (
+                        {sortedNewsArticles.map((article, idx) => (
                             <Card key={idx} className="overflow-hidden hover:shadow-md transition-shadow">
                                 <div className="flex">
                                     <div className="flex-1">
@@ -138,7 +148,7 @@ const NewsSection = ({
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <ScanText size={18}/>
                     Sentiment Analysis
-                    <GeminiLogo width="1.4rem" height="1.4rem" />
+                    <GeminiLogo width="1.4rem" height="1.4rem"/>
                 </h3>
 
                 {errorSentiment && (
@@ -172,22 +182,27 @@ const NewsSection = ({
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-base">Security Assessment</CardTitle>
                                     <Badge className={`
-                                        ${newsSentiment.stability_label === 'High Risk' ? 'bg-red-500 text-white dark:bg-red-900 dark:text-red-300' :
+                                            ${newsSentiment.stability_label === 'High Risk' ? 'bg-red-500 text-white dark:bg-red-900 dark:text-red-300' :
                                         newsSentiment.stability_label === 'Moderate Risk' ? 'bg-orange-500 text-white dark:bg-orange-900 dark:text-orange-300' :
                                             newsSentiment.stability_label === 'Slight Risk' ? 'bg-yellow-500 text-white dark:bg-yellow-900 dark:text-yellow-300' :
                                                 newsSentiment.stability_label === 'Stable' ? 'bg-green-500 text-white dark:bg-green-900 dark:text-green-300' : 'bg-gray-500 text-white dark:bg-gray-900 dark:text-gray-300'}
-                                    `}>
+                                            `}>
                                         {newsSentiment.stability_label}
                                     </Badge>
                                 </div>
-                                <CardDescription>
+                                <CardDescription className={'flex items-center gap-1'}>
                                     Stability Score: {newsSentiment.stability_score !== undefined ?
                                     newsSentiment.stability_score.toFixed(1) : 'N/A'}/10
+                                    {newsSentiment.updated_at && (
+                                        <span className="text-xs text-muted-foreground ml-2 flex items-center gap-1">
+                                            <Clock size={12}/>
+                                            Updated {formatDate(newsSentiment.updated_at)}
+                                        </span>
+                                    )}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <p className="text-sm mb-4">{newsSentiment.security_assessment}</p>
-
                                 <div className="mb-4">
                                     <h4 className="text-sm font-medium mb-2">Key Risk Factors:</h4>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -263,7 +278,7 @@ const NewsSection = ({
                                 </div>
 
                                 <div className="text-xs grid grid-cols-2 gap-4">
-                                    <div>
+                                    <div className={'flex flex-row gap-2 items-center'}>
                                         <p className="font-medium">Customer Suitability:</p>
                                         <Badge variant={
                                             newsSentiment.customer_suitability === 'Unsuitable' ? 'destructive' :
@@ -273,7 +288,7 @@ const NewsSection = ({
                                         </Badge>
                                     </div>
 
-                                    <div>
+                                    <div className={'flex flex-row gap-2 items-center'}>
                                         <p className="font-medium">Suggested Action:</p>
                                         <Badge variant={
                                             newsSentiment.suggested_action === 'Immediate Action Required' ? 'destructive' :

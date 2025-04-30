@@ -95,6 +95,7 @@ export interface SentimentAnalysisResponse {
     news_highlights?: string[];
     risk_score?: number;  // Range: 0 to 10
     error_details?: string | null;
+    updated_at?: string | null;
 }
 
 
