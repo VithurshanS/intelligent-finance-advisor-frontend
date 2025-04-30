@@ -59,87 +59,87 @@ const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) =>
         overall: null
     });
 
-    const fetchRiskAnalysis = async () => {
-        if (!inDb) return;
-
-        setLoading(true);
-        setSectionLoading({
-            news: true,
-            sentiment: true,
-            quant: true,
-            esg: true,
-            anomaly: true,
-            overall: true
-        });
-        setError(null);
-        setSectionErrors({
-            news: null,
-            sentiment: null,
-            quant: null,
-            esg: null,
-            anomaly: null,
-            overall: null
-        });
-
-        try {
-            // Create EventSource for SSE
-            const eventSource = new EventSource(`http://localhost:8000/risk-analysis/${ticker}/stream`);
-
-            eventSource.onmessage = (event) => {
-                const response = JSON.parse(event.data) as StreamResponse;
-
-                switch (response.type) {
-                    case 'news_articles':
-                        setNewsArticles(response.data as NewsArticle[]);
-                        setSectionLoading(prev => ({...prev, news: false}));
-                        break;
-                    case 'news_sentiment':
-                        setNewsSentiment(response.data as SentimentAnalysisResponse);
-                        setSectionLoading(prev => ({...prev, sentiment: false}));
-                        break;
-                    case 'quantitative_risk':
-                        setQuantRisk(response.data as QuantRiskResponse);
-                        setSectionLoading(prev => ({...prev, quant: false}));
-                        break;
-                    case 'esg_risk':
-                        setEsgRisk(response.data as EsgRiskResponse);
-                        setSectionLoading(prev => ({...prev, esg: false}));
-                        break;
-                    case 'anomaly_risk':
-                        setAnomalyRisk(response.data as AnomalyDetectionResponse);
-                        setSectionLoading(prev => ({...prev, anomaly: false}));
-                        break;
-                    case 'overall_risk':
-                        setOverallRisk(response.data as OverallRiskResponse);
-                        setSectionLoading(prev => ({...prev, overall: false}));
-                        break;
-                    case 'complete':
-                        setLoading(false);
-                        eventSource.close();
-                        break;
-                }
-            };
-
-            eventSource.onerror = (e) => {
-                console.error('EventSource error:', e);
-                setError('Connection error. Please try again later.');
-                setLoading(false);
-                eventSource.close();
-            };
-
-            return () => {
-                eventSource.close();
-            };
-        } catch (err) {
-            console.error('Error setting up SSE:', err);
-            setError('Failed to connect to risk analysis service.');
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchRiskAnalysis = async () => {
+            if (!inDb) return;
+
+            setLoading(true);
+            setSectionLoading({
+                news: true,
+                sentiment: true,
+                quant: true,
+                esg: true,
+                anomaly: true,
+                overall: true
+            });
+            setError(null);
+            setSectionErrors({
+                news: null,
+                sentiment: null,
+                quant: null,
+                esg: null,
+                anomaly: null,
+                overall: null
+            });
+
+            try {
+                // Create EventSource for SSE
+                const eventSource = new EventSource(`http://localhost:8000/risk-analysis/${ticker}/stream`);
+
+                eventSource.onmessage = (event) => {
+                    const response = JSON.parse(event.data) as StreamResponse;
+
+                    switch (response.type) {
+                        case 'news_articles':
+                            setNewsArticles(response.data as NewsArticle[]);
+                            setSectionLoading(prev => ({...prev, news: false}));
+                            break;
+                        case 'news_sentiment':
+                            setNewsSentiment(response.data as SentimentAnalysisResponse);
+                            setSectionLoading(prev => ({...prev, sentiment: false}));
+                            break;
+                        case 'quantitative_risk':
+                            setQuantRisk(response.data as QuantRiskResponse);
+                            setSectionLoading(prev => ({...prev, quant: false}));
+                            break;
+                        case 'esg_risk':
+                            setEsgRisk(response.data as EsgRiskResponse);
+                            setSectionLoading(prev => ({...prev, esg: false}));
+                            break;
+                        case 'anomaly_risk':
+                            setAnomalyRisk(response.data as AnomalyDetectionResponse);
+                            setSectionLoading(prev => ({...prev, anomaly: false}));
+                            break;
+                        case 'overall_risk':
+                            setOverallRisk(response.data as OverallRiskResponse);
+                            setSectionLoading(prev => ({...prev, overall: false}));
+                            break;
+                        case 'complete':
+                            setLoading(false);
+                            eventSource.close();
+                            break;
+                    }
+                };
+
+                eventSource.onerror = (e) => {
+                    console.error('EventSource error:', e);
+                    setError('Connection error. Please try again later.');
+                    setLoading(false);
+                    eventSource.close();
+                };
+
+                return () => {
+                    eventSource.close();
+                };
+            } catch (err) {
+                console.error('Error setting up SSE:', err);
+                setError('Failed to connect to risk analysis service.');
+                setLoading(false);
+            }
+        };
+
         if (inDb) {
-            fetchRiskAnalysis().then()
+            fetchRiskAnalysis().then();
         }
 
         // Cleanup function
