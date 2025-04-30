@@ -191,8 +191,14 @@ export default function PortfolioResultsPage() {
                                                 {result.monte_carlo_projection.success_rate_percent.toFixed(2)}%
                                             </span>
                                             <Badge
-                                                variant={result.monte_carlo_projection.success_rate_percent > 80 ? "default" : "destructive"}>
-                                                {result.monte_carlo_projection.success_rate_percent > 80 ? "High" : "Medium"}
+                                                variant={
+                                                    result.monte_carlo_projection.success_rate_percent > 80 ? "success" :
+                                                        result.monte_carlo_projection.success_rate_percent > 50 ? "default" :
+                                                            "destructive"
+                                                }>
+                                                {result.monte_carlo_projection.success_rate_percent > 80 ? "High" :
+                                                    result.monte_carlo_projection.success_rate_percent > 50 ? "Medium" :
+                                                        "Low"}
                                             </Badge>
                                         </div>
                                     </div>
