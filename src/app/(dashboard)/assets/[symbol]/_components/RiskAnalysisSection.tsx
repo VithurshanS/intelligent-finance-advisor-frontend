@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
+import {useEffect, useState} from 'react';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import {AlertCircle} from 'lucide-react';
+import {Separator} from '@/components/ui/separator';
+import {Badge} from '@/components/ui/badge';
 import AddStock from '@/app/(dashboard)/assets/[symbol]/_components/AddStock';
 import {
     NewsArticle,
@@ -14,7 +13,7 @@ import {
     EsgRiskResponse,
     AnomalyDetectionResponse,
     OverallRiskResponse,
-    StreamResponse
+    StreamResponse, Asset
 } from '../_utils/definitions';
 
 // Sub-components
@@ -26,10 +25,10 @@ import OverallRiskSection from './OverallRiskSection';
 interface RiskAnalysisSectionProps {
     ticker: string;
     inDb: boolean;
-    asset: any;
+    asset: Asset;
 }
 
-const RiskAnalysisSection = ({ ticker, inDb, asset }: RiskAnalysisSectionProps) => {
+const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) => {
     // State for each section of data
     const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
     const [newsSentiment, setNewsSentiment] = useState<SentimentAnalysisResponse | null>(null);
@@ -91,28 +90,28 @@ const RiskAnalysisSection = ({ ticker, inDb, asset }: RiskAnalysisSectionProps) 
 
                 switch (response.type) {
                     case 'news_articles':
-                        setNewsArticles(response.data as any);
-                        setSectionLoading(prev => ({ ...prev, news: false }));
+                        setNewsArticles(response.data as NewsArticle[]);
+                        setSectionLoading(prev => ({...prev, news: false}));
                         break;
                     case 'news_sentiment':
                         setNewsSentiment(response.data as SentimentAnalysisResponse);
-                        setSectionLoading(prev => ({ ...prev, sentiment: false }));
+                        setSectionLoading(prev => ({...prev, sentiment: false}));
                         break;
                     case 'quantitative_risk':
                         setQuantRisk(response.data as QuantRiskResponse);
-                        setSectionLoading(prev => ({ ...prev, quant: false }));
+                        setSectionLoading(prev => ({...prev, quant: false}));
                         break;
                     case 'esg_risk':
                         setEsgRisk(response.data as EsgRiskResponse);
-                        setSectionLoading(prev => ({ ...prev, esg: false }));
+                        setSectionLoading(prev => ({...prev, esg: false}));
                         break;
                     case 'anomaly_risk':
                         setAnomalyRisk(response.data as AnomalyDetectionResponse);
-                        setSectionLoading(prev => ({ ...prev, anomaly: false }));
+                        setSectionLoading(prev => ({...prev, anomaly: false}));
                         break;
                     case 'overall_risk':
                         setOverallRisk(response.data as OverallRiskResponse);
-                        setSectionLoading(prev => ({ ...prev, overall: false }));
+                        setSectionLoading(prev => ({...prev, overall: false}));
                         break;
                     case 'complete':
                         setLoading(false);
@@ -140,7 +139,7 @@ const RiskAnalysisSection = ({ ticker, inDb, asset }: RiskAnalysisSectionProps) 
 
     useEffect(() => {
         if (inDb) {
-            fetchRiskAnalysis();
+            fetchRiskAnalysis().then()
         }
 
         // Cleanup function
@@ -151,54 +150,52 @@ const RiskAnalysisSection = ({ ticker, inDb, asset }: RiskAnalysisSectionProps) 
 
     if (!inDb) {
         return (
-            <Card className="mb-6">
-                <CardHeader>
-                    <CardTitle>Risk Analysis</CardTitle>
-                    <CardDescription>
-                        Add this stock to the system to view comprehensive risk analysis
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col items-center text-center p-6">
+            <div className="mb-6 p-6 border ">
+                <h2 className="text-2xl font-bold mb-1">Risk Analysis</h2>
+                <p className="text-muted-foreground mb-6">
+                    Add this stock to the system to view comprehensive risk analysis
+                </p>
+
+                <div className="flex flex-col items-center text-center p-6">
                     <div className="mb-4">
-                        <AlertCircle className="h-12 w-12 text-muted-foreground mb-2" />
+                        <AlertCircle className="h-12 w-12 text-muted-foreground mb-2"/>
                         <p className="text-muted-foreground mb-6">
                             Risk analysis data is only available for stocks that have been added to the system.
                             Add this stock to access detailed risk metrics, news sentiment analysis, and more.
                         </p>
                     </div>
-                    <AddStock stock={asset} />
-                </CardContent>
-            </Card>
+                    <AddStock stock={asset}/>
+                </div>
+            </div>
         );
     }
 
     return (
-        <Card className="mb-6">
-            <CardHeader>
-                <div className="flex justify-between items-center">
+        <div className="mb-6">
+            <div className="mb-6">
+                <div className="flex justify-between items-center mb-4">
                     <div>
-                        <CardTitle>Risk Analysis</CardTitle>
-                        <CardDescription>
+                        <h2 className="text-2xl font-bold">Risk Analysis</h2>
+                        <p className="text-muted-foreground">
                             Comprehensive risk assessment for {ticker}
-                        </CardDescription>
+                        </p>
                     </div>
-                    {overallRisk?.overall_risk_score !== undefined && (
+                    {overallRisk?.overall_risk_score !== undefined && overallRisk?.overall_risk_score !== null && (
                         <Badge
                             className={`text-lg px-3 py-1 ${
-                                overallRisk.risk_level === 'High' ? 'bg-red-500' :
-                                    overallRisk.risk_level === 'Medium' ? 'bg-yellow-500' : 'bg-green-500'
+                                overallRisk.risk_level === 'High' ? 'bg-red-500 text-white dark:bg-red-800 dark:text-red-300' :
+                                    overallRisk.risk_level === 'Medium' ? 'bg-yellow-500 text-white dark:bg-yellow-800 dark:text-yellow-300' :
+                                        'bg-green-500 text-white dark:bg-green-800 dark:text-green-300'
                             }`}
                         >
                             Risk: {overallRisk.overall_risk_score.toFixed(1)}/10
                         </Badge>
                     )}
                 </div>
-            </CardHeader>
 
-            <CardContent>
                 {error && (
                     <Alert variant="destructive" className="mb-6">
-                        <AlertCircle className="h-4 w-4" />
+                        <AlertCircle className="h-4 w-4"/>
                         <AlertTitle>Error</AlertTitle>
                         <AlertDescription>{error}</AlertDescription>
                     </Alert>
@@ -206,56 +203,65 @@ const RiskAnalysisSection = ({ ticker, inDb, asset }: RiskAnalysisSectionProps) 
 
                 <div className="space-y-6">
                     {/* Overall Risk Section */}
-                    <OverallRiskSection
-                        loading={sectionLoading.overall}
-                        error={sectionErrors.overall}
-                        overallRisk={overallRisk}
-                    />
+                    <section className="p-4 ">
+                        <OverallRiskSection
+                            loading={sectionLoading.overall}
+                            error={sectionErrors.overall}
+                            overallRisk={overallRisk}
+                        />
+                    </section>
 
-                    <Separator />
+                    <Separator className="my-6"/>
 
                     {/* News and Sentiment Section */}
-                    <NewsSection
-                        loadingNews={sectionLoading.news}
-                        loadingSentiment={sectionLoading.sentiment}
-                        errorNews={sectionErrors.news}
-                        errorSentiment={sectionErrors.sentiment}
-                        newsArticles={newsArticles}
-                        newsSentiment={newsSentiment}
-                    />
+                    <section className="p-4 ">
+                        <NewsSection
+                            loadingNews={sectionLoading.news}
+                            loadingSentiment={sectionLoading.sentiment}
+                            errorNews={sectionErrors.news}
+                            errorSentiment={sectionErrors.sentiment}
+                            newsArticles={newsArticles}
+                            newsSentiment={newsSentiment}
+                        />
+                    </section>
 
-                    <Separator />
+                    <Separator className="my-6"/>
 
                     {/* Quantitative and ESG Risk Section */}
-                    <QuantEsgSection
-                        loadingQuant={sectionLoading.quant}
-                        loadingEsg={sectionLoading.esg}
-                        errorQuant={sectionErrors.quant}
-                        errorEsg={sectionErrors.esg}
-                        quantRisk={quantRisk}
-                        esgRisk={esgRisk}
-                    />
+                    <section className="p-4 ">
+                        <QuantEsgSection
+                            loadingQuant={sectionLoading.quant}
+                            loadingEsg={sectionLoading.esg}
+                            errorQuant={sectionErrors.quant}
+                            errorEsg={sectionErrors.esg}
+                            quantRisk={quantRisk}
+                            esgRisk={esgRisk}
+                        />
+                    </section>
 
-                    <Separator />
+                    <Separator className="my-6"/>
 
                     {/* Anomaly Detection Section */}
-                    <AnomalySection
-                        loading={sectionLoading.anomaly}
-                        error={sectionErrors.anomaly}
-                        anomalyRisk={anomalyRisk}
-                    />
+                    <section className="p-4 ">
+                        <AnomalySection
+                            loading={sectionLoading.anomaly}
+                            error={sectionErrors.anomaly}
+                            anomalyRisk={anomalyRisk}
+                        />
+                    </section>
                 </div>
 
                 {loading && (
                     <div className="flex justify-center mt-6">
                         <div className="text-center">
                             <p className="text-muted-foreground mb-2">Loading risk analysis data...</p>
-                            <p className="text-xs text-muted-foreground">This may take a moment as we analyze various risk factors</p>
+                            <p className="text-xs text-muted-foreground">This may take a moment as we analyze various
+                                risk factors</p>
                         </div>
                     </div>
                 )}
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 };
 

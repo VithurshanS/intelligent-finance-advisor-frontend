@@ -185,3 +185,34 @@
         height: 10px;
     }
 }
+
+/* Star.css */
+/* Star CSS for Next.js globals.css */
+.gemini-logo {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    background: linear-gradient(45deg, #7f5af0, #00cfff, #ff61d2, #7f5af0);
+    background-size: 400% 400%;
+    animation: gradientMove 5s infinite linear;
+    transition: transform 0.3s;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,0 C55,30 70,45 100,50 C70,55 55,70 50,100 C45,70 30,55 0,50 C30,45 45,30 50,0 Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50,0 C55,30 70,45 100,50 C70,55 55,70 50,100 C45,70 30,55 0,50 C30,45 45,30 50,0 Z' fill='black'/%3E%3C/svg%3E");
+    mask-size: 100% 100%;
+    -webkit-mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+

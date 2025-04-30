@@ -7,6 +7,7 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {AlertCircle, AlertTriangle, Calendar, CircleAlert} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
+import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
 
 interface AnomalySectionProps {
     loading: boolean;
@@ -30,19 +31,10 @@ const AnomalySection = ({
         });
     };
 
-    const getSeverityBadge = (severity: string | null | undefined) => {
+    const getSeverityBadge = (severity: number | null | undefined) => {
         if (!severity) return <Badge variant="outline">Unknown</Badge>;
 
-        switch (severity.toLowerCase()) {
-            case 'high':
-                return <Badge variant="destructive">High</Badge>;
-            case 'medium':
-                return <Badge className="bg-yellow-500">Medium</Badge>;
-            case 'low':
-                return <Badge className="bg-blue-500">Low</Badge>;
-            default:
-                return <Badge variant="outline">{severity}</Badge>;
-        }
+        return <RiskBadge score={severity} showLabel={false}/>
     };
 
     return (
@@ -80,13 +72,7 @@ const AnomalySection = ({
                         <div className="flex justify-between items-center">
                             <CardTitle className="text-base">Anomaly Findings</CardTitle>
                             {anomalyRisk.anomaly_score !== undefined && anomalyRisk.anomaly_score !== null && (
-                                <Badge className={
-                                    anomalyRisk.anomaly_score > 7 ? 'bg-red-500' :
-                                        anomalyRisk.anomaly_score > 3 ? 'bg-yellow-500' :
-                                            'bg-green-500'
-                                }>
-                                    Score: {anomalyRisk.anomaly_score.toFixed(1)}/10
-                                </Badge>
+                                <RiskBadge score={Number(anomalyRisk.anomaly_score.toFixed(1))}/>
                             )}
                         </div>
                         <CardDescription>

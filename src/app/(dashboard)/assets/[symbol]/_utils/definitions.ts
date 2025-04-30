@@ -133,7 +133,7 @@ export interface anomalyFlag {
     type?: string | null;
     date?: string | null;
     description?: string | null;
-    severity?: string | null;
+    severity?: number | null;
 }
 
 export interface AnomalyDetectionResponse {

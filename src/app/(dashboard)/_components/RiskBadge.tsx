@@ -45,15 +45,15 @@ const RiskBadge = ({
 
     switch (riskLevel) {
         case 'High':
-            badgeStyle = "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+            badgeStyle = "bg-red-500 text-white dark:bg-red-900 dark:text-red-300";
             RiskIcon = ShieldAlert;
             break;
         case 'Medium':
-            badgeStyle = "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+            badgeStyle = "bg-yellow-500 text-white dark:bg-yellow-900 dark:text-yellow-300";
             RiskIcon = AlertTriangle;
             break;
         case 'Low':
-            badgeStyle = "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+            badgeStyle = "bg-green-500 text-white dark:bg-green-900 dark:text-green-300";
             RiskIcon = CheckCircle2;
             break;
     }

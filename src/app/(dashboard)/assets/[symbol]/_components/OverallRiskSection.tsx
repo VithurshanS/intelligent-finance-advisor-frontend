@@ -20,9 +20,38 @@ const OverallRiskSection = ({
                                 overallRisk
                             }: OverallRiskSectionProps) => {
 
-    const getRiskColor = (score: number | null | undefined) => {
-        if (score === null || score === undefined) return 'bg-gray-200';
-        return score >= 7 ? 'bg-red-500' : score >= 4 ? 'bg-yellow-500' : 'bg-green-500';
+    const getRiskColorBadge = (score: number | null | undefined) => {
+        if (score === null || score === undefined) return 'bg-gray-500 text-white dark:bg-gray-900 dark:text-gray-300';
+        return score >= 7 ? 'bg-red-500 text-white dark:bg-red-900 dark:text-red-300' : score >= 4 ? 'bg-yellow-500 text-white dark:bg-yellow-900 dark:text-yellow-300' : 'bg-green-500 text-white dark:bg-green-900 dark:text-green-300';
+    };
+
+    const getRiskColorProgress = (score: number | null | undefined) => {
+        if (score === null || score === undefined) return 'bg-gray-500 dark:bg-gray-600';
+        return score >= 7 ? 'bg-red-500 dark:bg-red-600' : score >= 4 ? 'bg-yellow-500 dark:bg-yellow-600' : 'bg-green-500 dark:bg-green-600';
+    };
+
+    // Helper function to safely display scores
+    const formatScore = (score: number | null | undefined): string => {
+        return score !== null && score !== undefined ? score.toFixed(1) : 'N/A';
+    };
+
+    // Helper function to determine if component data is available
+    const hasComponentData = (component: {
+        weight?: number | null,
+        score?: number | null
+    } | null | undefined): boolean => {
+        return component !== null && component !== undefined && component.score !== null && component.score !== undefined;
+    };
+
+    // Helper function to calculate progress value safely
+    const calculateProgress = (score: number | null | undefined): number => {
+        if (score === null || score === undefined) return 0;
+        return score * 10; // Convert 0-10 score to 0-100 percentage
+    };
+
+    // Helper to safely display weight
+    const formatWeight = (weight: number | null | undefined): string => {
+        return weight !== null && weight !== undefined ? weight.toString() : '0';
     };
 
     return (
@@ -52,18 +81,17 @@ const OverallRiskSection = ({
                         </div>
                     </div>
                 </div>
-            ) : overallRisk?.overall_risk_score !== undefined && overallRisk?.risk_level ? (
+            ) : overallRisk?.overall_risk_score !== undefined && overallRisk?.overall_risk_score !== null && overallRisk?.risk_level ? (
                 <Card>
-                    <CardHeader className={`pb-2 ${
+                    <CardHeader className={`flex p-2 ${
                         overallRisk.risk_level === 'High' ? 'border-l-4 border-red-500' :
                             overallRisk.risk_level === 'Medium' ? 'border-l-4 border-yellow-500' :
                                 'border-l-4 border-green-500'
                     }`}>
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center w-full">
                             <CardTitle className="text-lg">Risk Level: {overallRisk.risk_level}</CardTitle>
-                            <Badge className={getRiskColor(overallRisk.overall_risk_score)}
-                                   className="text-lg px-3 py-1">
-                                {overallRisk.overall_risk_score.toFixed(1)}/10
+                            <Badge className={getRiskColorBadge(overallRisk.overall_risk_score)}>
+                                {formatScore(overallRisk.overall_risk_score)}/10
                             </Badge>
                         </div>
                     </CardHeader>
@@ -72,85 +100,85 @@ const OverallRiskSection = ({
                             {overallRisk.components && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* News Sentiment Component */}
-                                    {overallRisk.components.news_sentiment?.score !== undefined && (
+                                    {hasComponentData(overallRisk.components.news_sentiment) && (
                                         <div className="space-y-2">
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">News & Sentiment</span>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-xs text-muted-foreground">
-                                                        Weight: {overallRisk.components.news_sentiment.weight || 0}
+                                                        Weight: {formatWeight(overallRisk.components.news_sentiment?.weight)}
                                                     </span>
                                                     <span className="text-sm">
-                                                        {overallRisk.components.news_sentiment.score.toFixed(1)}
+                                                        {formatScore(overallRisk.components.news_sentiment?.score)}
                                                     </span>
                                                 </div>
                                             </div>
                                             <Progress
-                                                value={overallRisk.components.news_sentiment.score * 10}
-                                                className={getRiskColor(overallRisk.components.news_sentiment.score)}
+                                                value={calculateProgress(overallRisk.components.news_sentiment?.score)}
+                                                className={getRiskColorProgress(overallRisk.components.news_sentiment?.score)}
                                             />
                                         </div>
                                     )}
 
                                     {/* Quantitative Risk Component */}
-                                    {overallRisk.components.quant_risk?.score !== undefined && (
+                                    {hasComponentData(overallRisk.components.quant_risk) && (
                                         <div className="space-y-2">
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">Quantitative Metrics</span>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-xs text-muted-foreground">
-                                                        Weight: {overallRisk.components.quant_risk.weight || 0}
+                                                        Weight: {formatWeight(overallRisk.components.quant_risk?.weight)}
                                                     </span>
                                                     <span className="text-sm">
-                                                        {overallRisk.components.quant_risk.score.toFixed(1)}
+                                                        {formatScore(overallRisk.components.quant_risk?.score)}
                                                     </span>
                                                 </div>
                                             </div>
                                             <Progress
-                                                value={overallRisk.components.quant_risk.score * 10}
-                                                className={getRiskColor(overallRisk.components.quant_risk.score)}
+                                                value={calculateProgress(overallRisk.components.quant_risk?.score)}
+                                                className={getRiskColorProgress(overallRisk.components.quant_risk?.score)}
                                             />
                                         </div>
                                     )}
 
                                     {/* ESG Risk Component */}
-                                    {overallRisk.components.esg_risk?.score !== undefined && (
+                                    {hasComponentData(overallRisk.components.esg_risk) && (
                                         <div className="space-y-2">
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">ESG</span>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-xs text-muted-foreground">
-                                                        Weight: {overallRisk.components.esg_risk.weight || 0}
+                                                        Weight: {formatWeight(overallRisk.components.esg_risk?.weight)}
                                                     </span>
                                                     <span className="text-sm">
-                                                        {overallRisk.components.esg_risk.score.toFixed(1)}
+                                                        {formatScore(overallRisk.components.esg_risk?.score)}
                                                     </span>
                                                 </div>
                                             </div>
                                             <Progress
-                                                value={overallRisk.components.esg_risk.score * 10}
-                                                className={getRiskColor(overallRisk.components.esg_risk.score)}
+                                                value={calculateProgress(overallRisk.components.esg_risk?.score)}
+                                                className={getRiskColorProgress(overallRisk.components.esg_risk?.score)}
                                             />
                                         </div>
                                     )}
 
                                     {/* Anomaly Detection Component */}
-                                    {overallRisk.components.anomaly_detection?.score !== undefined && (
+                                    {hasComponentData(overallRisk.components.anomaly_detection) && (
                                         <div className="space-y-2">
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">Anomalies</span>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-xs text-muted-foreground">
-                                                        Weight: {overallRisk.components.anomaly_detection.weight || 0}
+                                                        Weight: {formatWeight(overallRisk.components.anomaly_detection?.weight)}
                                                     </span>
                                                     <span className="text-sm">
-                                                        {overallRisk.components.anomaly_detection.score.toFixed(1)}
+                                                        {formatScore(overallRisk.components.anomaly_detection?.score)}
                                                     </span>
                                                 </div>
                                             </div>
                                             <Progress
-                                                value={overallRisk.components.anomaly_detection.score * 10}
-                                                className={getRiskColor(overallRisk.components.anomaly_detection.score)}
+                                                value={calculateProgress(overallRisk.components.anomaly_detection?.score)}
+                                                className={getRiskColorProgress(overallRisk.components.anomaly_detection?.score)}
                                             />
                                         </div>
                                     )}

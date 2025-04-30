@@ -65,7 +65,7 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
         <div className="flex flex-col mx-auto py-8 px-8 gap-8">
             {/* Header Section */}
             <section>
-                <div className="flex flex-col items-center md:items-start gap-2">
+                <div className="flex flex-col items-center md:items-start gap-2 mb-4">
                     <div className="text-muted-foreground text-sm">
                         {asset.ticker} • {asset.exchange || 'Unknown Exchange'} • {asset.currency || 'Unknown Currency'}
                     </div>
