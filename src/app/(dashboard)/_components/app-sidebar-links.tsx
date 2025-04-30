@@ -8,7 +8,7 @@ import {SidebarData} from "@/app/(dashboard)/_utils/types";
 import {
     Bot,
     ChartCandlestickIcon,
-    DollarSign,
+    DollarSign, Earth,
     FolderGit2,
     LayoutGrid,
     PieChart,
@@ -118,7 +118,8 @@ const adminSidebar: SidebarData = {
         {
             title: "Global Assets",
             url: '/assets',
-            icon: ChartCandlestickIcon,
+            icon: Earth,
+            initiallyExpanded: true,
             items: [
                 {
                     title: "Discover",
@@ -135,6 +136,11 @@ const adminSidebar: SidebarData = {
 
             ]
         },
+        {
+            title: "System Assets",
+            url: '/assets/db',
+            icon: ChartCandlestickIcon,
+        }
     ],
     guides: [
         {

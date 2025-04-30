@@ -3,7 +3,7 @@ import {ScreenerType} from './_utils/definitions';
 import {ScreenerSelector} from "@/app/(dashboard)/global-assets/[type]/_components/SelectorTabs";
 import {ScreenTable} from "@/app/(dashboard)/global-assets/[type]/_components/ScreenTable";
 import SkeletonTable from "@/app/(dashboard)/global-assets/[type]/_components/SkeletonTable";
-import ScreenerPagination from "@/app/(dashboard)/global-assets/[type]/_components/ScreenerPagination";
+import Pagination from "@/app/(dashboard)/global-assets/[type]/_components/Pagination";
 
 // Make sure the searchParams has the correct type
 const Page = async ({
@@ -55,7 +55,7 @@ const Page = async ({
                 <Suspense key={`${filter}-${page}`} fallback={<SkeletonTable/>}>
                     <ScreenTable filter={filter} page={page}/>
                 </Suspense>
-                <ScreenerPagination page={page}/>
+                <Pagination page={page}/>
             </div>
         </div>
     );

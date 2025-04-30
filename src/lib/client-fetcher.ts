@@ -1,8 +1,9 @@
 import axios from "axios";
+import {BACKEND_BASE_URL} from "@/lib/const";
 
 // Axios Interceptor Instance
 const AxiosInstance = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: BACKEND_BASE_URL,
     withCredentials: true  // This ensures cookies are sent with every request
 });
 
