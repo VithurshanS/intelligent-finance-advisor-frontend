@@ -8,6 +8,11 @@ import {AlertCircle, AlertTriangle, Calendar, CircleAlert} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
 import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
+import { motion } from 'framer-motion';
+
+// Create motion variants of the components
+const MotionCard = motion(Card);
+const MotionTableRow = motion(TableRow);
 
 interface AnomalySectionProps {
     loading: boolean;
@@ -38,91 +43,179 @@ const AnomalySection = ({
     };
 
     return (
-        <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
+            <motion.h3
+                className="text-lg font-semibold mb-4 flex items-center gap-2"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+            >
                 <AlertTriangle size={18}/>
                 Anomaly Detection
-            </h3>
+            </motion.h3>
 
             {error && (
-                <Alert variant="destructive" className="mb-4">
-                    <AlertCircle className="h-4 w-4"/>
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <Alert variant="destructive" className="mb-4">
+                        <AlertCircle className="h-4 w-4"/>
+                        <AlertTitle>Error</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                </motion.div>
             )}
 
             {loading ? (
-                <Card>
-                    <CardHeader>
-                        <Skeleton className="h-4 w-2/3"/>
-                        <Skeleton className="h-3 w-1/2"/>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-2">
-                            <Skeleton className="h-10 w-full"/>
-                            <Skeleton className="h-10 w-full"/>
-                            <Skeleton className="h-10 w-full"/>
-                        </div>
-                    </CardContent>
-                </Card>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4 }}
+                >
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-4 w-2/3"/>
+                            <Skeleton className="h-3 w-1/2"/>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-2">
+                                <Skeleton className="h-10 w-full"/>
+                                <Skeleton className="h-10 w-full"/>
+                                <Skeleton className="h-10 w-full"/>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             ) : anomalyRisk ? (
-                <Card>
-                    <CardHeader className="pb-2">
-                        <div className="flex justify-between items-center">
-                            <CardTitle className="text-base">Anomaly Findings</CardTitle>
-                            {anomalyRisk.anomaly_score !== undefined && anomalyRisk.anomaly_score !== null && (
-                                <RiskBadge score={Number(anomalyRisk.anomaly_score.toFixed(1))}/>
-                            )}
-                        </div>
-                        <CardDescription>
-                            Unusual patterns or events that may indicate risk
-                        </CardDescription>
-                    </CardHeader>
+                <MotionCard
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: 0.2 }}
+                    >
+                        <CardHeader className="pb-2">
+                            <div className="flex justify-between items-center">
+                                <CardTitle className="text-base">Anomaly Findings</CardTitle>
+                                {anomalyRisk.anomaly_score !== undefined && anomalyRisk.anomaly_score !== null && (
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 260,
+                                            damping: 20,
+                                            delay: 0.3
+                                        }}
+                                    >
+                                        <RiskBadge score={Number(anomalyRisk.anomaly_score.toFixed(1))}/>
+                                    </motion.div>
+                                )}
+                            </div>
+                            <CardDescription>
+                                Unusual patterns or events that may indicate risk
+                            </CardDescription>
+                        </CardHeader>
+                    </motion.div>
                     <CardContent>
                         {anomalyRisk.flags && anomalyRisk.flags.length > 0 ? (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Type</TableHead>
-                                        <TableHead>Date</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead>Severity</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {anomalyRisk.flags.map((flag, idx) => (
-                                        <TableRow key={idx}>
-                                            <TableCell className="font-medium">
-                                                {flag.type || 'Unknown'}
-                                            </TableCell>
-                                            <TableCell className="flex items-center gap-1">
-                                                <Calendar size={14}/>
-                                                {flag.date ? formatDate(flag.date) : 'N/A'}
-                                            </TableCell>
-                                            <TableCell>{flag.description || 'No description available'}</TableCell>
-                                            <TableCell>{getSeverityBadge(flag.severity)}</TableCell>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.3, duration: 0.5 }}
+                            >
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Type</TableHead>
+                                            <TableHead>Date</TableHead>
+                                            <TableHead>Description</TableHead>
+                                            <TableHead>Severity</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {anomalyRisk.flags.map((flag, idx) => (
+                                            <MotionTableRow
+                                                key={idx}
+                                                initial={{ opacity: 0, x: -20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ delay: 0.4 + (idx * 0.1), duration: 0.3 }}
+                                            >
+                                                <TableCell className="font-medium">
+                                                    {flag.type || 'Unknown'}
+                                                </TableCell>
+                                                <TableCell className="flex items-center gap-1">
+                                                    <Calendar size={14}/>
+                                                    {flag.date ? formatDate(flag.date) : 'N/A'}
+                                                </TableCell>
+                                                <TableCell>{flag.description || 'No description available'}</TableCell>
+                                                <TableCell>
+                                                    <motion.div
+                                                        initial={{ scale: 0.8 }}
+                                                        animate={{ scale: 1 }}
+                                                        transition={{ delay: 0.5 + (idx * 0.1) }}
+                                                    >
+                                                        {getSeverityBadge(flag.severity)}
+                                                    </motion.div>
+                                                </TableCell>
+                                            </MotionTableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </motion.div>
                         ) : (
-                            <div className="flex items-center justify-center p-6 text-center">
+                            <motion.div
+                                className="flex items-center justify-center p-6 text-center"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.3, duration: 0.5 }}
+                            >
                                 <div>
-                                    <CircleAlert className="h-10 w-10 text-green-500 mx-auto mb-2"/>
-                                    <p className="text-muted-foreground">No anomalies detected in the analyzed
-                                        period.</p>
+                                    <motion.div
+                                        initial={{ scale: 0, rotate: -90 }}
+                                        animate={{ scale: 1, rotate: 0 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 260,
+                                            damping: 20,
+                                            delay: 0.4
+                                        }}
+                                    >
+                                        <CircleAlert className="h-10 w-10 text-green-500 mx-auto mb-2"/>
+                                    </motion.div>
+                                    <motion.p
+                                        className="text-muted-foreground"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.6 }}
+                                    >
+                                        No anomalies detected in the analyzed period.
+                                    </motion.p>
                                 </div>
-                            </div>
+                            </motion.div>
                         )}
                     </CardContent>
-                </Card>
+                </MotionCard>
             ) : (
-                <div className="flex items-center justify-center p-6 border rounded-md">
+                <motion.div
+                    className="flex items-center justify-center p-6 border rounded-md"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                >
                     <p className="text-muted-foreground">No anomaly detection data available.</p>
-                </div>
+                </motion.div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

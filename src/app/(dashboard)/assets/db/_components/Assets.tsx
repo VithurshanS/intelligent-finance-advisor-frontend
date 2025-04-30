@@ -8,12 +8,12 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {fetchStocks} from "@/app/(dashboard)/assets/db/_utils/actions";
-import {format} from "date-fns";
 import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
 import StatusBadge from "@/app/(dashboard)/_components/StatusBadge";
 import {ArrowUpDown} from "lucide-react";
 import Link from "next/link";
 import {Skeleton} from "@/components/ui/skeleton";
+import { formatDistanceToNow } from 'date-fns';
 
 // Main component type definition
 interface ScreenTableProps {
@@ -86,7 +86,9 @@ const AssetsTable = async ({page, result_per_page = 10}: ScreenTableProps): Prom
                                            showValue={false}/>
                             </TableCell>
                             <TableCell className="text-xs text-right text-muted-foreground py-3">
-                                {stock.updated_at ? format(new Date(stock.updated_at), 'MMM dd, yyyy') : '-'}
+                                {stock.updated_at
+                                    ? formatDistanceToNow(new Date(stock.updated_at), { addSuffix: true })
+                                    : '-'}
                             </TableCell>
                         </TableRow>
                     ))}
