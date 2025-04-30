@@ -16,7 +16,6 @@ import {
 export async function getAssetByTicker(ticker: string): Promise<{ data?: Asset; error?: AssetErrorResponse }> {
     try {
         const response = await AxiosInstance.get<Asset>(`/assets/${ticker}`);
-        console.log(response.data);
         return {data: response.data};
     } catch (error) {
         if (error instanceof AxiosError) {
