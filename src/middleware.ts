@@ -83,7 +83,7 @@ export default async function middleware(req: NextRequest) {
     }
 
     // Redirect authenticated users away from login page
-    if (session?.sub && path === "/auth/login") {
+    if (session?.sub && (path === "/auth/login" || path === "/auth/register")) {
         return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
     }
 

@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/table";
 import {getScreenStocks} from "../_utils/actions";
 import {ScreenerType} from "../_utils/definitions";
-import RiskBadge from "./RiskBadge";
+import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
 import AddStockDialog from "./AddStockDialog";
 import {formatMarketCap, formatPercent} from "../_utils/utils";
 import RatingDisplay from "./RatingDisplay";
+import Link from "next/link";
 
 // Price change component
 const PriceChange = ({change}: { change: number | null }): JSX.Element => {
@@ -58,8 +59,14 @@ const ScreenTable = async ({filter, page, result_per_page = 10}: ScreenTableProp
                     {stocks.success ? (
                         stocks.data.quotes.length > 0 ? (
                             stocks.data.quotes.map((stock) => (
+
                                 <TableRow key={stock.symbol}>
-                                    <TableCell className="font-bold text-primary">{stock.symbol}</TableCell>
+                                    <TableCell className="font-bold text-primary">
+                                        <Link href={`/assets/${stock.symbol} `}
+                                              className={' hover:underline cursor-pointer'}>
+                                            {stock.symbol}
+                                        </Link>
+                                    </TableCell>
                                     <TableCell className="max-w-[150px] truncate" title={stock.name}>
                                         {stock.name}
                                     </TableCell>
@@ -70,8 +77,8 @@ const ScreenTable = async ({filter, page, result_per_page = 10}: ScreenTableProp
                                     <TableCell className={'text-right'}>
                                         <RatingDisplay rating={stock.analystRating}/>
                                     </TableCell>
-                                    <TableCell className={'text-right'}>
-                                        <RiskBadge risk={stock.riskLevel}/>
+                                    <TableCell className={'flex justify-end'}>
+                                        <RiskBadge score={stock.risk_score} showIcon={false} showValue={false}/>
                                     </TableCell>
                                     <TableCell className="text-right">{formatMarketCap(stock.marketCap)}</TableCell>
                                     <TableCell>
