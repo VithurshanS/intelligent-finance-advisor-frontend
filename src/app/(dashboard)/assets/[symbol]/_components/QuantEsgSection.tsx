@@ -1,12 +1,12 @@
 'use client';
 
-import { QuantRiskResponse, EsgRiskResponse } from '../_utils/definitions';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, TrendingUp, Leaf, Users, BarChart3 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import {QuantRiskResponse, EsgRiskResponse} from '../_utils/definitions';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import {Skeleton} from '@/components/ui/skeleton';
+import {AlertCircle, TrendingUp, Leaf, Users, BarChart3} from 'lucide-react';
+import {Badge} from '@/components/ui/badge';
+import {Progress} from '@/components/ui/progress';
 
 interface QuantEsgSectionProps {
     loadingQuant: boolean;
@@ -31,8 +31,8 @@ const QuantEsgSection = ({
         if (value === null || value === undefined) return 'bg-gray-200';
 
         const threshold = reverse ?
-            { low: 7, medium: 3 } :
-            { low: 3, medium: 7 };
+            {low: 7, medium: 3} :
+            {low: 3, medium: 7};
 
         if (reverse) {
             return value > threshold.low ? 'bg-green-500' :
@@ -48,13 +48,13 @@ const QuantEsgSection = ({
             {/* Quantitative Risk Section */}
             <div>
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <TrendingUp size={18} />
+                    <TrendingUp size={18}/>
                     Quantitative Risk
                 </h3>
 
                 {errorQuant && (
                     <Alert variant="destructive" className="mb-4">
-                        <AlertCircle className="h-4 w-4" />
+                        <AlertCircle className="h-4 w-4"/>
                         <AlertTitle>Error</AlertTitle>
                         <AlertDescription>{errorQuant}</AlertDescription>
                     </Alert>
@@ -64,27 +64,27 @@ const QuantEsgSection = ({
                     <Card>
                         <CardContent className="pt-6">
                             <div className="space-y-4">
-                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-full"/>
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Skeleton className="h-3 w-24" />
-                                        <Skeleton className="h-3 w-12" />
+                                        <Skeleton className="h-3 w-24"/>
+                                        <Skeleton className="h-3 w-12"/>
                                     </div>
-                                    <Skeleton className="h-2 w-full" />
+                                    <Skeleton className="h-2 w-full"/>
                                 </div>
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Skeleton className="h-3 w-24" />
-                                        <Skeleton className="h-3 w-12" />
+                                        <Skeleton className="h-3 w-24"/>
+                                        <Skeleton className="h-3 w-12"/>
                                     </div>
-                                    <Skeleton className="h-2 w-full" />
+                                    <Skeleton className="h-2 w-full"/>
                                 </div>
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Skeleton className="h-3 w-24" />
-                                        <Skeleton className="h-3 w-12" />
+                                        <Skeleton className="h-3 w-24"/>
+                                        <Skeleton className="h-3 w-12"/>
                                     </div>
-                                    <Skeleton className="h-2 w-full" />
+                                    <Skeleton className="h-2 w-full"/>
                                 </div>
                             </div>
                         </CardContent>
@@ -111,15 +111,15 @@ const QuantEsgSection = ({
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Volatility</span>
                                         <span className="text-sm">
-                                              {quantRisk.volatility !== undefined && quantRisk.volatility !== null
-                                                  ? quantRisk.volatility.toFixed(2)
-                                                  : 'N/A'}
+                                            {quantRisk.volatility !== undefined && quantRisk.volatility !== null
+                                                ? quantRisk.volatility.toFixed(2)
+                                                : 'N/A'}
                                             {quantRisk.risk_metrics?.volatility_score !== undefined && (
                                                 <span className="ml-2 text-xs">
-                                              (Risk: {quantRisk.risk_metrics.volatility_score.toFixed(1)})
-                                            </span>
+                                                    (Risk: {quantRisk.risk_metrics.volatility_score.toFixed(1)})
+                                                </span>
                                             )}
-                                     </span>
+                                        </span>
                                     </div>
                                     <Progress
                                         value={quantRisk.risk_metrics?.volatility_score ? Math.min(quantRisk.risk_metrics.volatility_score * 10, 100) : 0}
@@ -132,15 +132,15 @@ const QuantEsgSection = ({
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Beta</span>
                                         <span className="text-sm">
-                      {quantRisk.beta !== undefined && quantRisk.beta !== null
-                          ? quantRisk.beta.toFixed(2)
-                          : 'N/A'}
+                                            {quantRisk.beta !== undefined && quantRisk.beta !== null
+                                                ? quantRisk.beta.toFixed(2)
+                                                : 'N/A'}
                                             {quantRisk.risk_metrics?.beta_score !== undefined && (
                                                 <span className="ml-2 text-xs">
-                          (Risk: {quantRisk.risk_metrics.beta_score.toFixed(1)})
-                        </span>
+                                                    (Risk: {quantRisk.risk_metrics.beta_score.toFixed(1)})
+                                                </span>
                                             )}
-                    </span>
+                                        </span>
                                     </div>
                                     <Progress
                                         value={quantRisk.risk_metrics?.beta_score ? Math.min(quantRisk.risk_metrics.beta_score * 10, 100) : 0}
@@ -153,15 +153,15 @@ const QuantEsgSection = ({
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">RSI</span>
                                         <span className="text-sm">
-                      {quantRisk.rsi !== undefined && quantRisk.rsi !== null
-                          ? quantRisk.rsi.toFixed(2)
-                          : 'N/A'}
+                                            {quantRisk.rsi !== undefined && quantRisk.rsi !== null
+                                                ? quantRisk.rsi.toFixed(2)
+                                                : 'N/A'}
                                             {quantRisk.risk_metrics?.rsi_risk !== undefined && (
                                                 <span className="ml-2 text-xs">
-                          (Risk: {quantRisk.risk_metrics.rsi_risk.toFixed(1)})
-                        </span>
+                                                    (Risk: {quantRisk.risk_metrics.rsi_risk.toFixed(1)})
+                                                </span>
                                             )}
-                    </span>
+                                        </span>
                                     </div>
                                     <Progress
                                         value={quantRisk.risk_metrics?.rsi_risk ? Math.min(quantRisk.risk_metrics.rsi_risk * 10, 100) : 0}
@@ -174,15 +174,15 @@ const QuantEsgSection = ({
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Volume Change</span>
                                         <span className="text-sm">
-                      {quantRisk.volume_change_percent !== undefined && quantRisk.volume_change_percent !== null
-                          ? `${(quantRisk.volume_change_percent * 100).toFixed(2)}%`
-                          : 'N/A'}
+                                            {quantRisk.volume_change_percent !== undefined && quantRisk.volume_change_percent !== null
+                                                ? `${(quantRisk.volume_change_percent * 100).toFixed(2)}%`
+                                                : 'N/A'}
                                             {quantRisk.risk_metrics?.volume_risk !== undefined && (
                                                 <span className="ml-2 text-xs">
-                          (Risk: {quantRisk.risk_metrics.volume_risk.toFixed(1)})
-                        </span>
+                                                    (Risk: {quantRisk.risk_metrics.volume_risk.toFixed(1)})
+                                                </span>
                                             )}
-                    </span>
+                                        </span>
                                     </div>
                                     <Progress
                                         value={quantRisk.risk_metrics?.volume_risk ? Math.min(quantRisk.risk_metrics.volume_risk * 10, 100) : 0}
@@ -196,15 +196,15 @@ const QuantEsgSection = ({
                                         <div className="flex justify-between items-center">
                                             <span className="text-sm font-medium">Debt to Equity</span>
                                             <span className="text-sm">
-                        {quantRisk.debt_to_equity !== null
-                            ? quantRisk.debt_to_equity.toFixed(2)
-                            : 'N/A'}
+                                                {quantRisk.debt_to_equity !== null
+                                                    ? quantRisk.debt_to_equity.toFixed(2)
+                                                    : 'N/A'}
                                                 {quantRisk.risk_metrics?.debt_risk !== undefined && (
                                                     <span className="ml-2 text-xs">
-                            (Risk: {quantRisk.risk_metrics.debt_risk.toFixed(1)})
-                          </span>
+                                                        (Risk: {quantRisk.risk_metrics.debt_risk.toFixed(1)})
+                                                    </span>
                                                 )}
-                      </span>
+                                            </span>
                                         </div>
                                         <Progress
                                             value={quantRisk.risk_metrics?.debt_risk ? Math.min(quantRisk.risk_metrics.debt_risk * 10, 100) : 0}
@@ -232,13 +232,13 @@ const QuantEsgSection = ({
             {/* ESG Risk Section */}
             <div>
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Leaf size={18} />
+                    <Leaf size={18}/>
                     ESG Risk
                 </h3>
 
                 {errorEsg && (
                     <Alert variant="destructive" className="mb-4">
-                        <AlertCircle className="h-4 w-4" />
+                        <AlertCircle className="h-4 w-4"/>
                         <AlertTitle>Error</AlertTitle>
                         <AlertDescription>{errorEsg}</AlertDescription>
                     </Alert>
@@ -248,27 +248,27 @@ const QuantEsgSection = ({
                     <Card>
                         <CardContent className="pt-6">
                             <div className="space-y-4">
-                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-full"/>
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Skeleton className="h-3 w-24" />
-                                        <Skeleton className="h-3 w-12" />
+                                        <Skeleton className="h-3 w-24"/>
+                                        <Skeleton className="h-3 w-12"/>
                                     </div>
-                                    <Skeleton className="h-2 w-full" />
+                                    <Skeleton className="h-2 w-full"/>
                                 </div>
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Skeleton className="h-3 w-24" />
-                                        <Skeleton className="h-3 w-12" />
+                                        <Skeleton className="h-3 w-24"/>
+                                        <Skeleton className="h-3 w-12"/>
                                     </div>
-                                    <Skeleton className="h-2 w-full" />
+                                    <Skeleton className="h-2 w-full"/>
                                 </div>
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Skeleton className="h-3 w-24" />
-                                        <Skeleton className="h-3 w-12" />
+                                        <Skeleton className="h-3 w-24"/>
+                                        <Skeleton className="h-3 w-12"/>
                                     </div>
-                                    <Skeleton className="h-2 w-full" />
+                                    <Skeleton className="h-2 w-full"/>
                                 </div>
                             </div>
                         </CardContent>
@@ -295,10 +295,10 @@ const QuantEsgSection = ({
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Total ESG Score</span>
                                         <span className="text-sm">
-                      {esgRisk.total_esg !== undefined && esgRisk.total_esg !== null
-                          ? esgRisk.total_esg.toFixed(1)
-                          : 'N/A'}
-                    </span>
+                                            {esgRisk.total_esg !== undefined && esgRisk.total_esg !== null
+                                                ? esgRisk.total_esg.toFixed(1)
+                                                : 'N/A'}
+                                        </span>
                                     </div>
                                     <Progress
                                         value={esgRisk.total_esg ? Math.min((10 - (esgRisk.total_esg / 3)) * 10, 100) : 0}
@@ -309,15 +309,15 @@ const QuantEsgSection = ({
                                 {/* Environmental */}
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium flex items-center gap-1">
-                      <Leaf size={14} />
-                      Environmental
-                    </span>
+                                        <span className="text-sm font-medium flex items-center gap-1">
+                                            <Leaf size={14}/>
+                                            Environmental
+                                        </span>
                                         <span className="text-sm">
-                      {esgRisk.environmental_score !== undefined && esgRisk.environmental_score !== null
-                          ? esgRisk.environmental_score.toFixed(1)
-                          : 'N/A'}
-                    </span>
+                                            {esgRisk.environmental_score !== undefined && esgRisk.environmental_score !== null
+                                                ? esgRisk.environmental_score.toFixed(1)
+                                                : 'N/A'}
+                                        </span>
                                     </div>
                                     <Progress
                                         value={esgRisk.environmental_score ? Math.min((10 - esgRisk.environmental_score) * 10, 100) : 0}
@@ -328,15 +328,15 @@ const QuantEsgSection = ({
                                 {/* Social */}
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium flex items-center gap-1">
-                      <Users size={14} />
-                      Social
-                    </span>
+                                        <span className="text-sm font-medium flex items-center gap-1">
+                                            <Users size={14}/>
+                                            Social
+                                        </span>
                                         <span className="text-sm">
-                      {esgRisk.social_score !== undefined && esgRisk.social_score !== null
-                          ? esgRisk.social_score.toFixed(1)
-                          : 'N/A'}
-                    </span>
+                                            {esgRisk.social_score !== undefined && esgRisk.social_score !== null
+                                                ? esgRisk.social_score.toFixed(1)
+                                                : 'N/A'}
+                                        </span>
                                     </div>
                                     <Progress
                                         value={esgRisk.social_score ? Math.min((10 - esgRisk.social_score) * 10, 100) : 0}
@@ -347,15 +347,15 @@ const QuantEsgSection = ({
                                 {/* Governance */}
                                 <div className="space-y-2">
                                     <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium flex items-center gap-1">
-                      <BarChart3 size={14} />
-                      Governance
-                    </span>
+                                        <span className="text-sm font-medium flex items-center gap-1">
+                                            <BarChart3 size={14}/>
+                                            Governance
+                                        </span>
                                         <span className="text-sm">
-                      {esgRisk.governance_score !== undefined && esgRisk.governance_score !== null
-                          ? esgRisk.governance_score.toFixed(1)
-                          : 'N/A'}
-                    </span>
+                                            {esgRisk.governance_score !== undefined && esgRisk.governance_score !== null
+                                                ? esgRisk.governance_score.toFixed(1)
+                                                : 'N/A'}
+                                        </span>
                                     </div>
                                     <Progress
                                         value={esgRisk.governance_score ? Math.min((10 - esgRisk.governance_score) * 10, 100) : 0}

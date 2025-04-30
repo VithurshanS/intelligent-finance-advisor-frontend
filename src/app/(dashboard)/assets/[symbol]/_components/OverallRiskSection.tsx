@@ -77,12 +77,12 @@ const OverallRiskSection = ({
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">News & Sentiment</span>
                                                 <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">
-                            Weight: {overallRisk.components.news_sentiment.weight || 0}
-                          </span>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        Weight: {overallRisk.components.news_sentiment.weight || 0}
+                                                    </span>
                                                     <span className="text-sm">
-                            {overallRisk.components.news_sentiment.score.toFixed(1)}
-                          </span>
+                                                        {overallRisk.components.news_sentiment.score.toFixed(1)}
+                                                    </span>
                                                 </div>
                                             </div>
                                             <Progress
@@ -98,12 +98,12 @@ const OverallRiskSection = ({
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">Quantitative Metrics</span>
                                                 <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">
-                            Weight: {overallRisk.components.quant_risk.weight || 0}
-                          </span>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        Weight: {overallRisk.components.quant_risk.weight || 0}
+                                                    </span>
                                                     <span className="text-sm">
-                            {overallRisk.components.quant_risk.score.toFixed(1)}
-                          </span>
+                                                        {overallRisk.components.quant_risk.score.toFixed(1)}
+                                                    </span>
                                                 </div>
                                             </div>
                                             <Progress
@@ -119,12 +119,12 @@ const OverallRiskSection = ({
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">ESG</span>
                                                 <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">
-                            Weight: {overallRisk.components.esg_risk.weight || 0}
-                          </span>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        Weight: {overallRisk.components.esg_risk.weight || 0}
+                                                    </span>
                                                     <span className="text-sm">
-                            {overallRisk.components.esg_risk.score.toFixed(1)}
-                          </span>
+                                                        {overallRisk.components.esg_risk.score.toFixed(1)}
+                                                    </span>
                                                 </div>
                                             </div>
                                             <Progress
@@ -140,12 +140,12 @@ const OverallRiskSection = ({
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">Anomalies</span>
                                                 <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">
-                            Weight: {overallRisk.components.anomaly_detection.weight || 0}
-                          </span>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        Weight: {overallRisk.components.anomaly_detection.weight || 0}
+                                                    </span>
                                                     <span className="text-sm">
-                            {overallRisk.components.anomaly_detection.score.toFixed(1)}
-                          </span>
+                                                        {overallRisk.components.anomaly_detection.score.toFixed(1)}
+                                                    </span>
                                                 </div>
                                             </div>
                                             <Progress

@@ -81,15 +81,15 @@ const NewsSection = ({
                                     <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                                         {article.provider_name && (
                                             <span className="flex items-center gap-1">
-                        <Newspaper size={12}/>
+                                                <Newspaper size={12}/>
                                                 {article.provider_name}
-                      </span>
+                                            </span>
                                         )}
                                         {article.publish_date && (
                                             <span className="flex items-center gap-1">
-                        <Clock size={12}/>
+                                                <Clock size={12}/>
                                                 {formatDate(article.publish_date)}
-                      </span>
+                                            </span>
                                         )}
                                     </div>
                                 </CardHeader>
@@ -145,11 +145,11 @@ const NewsSection = ({
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-base">Security Assessment</CardTitle>
                                     <Badge className={`
-                    ${newsSentiment.stability_label === 'High Risk' ? 'bg-red-500' :
+                                                ${newsSentiment.stability_label === 'High Risk' ? 'bg-red-500' :
                                         newsSentiment.stability_label === 'Moderate Risk' ? 'bg-orange-500' :
                                             newsSentiment.stability_label === 'Slight Risk' ? 'bg-yellow-500' :
                                                 newsSentiment.stability_label === 'Stable' ? 'bg-green-500' : 'bg-blue-500'}
-                  `}>
+                                                `}>
                                         {newsSentiment.stability_label}
                                     </Badge>
                                 </div>
