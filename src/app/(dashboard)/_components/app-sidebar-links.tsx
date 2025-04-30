@@ -56,7 +56,7 @@ const userSidebar: SidebarData = {
         },
         {
             title: "Portfolio Optimization",
-            url: "/portfolio",
+            url: "/dashboard/portfolio",
             icon: PieChart,
         },
         {
