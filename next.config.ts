@@ -17,20 +17,6 @@ const nextConfig: NextConfig = {
             },
         ],
     },
-    async headers() {
-        return [
-            {
-                source: '/:path*',
-                headers: [
-                    {
-                        key: 'Content-Security-Policy',
-                        value: 'default-src https:; connect-src https: http://152.42.185.12; script-src https: \'unsafe-inline\' \'unsafe-eval\'; style-src https: \'unsafe-inline\''
-                    }
-                ],
-            },
-        ];
-    },
 };
-
 
 export default nextConfig;
