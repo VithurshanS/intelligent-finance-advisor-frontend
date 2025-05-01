@@ -86,7 +86,7 @@ const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) =>
             try {
                 // Create EventSource for SSE
                 const eventSource = new EventSource(`${BACKEND_BASE_URL}/risk-analysis/${ticker}/stream`, {
-                    withCredentials: true,
+                    withCredentials: false,
                 });
 
                 eventSource.onmessage = (event) => {
