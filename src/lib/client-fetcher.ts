@@ -4,7 +4,7 @@ import {BACKEND_BASE_URL} from "@/lib/const";
 // Axios Interceptor Instance
 const AxiosInstance = axios.create({
     baseURL: BACKEND_BASE_URL,
-    withCredentials: false  // This ensures cookies are sent with every request
+    withCredentials: true  // This ensures cookies are sent with every request
 });
 
 // Request Interceptor
