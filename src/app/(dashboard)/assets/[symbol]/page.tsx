@@ -9,13 +9,15 @@ import {Separator} from '@/components/ui/separator';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import Link from 'next/link';
-import StatusBadge from "./_components/StatusBadge";
+import StatusBadge from "@/app/(dashboard)/_components/StatusBadge";
 import RiskBadge from "../../_components/RiskBadge";
 import StatusManager from "./_components/StatusManager";
 import {MarketDataSection, FinancialDataSection, CompanyInfoSection} from "./_components/AccordionItems";
 import PriceSection from './_components/PriceSection';
 import AddStock from "@/app/(dashboard)/assets/[symbol]/_components/AddStock";
 import {RiskScoreTooltip} from "@/app/(dashboard)/assets/[symbol]/_components/ShallowRiskTooltip";
+import RiskAnalysisSection from "@/app/(dashboard)/assets/[symbol]/_components/RiskAnalysisSection";
+import {AssetStatus} from "@/app/(dashboard)/assets/[symbol]/_utils/definitions";
 
 // Main page component
 const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }) => {
@@ -61,9 +63,9 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
     }
 
     return (
-        <div className="container mx-auto py-8 px-8">
+        <div className="flex flex-col mx-auto py-8 px-8 gap-8">
             {/* Header Section */}
-            <section className="mb-6">
+            <section>
                 <div className="flex flex-col items-center md:items-start gap-2 mb-4">
                     <div className="text-muted-foreground text-sm">
                         {asset.ticker} • {asset.exchange || 'Unknown Exchange'} • {asset.currency || 'Unknown Currency'}
@@ -77,7 +79,7 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                             </Link>
                         )}
                         <div className="flex flex-wrap gap-2 items-center">
-                            {asset.db?.status && <StatusBadge status={asset.db.status}/>}
+                            {asset.db?.status && <StatusBadge status={asset.db.status as AssetStatus}/>}
                             {asset.db?.risk_score !== undefined && <RiskBadge score={asset.db.risk_score}/>}
                             {asset.db?.risk_score !== null && <RiskScoreTooltip/>}
                         </div>
@@ -122,6 +124,8 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                     </Accordion>
                 </div>
             </section>
+            <Separator />
+            <RiskAnalysisSection ticker={asset.ticker} inDb={asset.db?.in_db || false} asset={asset}/>
         </div>
     );
 };

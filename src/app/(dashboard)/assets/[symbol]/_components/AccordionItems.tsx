@@ -1,7 +1,7 @@
-import {Asset} from "../_utils/actions";
 import {AccordionContent, AccordionItem, AccordionTrigger} from '@/components/ui/accordion';
 import {DataItem} from "../_components/DataItem"
 import React from "react";
+import {Asset} from "@/app/(dashboard)/assets/[symbol]/_utils/definitions";
 
 
 interface MarketDataSectionProps {

@@ -3,7 +3,7 @@
 import {useSearchParams} from "next/navigation";
 import {useRouter} from "next/navigation";
 import {
-    Pagination,
+    Pagination as ShadcnPagination,
     PaginationContent,
     PaginationItem,
     PaginationLink,
@@ -11,12 +11,12 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-export default function ScreenerPagination({
-                                               totalItems,
-                                               itemsPerPage = 10,
-                                               page,
-                                               parameterName = "page",
-                                           }: {
+export default function Pagination({
+                                       totalItems,
+                                       itemsPerPage = 10,
+                                       page,
+                                       parameterName = "page",
+                                   }: {
     page: number;
     totalItems?: number;
     itemsPerPage?: number;
@@ -47,7 +47,7 @@ export default function ScreenerPagination({
 
     // Simplified version focusing on just current page, prev and next buttons
     return (
-        <Pagination className="justify-end">
+        <ShadcnPagination className="justify-end">
             <PaginationContent>
                 <PaginationItem>
                     <PaginationPrevious
@@ -81,6 +81,6 @@ export default function ScreenerPagination({
                     />
                 </PaginationItem>
             </PaginationContent>
-        </Pagination>
+        </ShadcnPagination>
     );
 }

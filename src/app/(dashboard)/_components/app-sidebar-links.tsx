@@ -6,20 +6,18 @@ import { NavGuides } from "@/app/(dashboard)/_components/nav-guides";
 import { Role } from "@/lib/types/user";
 import { SidebarData } from "@/app/(dashboard)/_utils/types";
 import {
-    Bot,
     ChartCandlestickIcon,
-    DollarSign,
+    Earth,
     FolderGit2,
     LayoutGrid,
     PieChart,
-    Scale,
-    Settings2,
     Users
 } from "lucide-react";
 
 const userSidebar: SidebarData = {
     navMain: [
         {
+<<<<<<< HEAD
             title: "Dashboard",
             url: "/dashboard",
             icon: LayoutGrid,
@@ -55,43 +53,11 @@ const userSidebar: SidebarData = {
             ],
         },
         {
+=======
+>>>>>>> 7e1c06d04c3623d078713cf405ffcf32490feb2e
             title: "Portfolio Optimization",
-            url: "/portfolio",
+            url: "/dashboard/portfolio",
             icon: PieChart,
-        },
-        {
-            title: "Risk & Compliance",
-            url: "/group-40",
-            icon: Scale,
-            items: [
-                {
-                    title: "Risk Analysis",
-                    url: "/group-40/risk",
-                },
-                {
-                    title: "Fairness & Bias",
-                    url: "/group-40/fairness",
-                },
-                {
-                    title: "Explainability",
-                    url: "/group-40/explain",
-                },
-            ],
-        },
-        {
-            title: "Settings",
-            url: "/settings",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "/settings/general",
-                },
-                {
-                    title: "Team",
-                    url: "/settings/team",
-                },
-            ],
         },
     ],
     guides: [
@@ -118,7 +84,8 @@ const adminSidebar: SidebarData = {
         {
             title: "Global Assets",
             url: '/assets',
-            icon: ChartCandlestickIcon,
+            icon: Earth,
+            initiallyExpanded: true,
             items: [
                 {
                     title: "Discover",
@@ -135,6 +102,11 @@ const adminSidebar: SidebarData = {
 
             ]
         },
+        {
+            title: "System Assets",
+            url: '/assets/db',
+            icon: ChartCandlestickIcon,
+        }
     ],
     guides: [
         {
