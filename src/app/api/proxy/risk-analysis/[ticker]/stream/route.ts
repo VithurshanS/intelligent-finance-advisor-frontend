@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 // Correct type definition for Next.js App Router route handlers
 export async function GET(
     request: NextRequest,
-    { params }: { params: { ticker: string } }
+    { params }: { params: Promise<{ ticker: string }> }
 ) {
     try {
         // Get the auth token from cookies
@@ -19,7 +19,7 @@ export async function GET(
         }
 
         // Create URL to your backend
-        const backendUrl = `${process.env.BACKEND_BASE_URL}/risk-analysis/${params.ticker}/stream`;
+        const backendUrl = `${process.env.BACKEND_BASE_URL}/risk-analysis/${(await params).ticker}/stream`;
         console.log(`Proxying request to: ${backendUrl}`);
 
         // Make the request to your backend with proper auth
