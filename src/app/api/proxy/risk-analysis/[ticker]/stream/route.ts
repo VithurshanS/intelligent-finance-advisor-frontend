@@ -1,19 +1,21 @@
 // app/api/proxy/risk-analysis/[ticker]/stream/route.ts
-import {NextResponse} from 'next/server';
-import {cookies} from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
+// The correct type definition for Next.js App Router
 export async function GET(
-    {params}: { params: Promise<{ ticker: string }> }
+    request: NextRequest,
+    { params }: { params: Promise<{ ticker: string }> }
 ) {
     try {
-        // Get the auth token from cookies
+        // Get the auth token from cookies - no need for await with cookies()
         const cookieStore = await cookies();
         const token = cookieStore.get('token')?.value;
 
         if (!token) {
-            return new NextResponse(JSON.stringify({error: 'Not authenticated'}), {
+            return new NextResponse(JSON.stringify({ error: 'Not authenticated' }), {
                 status: 401,
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,6 +25,7 @@ export async function GET(
 
         // Create URL to your backend
         const backendUrl = `${process.env.BACKEND_BASE_URL}/risk-analysis/${(await params).ticker}/stream`;
+        console.log(`Proxying request to: ${backendUrl}`);
 
         // Make the request to your backend with proper auth
         const response = await fetch(backendUrl, {
@@ -36,7 +39,9 @@ export async function GET(
 
         // If backend response is not ok, return error
         if (!response.ok) {
-            return new NextResponse(JSON.stringify({error: 'Backend error'}), {
+            const errorText = await response.text();
+            console.error(`Backend error (${response.status}): ${errorText}`);
+            return new NextResponse(JSON.stringify({ error: 'Backend error', details: errorText }), {
                 status: response.status,
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,46 +49,17 @@ export async function GET(
             });
         }
 
-        // Create a ReadableStream to proxy the data
-        const reader = response.body?.getReader();
-        new TextEncoder();
-        // Return a streaming response
-        return new NextResponse(
-            new ReadableStream({
-                async start(controller) {
-                    if (!reader) {
-                        controller.close();
-                        return;
-                    }
-
-                    try {
-                        while (true) {
-                            const {done, value} = await reader.read();
-
-                            if (done) {
-                                controller.close();
-                                break;
-                            }
-
-                            // Forward the data as is (already in SSE format)
-                            controller.enqueue(value);
-                        }
-                    } catch (error) {
-                        controller.error(error);
-                    }
-                },
-            }),
-            {
-                headers: {
-                    'Content-Type': 'text/event-stream',
-                    'Cache-Control': 'no-cache',
-                    'Connection': 'keep-alive',
-                },
-            }
-        );
+        // Return a streaming response by directly forwarding the response
+        return new Response(response.body, {
+            headers: {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+            },
+        });
     } catch (error) {
         console.error('Proxy error:', error);
-        return new NextResponse(JSON.stringify({error: 'Internal server error'}), {
+        return new NextResponse(JSON.stringify({ error: 'Internal server error' }), {
             status: 500,
             headers: {
                 'Content-Type': 'application/json',
