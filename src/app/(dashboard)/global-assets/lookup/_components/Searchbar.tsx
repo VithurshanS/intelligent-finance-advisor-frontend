@@ -8,7 +8,7 @@ import {useTheme} from "next-themes";
 import {useDebounce} from "use-debounce";
 import {Badge} from "@/components/ui/badge";
 import Link from "next/link";
-import {searchYahooFinance} from "../_utils/client_actions";
+import {searchYahooFinance} from "../_utils/actions";
 import {SearchResult} from "../_utils/definitions";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {useRouter, useSearchParams} from "next/navigation";
