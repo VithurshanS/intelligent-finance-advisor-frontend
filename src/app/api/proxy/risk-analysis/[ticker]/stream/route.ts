@@ -1,11 +1,10 @@
 // app/api/proxy/risk-analysis/[ticker]/stream/route.ts
-import {NextRequest, NextResponse} from 'next/server';
+import {NextResponse} from 'next/server';
 import {cookies} from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(
-    request: NextRequest,
     {params}: { params: Promise<{ ticker: string }> }
 ) {
     try {
