@@ -1,30 +1,25 @@
 // app/api/proxy/risk-analysis/[ticker]/stream/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
-// The correct type definition for Next.js App Router
+// Correct type definition for Next.js App Router route handlers
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ ticker: string }> }
+    { params }: { params: { ticker: string } }
 ) {
     try {
-        // Get the auth token from cookies - no need for await with cookies()
+        // Get the auth token from cookies
         const cookieStore = await cookies();
         const token = cookieStore.get('token')?.value;
 
         if (!token) {
-            return new NextResponse(JSON.stringify({ error: 'Not authenticated' }), {
-                status: 401,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            return Response.json({ error: 'Not authenticated' }, { status: 401 });
         }
 
         // Create URL to your backend
-        const backendUrl = `${process.env.BACKEND_BASE_URL}/risk-analysis/${(await params).ticker}/stream`;
+        const backendUrl = `${process.env.BACKEND_BASE_URL}/risk-analysis/${params.ticker}/stream`;
         console.log(`Proxying request to: ${backendUrl}`);
 
         // Make the request to your backend with proper auth
@@ -41,12 +36,10 @@ export async function GET(
         if (!response.ok) {
             const errorText = await response.text();
             console.error(`Backend error (${response.status}): ${errorText}`);
-            return new NextResponse(JSON.stringify({ error: 'Backend error', details: errorText }), {
-                status: response.status,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            return Response.json(
+                { error: 'Backend error', details: errorText },
+                { status: response.status }
+            );
         }
 
         // Return a streaming response by directly forwarding the response
@@ -59,11 +52,9 @@ export async function GET(
         });
     } catch (error) {
         console.error('Proxy error:', error);
-        return new NextResponse(JSON.stringify({ error: 'Internal server error' }), {
-            status: 500,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        return Response.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
 }
