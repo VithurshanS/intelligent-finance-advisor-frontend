@@ -175,3 +175,19 @@ export async function deleteStockAction(stockId: number): Promise<{ success: boo
         };
     }
 }
+
+export interface AssetFastInfo {
+    currency: string | null;
+    prev_close: number | null;
+    last_price: number | null;
+}
+
+export async function fetchAssetFastInfo(ticker: string): Promise<AssetFastInfo | null> {
+    try {
+        const response = await AxiosInstance.get<AssetFastInfo>(`/assets/fast-info/${ticker}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching asset fast info:', error);
+        return null;
+    }
+}

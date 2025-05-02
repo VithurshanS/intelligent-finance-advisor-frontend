@@ -2,13 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import PriceChange from "@/app/(dashboard)/assets/[symbol]/_components/PriceChange";
-import AxiosInstance from "@/lib/client-fetcher";
-
-interface AssetFastInfo {
-    currency: string | null;
-    prev_close: number | null;
-    last_price: number | null;
-}
+import {AssetFastInfo, fetchAssetFastInfo} from "@/app/(dashboard)/assets/[symbol]/_utils/actions";
 
 const PriceSection = ({ticker, initial}: { ticker: string, initial: AssetFastInfo }) => {
     const [asset, setAsset] = useState<AssetFastInfo>(initial);
@@ -21,8 +15,12 @@ const PriceSection = ({ticker, initial}: { ticker: string, initial: AssetFastInf
         const fetchAssetInfo = async () => {
             try {
                 setLoading(true);
-                const response = await AxiosInstance.get<AssetFastInfo>(`/assets/fast-info/${ticker}`);
-                setAsset(response.data);
+                const response = await fetchAssetFastInfo(ticker);
+                if (!response) {
+                    setError("No data received");
+                    return;
+                }
+                setAsset(response);
                 setError(null);
             } catch (err) {
                 // When error occurs, revert to initial values
@@ -51,7 +49,8 @@ const PriceSection = ({ticker, initial}: { ticker: string, initial: AssetFastInf
             <div className="text-3xl font-extrabold">
                 {asset.last_price
                     ?
-                    <span>{asset.last_price.toFixed(2)} <span className="text-xl font-semibold">{asset.currency || '$'}</span> </span>
+                    <span>{asset.last_price.toFixed(2)} <span
+                        className="text-xl font-semibold">{asset.currency || '$'}</span> </span>
                     : 'Price Unavailable'}
             </div>
 
