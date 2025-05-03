@@ -2,7 +2,15 @@
 
 import React, {useEffect, useState} from 'react';
 import PriceChange from "@/app/(dashboard)/assets/[symbol]/_components/PriceChange";
-import {AssetFastInfo, fetchAssetFastInfo} from "@/app/(dashboard)/assets/[symbol]/_utils/actions";
+import AxiosInstance from "@/lib/client-fetcher";
+
+
+interface AssetFastInfo {
+    currency: string | null;
+    prev_close: number | null;
+    last_price: number | null;
+}
+
 
 const PriceSection = ({ticker, initial}: { ticker: string, initial: AssetFastInfo }) => {
     const [asset, setAsset] = useState<AssetFastInfo>(initial);
@@ -15,12 +23,12 @@ const PriceSection = ({ticker, initial}: { ticker: string, initial: AssetFastInf
         const fetchAssetInfo = async () => {
             try {
                 setLoading(true);
-                const response = await fetchAssetFastInfo(ticker);
-                if (!response) {
+                const response = await AxiosInstance.get<AssetFastInfo>(`/assets/fast-info/${ticker}`);
+                if (!response || !response.data) {
                     setError("No data received");
                     return;
                 }
-                setAsset(response);
+                setAsset(response.data);
                 setError(null);
             } catch (err) {
                 // When error occurs, revert to initial values
