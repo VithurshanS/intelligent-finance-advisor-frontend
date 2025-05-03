@@ -7,37 +7,7 @@ import {User} from "@/lib/types/user";
 import {FormState, HTTPValidationError, RegisterResponse, registerSchema} from "@/lib/types/register";
 import AxiosInstance from "@/lib/server-fetcher";
 import axios from "axios";
-
-async function createSession(loginResponse: LoginResponse) {
-    const {token} = loginResponse;
-
-    // Set secure HTTP-only cookies instead of localStorage
-    const cookieStore = await cookies();
-
-    cookieStore.set('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24, // 1 day
-        path: '/',
-        sameSite: 'strict'
-    });
-
-    cookieStore.set('user', JSON.stringify(loginResponse), {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24, // 1 day
-        path: '/',
-        sameSite: 'strict'
-    });
-}
-
-async function deleteSession() {
-    const cookieStore = await cookies();
-
-    // Clear all auth cookies
-    cookieStore.delete('token');
-    cookieStore.delete('user');
-}
+import {createSession, deleteSession} from "@/actions/sessions";
 
 
 export async function login(_previousState: string, formData: FormData): Promise<string> {
