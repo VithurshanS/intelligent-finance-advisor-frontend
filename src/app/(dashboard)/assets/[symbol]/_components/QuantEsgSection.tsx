@@ -390,8 +390,6 @@ const QuantEsgSection = ({
                                         <h4 className="font-semibold mb-2 flex items-center gap-2">
                                             AI Risk Analysis
                                             {/*<GeminiLogo width="1.4rem" height="1.4rem" model={"Gemini 2.0 Lite"}/>*/}
-
-
                                             <TooltipProvider>
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
