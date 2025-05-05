@@ -7,8 +7,17 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {AlertCircle, TrendingUp, Leaf, Users, BarChart3} from 'lucide-react';
 import {Progress} from '@/components/ui/progress';
 import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
-import GeminiLogo from "@/app/(dashboard)/assets/[symbol]/_components/GeminiLogo";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Image from "next/image";
 import {motion} from "framer-motion";
+import styles from "@/app/(dashboard)/assets/[symbol]/_components/GeminiLogo.module.css";
+import React from "react";
+
 
 // Create motion variants of the components
 const MotionCard = motion(Card);
@@ -380,7 +389,29 @@ const QuantEsgSection = ({
                                     >
                                         <h4 className="font-semibold mb-2 flex items-center gap-2">
                                             AI Risk Analysis
-                                            <GeminiLogo width="1.4rem" height="1.4rem" model={"Gemini 2.0 Lite"}/>
+                                            {/*<GeminiLogo width="1.4rem" height="1.4rem" model={"Gemini 2.0 Lite"}/>*/}
+
+
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="inline-flex cursor-pointer">
+                                                            <Image
+                                                                alt="Palmyra Finance"
+                                                                src="https://writer.com/wp-content/uploads/2024/11/Palmyra-Finance.svg"
+                                                                width={20}
+                                                                height={20}
+                                                            />
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent className={styles.tooltipContent} side={'right'}>
+                                                        <div>
+                                                            <div className={styles.gradientText}>Powered Writer Palmyra Finance</div>
+                                                            <div className={styles.cautionText}>AI can make mistakes. Use with caution.</div>
+                                                        </div>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
                                         </h4>
 
                                         <p className="text-muted-foreground"><span
