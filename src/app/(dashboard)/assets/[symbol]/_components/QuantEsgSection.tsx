@@ -276,7 +276,7 @@ const QuantEsgSection = ({
                                         <span className="text-sm font-medium">Volume Change</span>
                                         <span className="text-sm">
                                             {quantRisk.volume_change_percent !== undefined && quantRisk.volume_change_percent !== null
-                                                ? `${(quantRisk.volume_change_percent * 100).toFixed(2)}%`
+                                                ? `${(quantRisk.volume_change_percent).toFixed(2)}%`
                                                 : 'N/A'}
                                             {quantRisk.risk_metrics?.volume_risk !== undefined &&
                                                 quantRisk.risk_metrics?.volume_risk !== null && (
