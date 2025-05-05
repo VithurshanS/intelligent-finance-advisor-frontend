@@ -8,7 +8,7 @@ import {AlertCircle, TrendingUp, Leaf, Users, BarChart3} from 'lucide-react';
 import {Progress} from '@/components/ui/progress';
 import RiskBadge from "@/app/(dashboard)/_components/RiskBadge";
 import GeminiLogo from "@/app/(dashboard)/assets/[symbol]/_components/GeminiLogo";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 
 // Create motion variants of the components
 const MotionCard = motion(Card);
@@ -66,15 +66,15 @@ const QuantEsgSection = ({
     return (
         <motion.div
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.5}}
         >
             {/* Quantitative Risk Section */}
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
             >
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <TrendingUp size={18}/>
@@ -83,9 +83,9 @@ const QuantEsgSection = ({
 
                 {errorQuant && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3 }}
+                        initial={{opacity: 0, scale: 0.95}}
+                        animate={{opacity: 1, scale: 1}}
+                        transition={{duration: 0.3}}
                     >
                         <Alert variant="destructive" className="mb-4">
                             <AlertCircle className="h-4 w-4"/>
@@ -126,30 +126,31 @@ const QuantEsgSection = ({
                     </Card>
                 ) : quantRisk ? (
                     <MotionCard
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4 }}
+                        initial={{opacity: 0, y: 10}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.4}}
                     >
-                        <CardHeader className="pb-2">
+                        <CardHeader>
                             <div className="flex justify-between items-center">
                                 <CardTitle className="text-base">Risk Metrics</CardTitle>
                                 {quantRisk.risk_metrics?.quant_risk_score !== undefined &&
                                     quantRisk.risk_metrics?.quant_risk_score !== null && (
                                         <motion.div
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1 }}
+                                            initial={{scale: 0}}
+                                            animate={{scale: 1}}
                                             transition={{
                                                 type: "spring",
                                                 stiffness: 260,
                                                 damping: 20
                                             }}
                                         >
-                                            <RiskBadge score={Number(quantRisk.risk_metrics.quant_risk_score.toFixed(1))}/>
+                                            <RiskBadge
+                                                score={Number(quantRisk.risk_metrics.quant_risk_score.toFixed(1))}/>
                                         </motion.div>
                                     )}
                             </div>
                             <CardDescription>
-                                {quantRisk.risk_label || 'Quantitative risk assessment'}
+                                {'Quantitative risk assessment'}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -157,9 +158,9 @@ const QuantEsgSection = ({
                                 {/* Volatility */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.1 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.1}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Volatility</span>
@@ -176,10 +177,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.2 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.2}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={quantRisk.risk_metrics?.volatility_score !== undefined &&
@@ -194,9 +195,9 @@ const QuantEsgSection = ({
                                 {/* Beta */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.2}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Beta</span>
@@ -213,10 +214,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.3 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.3}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={quantRisk.risk_metrics?.beta_score !== undefined &&
@@ -231,9 +232,9 @@ const QuantEsgSection = ({
                                 {/* RSI */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.3 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.3}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">RSI</span>
@@ -250,10 +251,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.4 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.4}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={quantRisk.risk_metrics?.rsi_risk !== undefined &&
@@ -268,9 +269,9 @@ const QuantEsgSection = ({
                                 {/* Volume Change */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.4 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.4}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Volume Change</span>
@@ -287,10 +288,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.5 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.5}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={quantRisk.risk_metrics?.volume_risk !== undefined &&
@@ -306,9 +307,9 @@ const QuantEsgSection = ({
                                 {quantRisk.debt_to_equity !== undefined && (
                                     <motion.div
                                         className="space-y-2"
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.5 }}
+                                        initial={{opacity: 0, x: -10}}
+                                        animate={{opacity: 1, x: 0}}
+                                        transition={{delay: 0.5}}
                                     >
                                         <div className="flex justify-between items-center">
                                             <span className="text-sm font-medium">Debt to Equity</span>
@@ -325,10 +326,10 @@ const QuantEsgSection = ({
                                             </span>
                                         </div>
                                         <motion.div
-                                            initial={{ scaleX: 0 }}
-                                            animate={{ scaleX: 1 }}
-                                            transition={{ delay: 0.6 }}
-                                            style={{ originX: 0 }}
+                                            initial={{scaleX: 0}}
+                                            animate={{scaleX: 1}}
+                                            transition={{delay: 0.6}}
+                                            style={{originX: 0}}
                                         >
                                             <Progress
                                                 value={quantRisk.risk_metrics?.debt_risk !== undefined &&
@@ -346,9 +347,9 @@ const QuantEsgSection = ({
                                     quantRisk.risk_metrics?.eps_risk !== null && (
                                         <motion.div
                                             className="space-y-2"
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: 0.6 }}
+                                            initial={{opacity: 0, x: -10}}
+                                            animate={{opacity: 1, x: 0}}
+                                            transition={{delay: 0.6}}
                                         >
                                             <div className="flex justify-between items-center">
                                                 <span className="text-sm font-medium">Earnings Risk</span>
@@ -357,10 +358,10 @@ const QuantEsgSection = ({
                                                 </span>
                                             </div>
                                             <motion.div
-                                                initial={{ scaleX: 0 }}
-                                                animate={{ scaleX: 1 }}
-                                                transition={{ delay: 0.7 }}
-                                                style={{ originX: 0 }}
+                                                initial={{scaleX: 0}}
+                                                animate={{scaleX: 1}}
+                                                transition={{delay: 0.7}}
+                                                style={{originX: 0}}
                                             >
                                                 <Progress
                                                     value={Math.min(quantRisk.risk_metrics.eps_risk * 10, 100)}
@@ -373,15 +374,18 @@ const QuantEsgSection = ({
                                 {quantRisk.risk_explanation && (
                                     <motion.div
                                         className="mt-4 text-sm"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.8 }}
+                                        initial={{opacity: 0, y: 10}}
+                                        animate={{opacity: 1, y: 0}}
+                                        transition={{delay: 0.8}}
                                     >
                                         <h4 className="font-semibold mb-2 flex items-center gap-2">
-                                            Risk Analysis:
+                                            AI Risk Analysis
                                             <GeminiLogo width="1.4rem" height="1.4rem" model={"Gemini 2.0 Lite"}/>
                                         </h4>
-                                        <p className="text-muted-foreground">{quantRisk.risk_explanation}</p>
+
+                                        <p className="text-muted-foreground"><span
+                                            className={'font-semibold'}>{quantRisk.risk_label} </span>: {quantRisk.risk_explanation}
+                                        </p>
                                     </motion.div>
                                 )}
                             </div>
@@ -390,9 +394,9 @@ const QuantEsgSection = ({
                 ) : (
                     <motion.div
                         className="flex items-center justify-center p-6 border rounded-md"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{duration: 0.5}}
                     >
                         <p className="text-muted-foreground">No quantitative risk data available.</p>
                     </motion.div>
@@ -401,9 +405,9 @@ const QuantEsgSection = ({
 
             {/* ESG Risk Section */}
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5, delay: 0.2}}
             >
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <Leaf size={18}/>
@@ -412,9 +416,9 @@ const QuantEsgSection = ({
 
                 {errorEsg && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3 }}
+                        initial={{opacity: 0, scale: 0.95}}
+                        animate={{opacity: 1, scale: 1}}
+                        transition={{duration: 0.3}}
                     >
                         <Alert variant="destructive" className="mb-4">
                             <AlertCircle className="h-4 w-4"/>
@@ -455,17 +459,17 @@ const QuantEsgSection = ({
                     </Card>
                 ) : esgRisk ? (
                     <MotionCard
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.2 }}
+                        initial={{opacity: 0, y: 10}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.4, delay: 0.2}}
                     >
-                        <CardHeader className="pb-2">
+                        <CardHeader>
                             <div className="flex justify-between items-center">
                                 <CardTitle className="text-base">ESG Metrics</CardTitle>
                                 {esgRisk.esg_risk_score !== undefined && esgRisk.esg_risk_score !== null && (
                                     <motion.div
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
+                                        initial={{scale: 0}}
+                                        animate={{scale: 1}}
                                         transition={{
                                             type: "spring",
                                             stiffness: 260,
@@ -486,9 +490,9 @@ const QuantEsgSection = ({
                                 {/* Total ESG Score */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.4 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.4}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium">Total ESG Score</span>
@@ -500,10 +504,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.5 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.5}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={calculateEsgProgress(esgRisk.total_esg, true)}
@@ -516,9 +520,9 @@ const QuantEsgSection = ({
                                 {/* Environmental */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.5 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.5}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium flex items-center gap-1">
@@ -533,10 +537,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.6 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.6}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={calculateEsgProgress(esgRisk.environmental_score)}
@@ -548,9 +552,9 @@ const QuantEsgSection = ({
                                 {/* Social */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.6 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.6}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium flex items-center gap-1">
@@ -565,10 +569,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.7 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.7}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={calculateEsgProgress(esgRisk.social_score)}
@@ -580,9 +584,9 @@ const QuantEsgSection = ({
                                 {/* Governance */}
                                 <motion.div
                                     className="space-y-2"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.7 }}
+                                    initial={{opacity: 0, x: -10}}
+                                    animate={{opacity: 1, x: 0}}
+                                    transition={{delay: 0.7}}
                                 >
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium flex items-center gap-1">
@@ -597,10 +601,10 @@ const QuantEsgSection = ({
                                         </span>
                                     </div>
                                     <motion.div
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: 1 }}
-                                        transition={{ delay: 0.8 }}
-                                        style={{ originX: 0 }}
+                                        initial={{scaleX: 0}}
+                                        animate={{scaleX: 1}}
+                                        transition={{delay: 0.8}}
+                                        style={{originX: 0}}
                                     >
                                         <Progress
                                             value={calculateEsgProgress(esgRisk.governance_score)}
@@ -614,9 +618,9 @@ const QuantEsgSection = ({
                 ) : (
                     <motion.div
                         className="flex items-center justify-center p-6 border rounded-md"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{duration: 0.5, delay: 0.2}}
                     >
                         <p className="text-muted-foreground">No ESG risk data available.</p>
                     </motion.div>

@@ -360,7 +360,7 @@ const NewsSection = ({
                             initial="hidden"
                             animate="show"
                         >
-                            <CardHeader className="pb-2">
+                            <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-base">Security Assessment</CardTitle>
                                     <motion.div
@@ -379,7 +379,7 @@ const NewsSection = ({
                                                 newsSentiment.stability_label === 'Slight Risk' ? 'bg-yellow-500 text-white dark:bg-yellow-900 dark:text-yellow-300' :
                                                     newsSentiment.stability_label === 'Stable' ? 'bg-green-500 text-white dark:bg-green-900 dark:text-green-300' : 'bg-gray-500 text-white dark:bg-gray-900 dark:text-gray-300'}
                                         `}>
-                                            {newsSentiment.stability_label}
+                                            {newsSentiment.risk_score !== undefined ? `${newsSentiment.risk_score} - ` : ''}{newsSentiment.stability_label || 'Unknown'}
                                         </Badge>
                                     </motion.div>
                                 </div>
@@ -653,19 +653,6 @@ const NewsSection = ({
                                                 </motion.li>
                                             ))}
                                         </ul>
-                                    </motion.div>
-                                )}
-
-                                {newsSentiment.risk_score !== undefined && (
-                                    <motion.div
-                                        className="mt-4"
-                                        initial={{opacity: 0, y: 10}}
-                                        animate={{opacity: 1, y: 0}}
-                                        transition={{delay: 1.4}}
-                                    >
-                                        <p className="text-xs font-medium">
-                                            Risk Score: {newsSentiment.risk_score.toFixed(1)}/10
-                                        </p>
                                     </motion.div>
                                 )}
                             </CardContent>
