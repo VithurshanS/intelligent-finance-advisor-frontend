@@ -145,7 +145,7 @@ const StatusManager = ({
                 value={status}  // Use controlled value from state
                 onValueChange={(value) => {
                     setStatus(value as AssetStatus);  // Update local state
-                    handleStatusChange(value as AssetStatus);  // Call the action
+                    handleStatusChange(value as AssetStatus).then();  // Call the action
                 }}
             >
                 <SelectTrigger className="w-full sm:w-48 border-gray-300 dark:border-gray-600">
