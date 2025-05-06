@@ -1,6 +1,5 @@
 // GeminiLogoWithTooltip.tsx
 import React from 'react';
-import styles from './GeminiLogo.module.css';
 import {
     Tooltip,
     TooltipContent,
@@ -26,19 +25,19 @@ const GeminiLogo: React.FC<GeminiLogoProps> = ({
             <Tooltip>
                 <TooltipTrigger asChild>
                     <div
-                        className={`${styles.logoContainer} ${className}`}
+                        className={`gemini-logo-container ${className}`}
                         style={{width, height}}
                     >
                         <svg
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 16 16"
-                            className={styles.logoSvg}
+                            className="gemini-logo-svg"
                         >
                             <path
                                 d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z"
                                 fill="url(#prefix__paint0_radial_980_20147)"
-                                className={styles.animatedPath}
+                                className="gemini-animated-path"
                             />
                             <defs>
                                 <radialGradient
@@ -57,10 +56,10 @@ const GeminiLogo: React.FC<GeminiLogoProps> = ({
                         </svg>
                     </div>
                 </TooltipTrigger>
-                <TooltipContent className={styles.tooltipContent} side={'right'}>
+                <TooltipContent className="gemini-tooltip-content" side={'right'}>
                     <div>
-                        <div className={styles.gradientText}>Powered by Google {model}</div>
-                        <div className={styles.cautionText}>AI can make mistakes. Use with caution.</div>
+                        <div className="gemini-gradient-text">Powered by Google {model}</div>
+                        <div className="gemini-caution-text">AI can make mistakes. Use with caution.</div>
                     </div>
                 </TooltipContent>
             </Tooltip>

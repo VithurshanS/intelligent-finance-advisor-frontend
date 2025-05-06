@@ -14,25 +14,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 18.x, 20.x, 22.x ]
+        node-version: [18.x, 20.x, 22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: npm i lightningcss-linux-x64-gnu
-      - run: npm ci
-        # Rebuild native dependencies to ensure compatibility with the CI environment
-      - name: Rebuild native dependencies
-        run: npm rebuild
-        # Specifically rebuild Tailwind Oxide which is causing the error
-      - name: Rebuild Tailwind Oxide
-        run: npm rebuild @tailwindcss/oxide || true # Continue even if this specific step fails
-        # Set environment variable to use JavaScript fallback if native build fails
-      - name: Set environment variable for Tailwind
-        run: echo "OXIDE_NO_NATIVE=1" >> $GITHUB_ENV
-      - run: npm run build --if-present
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
