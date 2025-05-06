@@ -202,7 +202,7 @@ export const BudgetApi = {
 
     // Transaction CRUD operations
     async getTransactionsByUser(userId: string): Promise<Transaction[]> {
-        return fetchApi(`/transactions/${userId}}`);
+        return fetchApi(`/transactions/${userId}`);
     },
 
     async createTransaction(transaction: TransactionCreate): Promise<Transaction> {
