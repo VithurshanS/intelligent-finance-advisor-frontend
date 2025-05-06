@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
-import {NavMain} from "@/app/(dashboard)/_components/nav-main";
-import {NavGuides} from "@/app/(dashboard)/_components/nav-guides";
-import {Role} from "@/lib/types/user";
-import {SidebarData} from "@/app/(dashboard)/_utils/types";
+import { NavMain } from "@/app/(dashboard)/_components/nav-main";
+import { NavGuides } from "@/app/(dashboard)/_components/nav-guides";
+import { Role } from "@/lib/types/user";
+import { SidebarData } from "@/app/(dashboard)/_utils/types";
 import {
-    ChartCandlestickIcon,
+    Bot,
+    ChartCandlestickIcon, DollarSign,
     Earth,
     FolderGit2,
     LayoutGrid,
@@ -17,11 +18,40 @@ import {
 const userSidebar: SidebarData = {
     navMain: [
         {
+            title: "Dashboard",
+            url: "/dashboard",
+            icon: LayoutGrid,
+        },
+        {
+            title: "Budget Tracker",
+            url: "/dashboard/budget",
+            icon: DollarSign,
+        },
+        {
+            title: "Market Prediction",
+            url: "/group-37",
+            icon: Bot,
+            items: [
+                {
+                    title: "Price Forecast",
+                    url: "/group-37/forecast",
+                },
+                {
+                    title: "Model Metrics",
+                    url: "/group-37/metrics",
+                },
+            ],
+        },
+        {
+            title: "Budget Tracking",
+            url: "/budget-tracking",
+            icon: DollarSign,
+        },
+        {
             title: "Portfolio Optimization",
             url: "/dashboard/portfolio",
-            icon: PieChart,
-        },
-    ],
+            icon: PieChart
+        },],
     guides: [
         {
             name: "ML Model Notebook",
@@ -84,12 +114,12 @@ const adminSidebar: SidebarData = {
     ],
 }
 
-const AppSidebarLinks = ({role}: { role: Role }) => {
+const AppSidebarLinks = ({ role }: { role: Role }) => {
     const sidebar = role === 'admin' ? adminSidebar : userSidebar;
     return (
         <>
-            <NavMain items={sidebar.navMain}/>
-            <NavGuides projects={sidebar.guides}/>
+            <NavMain items={sidebar.navMain} />
+            <NavGuides projects={sidebar.guides} />
         </>
     );
 };
