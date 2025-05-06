@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/tooltip";
 import Image from "next/image";
 import {motion} from "framer-motion";
-import styles from "@/app/(dashboard)/assets/[symbol]/_components/GeminiLogo.module.css";
 import React from "react";
 
 
@@ -402,10 +401,14 @@ const QuantEsgSection = ({
                                                             />
                                                         </div>
                                                     </TooltipTrigger>
-                                                    <TooltipContent className={styles.tooltipContent} side={'right'}>
+                                                    <TooltipContent className="gemini-tooltip-content" side={'right'}>
                                                         <div>
-                                                            <div className={styles.gradientText}>Powered Writer Palmyra Finance</div>
-                                                            <div className={styles.cautionText}>AI can make mistakes. Use with caution.</div>
+                                                            <div className="gemini-gradient-text">Powered Writer Palmyra
+                                                                Finance
+                                                            </div>
+                                                            <div className="gemini-caution-text">AI can make mistakes.
+                                                                Use with caution.
+                                                            </div>
                                                         </div>
                                                     </TooltipContent>
                                                 </Tooltip>
