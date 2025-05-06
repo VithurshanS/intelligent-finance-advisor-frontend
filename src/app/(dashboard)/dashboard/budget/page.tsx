@@ -87,28 +87,12 @@ export default function Home() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-900 text-gray-100">
-                <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid grid-cols-4 mb-8 bg-gray-800 p-1 rounded-lg">
-                        {/* ... existing tab triggers ... */}
-                    </TabsList>
 
-                    {isLoading ? (
-                        <div className="flex flex-col items-center justify-center h-[70vh]">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-                            <p className="text-gray-300">Loading your financial data...</p>
-                        </div>
-                    ) : (
-                        <>
-                            <TabsContent value="dashboard" className="space-y-6">
-                                {/* ... rest of your existing content ... */}
-                            </TabsContent>
-                            {/* ... other tab contents ... */}
-                        </>
-                    )}
+                <div className="flex flex-col items-center justify-center h-[70vh]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <p className="text-gray-300">Loading your financial data...</p>
+                </div>
 
-                    {/* Floating AI Chat Button */}
-                    <AIChat />
-                </Tabs>
             </div>
         )
     }

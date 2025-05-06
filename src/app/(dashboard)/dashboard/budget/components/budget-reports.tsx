@@ -23,9 +23,10 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
   const [budgetReport, setBudgetReport] = useState<BudgetReport | null>(null)
 
   const [newTransaction, setNewTransaction] = useState<Omit<TransactionCreate, 'user_id'>>({
-    created_at: new Date().toISOString().split("T")[0],
+    date: new Date().toLocaleString(),
     category: "",
     reason: "",
+    created_at: new Date().toLocaleString(),
     amount: 0,
     type: "expense"
   })
@@ -41,7 +42,7 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
   // Calculate paginated transactions using useMemo
   const { currentTransactions, paginationData } = useMemo(() => {
     const allTransactions = transactions
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     const expenseTransactions = allTransactions.filter(t => t.type === 'expense');
     const incomeTransactions = allTransactions.filter(t => t.type === 'income');
@@ -178,7 +179,7 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
   const handleAddTransaction = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!newTransaction.reason || !newTransaction.amount || !newTransaction.created_at || (newTransaction.type === 'Expense' || newTransaction.type === 'Income')) {
+    if (!newTransaction.reason || !newTransaction.amount || !newTransaction.date || (newTransaction.type === 'Expense' || newTransaction.type === 'Income')) {
       setError("Please fill all required fields")
       return
     }
@@ -188,7 +189,8 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
         ...newTransaction,
         user_id: userId,
         amount: Number(newTransaction.amount),
-        created_at: new Date(newTransaction.created_at).toISOString().split("T")[0],
+        date: new Date(newTransaction.date).toISOString().replace("T", " ").split(".")[0],
+        created_at: new Date(newTransaction.date).toISOString().replace("T", " ").split(".")[0],
         type: newTransaction.type.toLowerCase() as "expense" | "income"
       }
 
@@ -198,6 +200,8 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
 
       const createdTransaction = await BudgetApi.createTransaction(transactionToCreate)
       // console.log(createdTransaction)
+      localStorage.removeItem('report')
+      localStorage.removeItem('prediction')
       setTransactions([...transactions, createdTransaction])
 
       // Update category transactions
@@ -209,8 +213,9 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
       setCategoryTransactions(updatedCategoryTransactions)
 
       setNewTransaction({
-        created_at: new Date().toISOString().split("T")[0],
+        date: new Date().toISOString().split("T")[0],
         category: "",
+        created_at: new Date().toLocaleDateString(),
         reason: "",
         amount: 0,
         type: "expense"
@@ -344,10 +349,10 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
             Income List
           </TabsTrigger>
           <TabsTrigger value="chart" className="text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-            Expense Chart
+            Charts
           </TabsTrigger>
           <TabsTrigger value="add" className="text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-            Add Expense
+            Add Transactions
           </TabsTrigger>
         </TabsList>
 
@@ -376,7 +381,7 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
                 <CardContent className="pt-0 pb-4">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400">
-                      {new Date(txn.created_at).toLocaleDateString('en-US', {
+                      {new Date(txn.date).toLocaleDateString('en-US', {
                         weekday: 'short',
                         year: 'numeric',
                         month: 'short',
@@ -428,7 +433,7 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
                 <CardContent className="pt-0 pb-4">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400">
-                      {new Date(txn.created_at).toLocaleDateString('en-US', {
+                      {new Date(txn.date).toLocaleDateString('en-US', {
                         weekday: 'short',
                         year: 'numeric',
                         month: 'short',
@@ -480,7 +485,7 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
                 <CardContent className="pt-0 pb-4">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400">
-                      {new Date(txn.created_at).toLocaleDateString('en-US', {
+                      {new Date(txn.date).toLocaleDateString('en-US', {
                         weekday: 'short',
                         year: 'numeric',
                         month: 'short',
@@ -534,7 +539,7 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
           </Card>
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
-              <CardTitle className="text-lg text-white">Expense Distribution</CardTitle>
+              <CardTitle className="text-lg text-white">Income Distribution</CardTitle>
               <CardDescription className="text-gray-300">Breakdown by category</CardDescription>
             </CardHeader>
             <CardContent>
@@ -563,7 +568,7 @@ export function BudgetReports({ userId }: BudgetReportsProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label className="text-white">Date</Label>
-                <Input type="date" value={newTransaction.created_at} onChange={e => setNewTransaction({ ...newTransaction, created_at: e.target.value })} />
+                <Input type="date" value={newTransaction.date} onChange={e => setNewTransaction({ ...newTransaction, date: e.target.value })} />
               </div>
               <div>
                 <Label className="text-white">Amount</Label>

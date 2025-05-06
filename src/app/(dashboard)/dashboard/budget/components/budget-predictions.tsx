@@ -8,118 +8,134 @@ import { AlertCircle, ArrowUpRight, TrendingUp, TrendingDown, LineChartIcon } fr
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { LineChart } from "./charts"
 import { useEffect, useState } from "react"
-import { getCurrentUser } from "@/actions/auth"
-
-interface PredictionData {
-  predictions: {
-    income_next_day: number;
-    income_next_week: number;
-    income_next_month: number;
-    expense_next_day: number;
-    expense_next_week: number;
-    expense_next_month: number;
-    today_income: number;
-    today_expense: number;
-    this_week_income: number;
-    this_week_expense: number;
-    this_month_income: number;
-    this_month_expense: number;
-    income: Map<string, number>;
-    expense: Map<string, number>;
-  }
-  financial_advice: {
-    observations: string;
-    daily_actions: string;
-    weekly_actions: string;
-    monthly_actions: string;
-    risks: string;
-    long_term_insights: string;
-  }
-  budget_goals: Array<{
-    time_period: string;
-    amount?: number;
-    description?: string;
-  }>
-}
+import { BudgetApi } from "@/lib/budget-lib/budget_api"
+import { PredictionResponse } from "@/lib/budget-lib/budget_api"
+import { AddGoalDialog } from "./add-goal-dialog"
 
 interface BudgetPredictionProps {
   userId: string
 }
 
 export function BudgetPredictions({ userId }: BudgetPredictionProps) {
-  const [data, setData] = useState<PredictionData | null>(null)
+  const [data, setData] = useState<PredictionResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchPredictions = async () => {
       try {
-        const result = await fetch(process.env.NEXT_PUBLIC_API_URL + `/predictions/?user_id=${userId}`)
-        const responseData = await result.json()
-        console.log(responseData)
-        setData(responseData)
-      } catch (error) {
-        console.error("Error fetching predictions:", error)
+        let predictionData: PredictionResponse;
+        const cachedPrediction = localStorage.getItem('prediction');
+
+        if (cachedPrediction) {
+          predictionData = JSON.parse(cachedPrediction);
+        } else {
+          const response = await BudgetApi.getPredictions(userId);
+          predictionData = response;
+          localStorage.setItem('prediction', JSON.stringify(response));
+        }
+
+        setData(predictionData)
+      } catch (err) {
+        console.error("Error fetching predictions:", err)
+        setError("Failed to load prediction data")
       } finally {
         setLoading(false)
       }
-
     }
     fetchPredictions()
-  }, [])
+  }, [userId])
 
   if (loading) {
-    return <div className="text-white">Loading predictions...</div>
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-white">Loading predictions...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive" className="bg-red-900/30 border-red-800/30">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription className="text-gray-300">
+          {error}
+        </AlertDescription>
+      </Alert>
+    )
   }
 
   if (!data) {
-    return <div className="text-white">No prediction data available</div>
+    return (
+      <Alert className="bg-blue-900/30 border-blue-800/30">
+        <AlertCircle className="h-4 w-4 text-blue-400" />
+        <AlertTitle className="text-white">No Data Available</AlertTitle>
+        <AlertDescription className="text-gray-300">
+          We couldn't find any prediction data for your account.
+        </AlertDescription>
+      </Alert>
+    )
   }
 
-  // Create prediction cards data
+  // Extract predictions from data
+  const { predictions, financial_advice, budget_goals } = data
+
+  // Create prediction cards data dynamically
   const predictionCards = [
     {
       title: "Income Next Day",
-      value: data.predictions.income_next_day,
+      value: predictions.income_next_day,
+      currentValue: predictions.today_income,
       category: "Income",
       timeFrame: "Next Day",
-      impact: data.predictions.income_next_day >= data.predictions.today_income ? "Positive" : "Negative"
+      icon: TrendingUp
     },
     {
       title: "Income Next Week",
-      value: data.predictions.income_next_week,
+      value: predictions.income_next_week,
+      currentValue: predictions.this_week_income,
       category: "Income",
       timeFrame: "Next Week",
-      impact: data.predictions.income_next_week >= data.predictions.this_week_income ? "Positive" : "Negative"
+      icon: TrendingUp
     },
     {
       title: "Income Next Month",
-      value: data.predictions.income_next_month,
+      value: predictions.income_next_month,
+      currentValue: predictions.this_month_income,
       category: "Income",
       timeFrame: "Next Month",
-      impact: data.predictions.income_next_month >= data.predictions.this_month_income ? "Positive" : "Negative"
+      icon: TrendingUp
     },
     {
       title: "Expense Next Day",
-      value: data.predictions.expense_next_day,
+      value: predictions.expense_next_day,
+      currentValue: predictions.today_expense,
       category: "Expense",
       timeFrame: "Next Day",
-      impact: data.predictions.expense_next_day >= data.predictions.today_expense ? "Positive" : "Negative"
+      icon: TrendingDown
     },
     {
       title: "Expense Next Week",
-      value: data.predictions.expense_next_week,
+      value: predictions.expense_next_week,
+      currentValue: predictions.this_week_expense,
       category: "Expense",
       timeFrame: "Next Week",
-      impact: data.predictions.expense_next_week >= data.predictions.this_week_expense ? "Positive" : "Negative"
+      icon: TrendingDown
     },
     {
       title: "Expense Next Month",
-      value: data.predictions.expense_next_month,
+      value: predictions.expense_next_month,
+      currentValue: predictions.this_month_expense,
       category: "Expense",
       timeFrame: "Next Month",
-      impact: data.predictions.expense_next_month >= data.predictions.this_month_expense ? "Positive" : "Negative"
+      icon: TrendingDown
     }
-  ]
+  ].filter(prediction => prediction.value !== undefined)
+
+  // Calculate financial metrics
+  const monthlyNet = predictions.income_next_month - predictions.expense_next_month
+  const weeklySavingsPotential = predictions.income_next_week - predictions.expense_next_week
 
   return (
     <div className="space-y-6">
@@ -138,8 +154,8 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
             <CardDescription className="text-gray-300">Projected cash flow for the next month</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">
-              ${(data.predictions.income_next_month - data.predictions.expense_next_month).toFixed(2)}
+            <div className={`text-2xl font-bold ${monthlyNet >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              ${Math.abs(monthlyNet).toFixed(2)} {monthlyNet >= 0 ? 'Surplus' : 'Deficit'}
             </div>
             <p className="text-gray-300 mt-2">Predicted for next month</p>
           </CardContent>
@@ -151,8 +167,8 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
             <CardDescription className="text-gray-300">Potential savings next week</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-400">
-              ${(data.predictions.income_next_week - data.predictions.expense_next_week).toFixed(2)}
+            <div className={`text-2xl font-bold ${weeklySavingsPotential >= 0 ? 'text-blue-400' : 'text-red-400'}`}>
+              ${Math.abs(weeklySavingsPotential).toFixed(2)} {weeklySavingsPotential >= 0 ? 'Savings' : 'Shortfall'}
             </div>
             <p className="text-gray-300 mt-2">Could be saved or used to pay debt</p>
           </CardContent>
@@ -184,8 +200,9 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
         <TabsContent value="insights">
           <div className="space-y-6">
             {predictionCards.map((prediction, i) => {
-              const isPositive = prediction.impact === "Positive";
-              const isIncome = prediction.category === "Income";
+              const isPositive = prediction.value >= prediction.currentValue
+              const isIncome = prediction.category === "Income"
+              const Icon = prediction.icon
 
               return (
                 <Card key={i} className="bg-gray-800 border-gray-700 shadow-md">
@@ -193,52 +210,40 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
                     <div className="flex justify-between items-start">
                       <div>
                         <CardTitle className="flex items-center text-white">
-                          {isPositive ? (
-                            isIncome ? (
-                              <TrendingUp className="h-5 w-5 mr-2 text-green-400" />
-                            ) : (
-                              <TrendingUp className="h-5 w-5 mr-2 text-red-400" />)
-                          ) : (
-                            isIncome ? (
-                              <TrendingDown className="h-5 w-5 mr-2 text-red-400" />
-                            ) : (
-                              <TrendingDown className="h-5 w-5 mr-2 text-green-400" />
-                            ))}
+                          <Icon className={`h-5 w-5 mr-2 ${isIncome
+                            ? isPositive ? 'text-green-400' : 'text-red-400'
+                            : isPositive ? 'text-red-400' : 'text-green-400'
+                            }`} />
                           {prediction.title}
                         </CardTitle>
-                        <CardDescription className="text-gray-300">{prediction.category} • {prediction.timeFrame}</CardDescription>
+                        <CardDescription className="text-gray-300">
+                          {prediction.category} • {prediction.timeFrame}
+                        </CardDescription>
                       </div>
                       <Badge
-                        variant={isPositive ? "default" : "destructive"}
                         className={
-                          isPositive
-                            ? (isIncome
-                              ? "bg-green-600 hover:bg-green-700"
-                              : "bg-red-600 hover:bg-red-700")
-                            : (
-                              isIncome
-                                ? "bg-red-600 hover:bg-red-700"
-                                : "bg-green-600 hover:bg-green-700"
-                            )
+                          isIncome
+                            ? isPositive ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
+                            : isPositive ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
                         }
                       >
-                        {isPositive ? (isIncome ? "Positive" : "Negative") : (isIncome ? "Negative" : "Positive")} Impact
+                        {isPositive ? (isIncome ? 'Increase' : 'Increase') : (isIncome ? 'Decrease' : 'Decrease')}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-200">Predicted value: ${prediction.value.toFixed(2)}</p>
-                    {isPositive ? (
-                      isIncome ? (
-                        <p className="text-green-400 text-sm mt-1">Expected inflow</p>) :
-                        (<p className="text-red-400 text-sm mt-1">Expected outlow</p>)
-                    )
-                      : (
-                        isIncome ? (
-                          <p className="text-red-400 text-sm mt-1">Expected outflow</p>) : (
-                          <p className="text-green-400 text-sm mt-1">Expected inflow</p>
-                        )
-                      )}
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-gray-200">Current: ${prediction.currentValue?.toFixed(2) || '0.00'}</p>
+                        <p className="text-gray-200">Predicted: ${prediction.value.toFixed(2)}</p>
+                      </div>
+                      <div className={`text-lg font-semibold ${isIncome
+                        ? isPositive ? 'text-green-400' : 'text-red-400'
+                        : isPositive ? 'text-red-400' : 'text-green-400'
+                        }`}>
+                        {((prediction.value - prediction.currentValue) / prediction.currentValue * 100).toFixed(1)}%
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               )
@@ -255,59 +260,70 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {financial_advice.observations && (
+                <div className="p-4 border border-gray-600 rounded-lg">
+                  <div className="font-medium mb-1 text-white">Observations</div>
+                  <div className="text-sm text-gray-300">{financial_advice.observations}</div>
+                </div>
+              )}
+
               <div className="space-y-4">
-                {data.financial_advice.daily_actions && (
+                {financial_advice.daily_actions && (
                   <div className="p-4 border border-gray-600 rounded-lg">
                     <div className="flex items-start">
                       <ArrowUpRight className="h-5 w-5 mr-2 text-green-400 mt-0.5" />
                       <div>
                         <div className="font-medium mb-1 text-white">Daily Actions</div>
-                        <div className="text-sm text-gray-300">{data.financial_advice.daily_actions}</div>
+                        <div className="text-sm text-gray-300">{financial_advice.daily_actions}</div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {data.financial_advice.weekly_actions && (
+                {financial_advice.weekly_actions && (
                   <div className="p-4 border border-gray-600 rounded-lg">
                     <div className="flex items-start">
                       <ArrowUpRight className="h-5 w-5 mr-2 text-blue-400 mt-0.5" />
                       <div>
                         <div className="font-medium mb-1 text-white">Weekly Actions</div>
-                        <div className="text-sm text-gray-300">{data.financial_advice.weekly_actions}</div>
+                        <div className="text-sm text-gray-300">{financial_advice.weekly_actions}</div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {data.financial_advice.monthly_actions && (
+                {financial_advice.monthly_actions && (
                   <div className="p-4 border border-gray-600 rounded-lg">
                     <div className="flex items-start">
                       <ArrowUpRight className="h-5 w-5 mr-2 text-purple-400 mt-0.5" />
                       <div>
                         <div className="font-medium mb-1 text-white">Monthly Actions</div>
-                        <div className="text-sm text-gray-300">{data.financial_advice.monthly_actions}</div>
+                        <div className="text-sm text-gray-300">{financial_advice.monthly_actions}</div>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              <Alert className="bg-red-900/30 border-red-600/30 border">
-                <AlertCircle className="h-4 w-4 text-red-400" />
-                <AlertTitle className="text-white">Potential Risks</AlertTitle>
-                <AlertDescription className="text-gray-300">
-                  {data.financial_advice.risks}
-                </AlertDescription>
-              </Alert>
+              {financial_advice.risks && (
+                <Alert className="bg-red-900/30 border-red-600/30 border">
+                  <AlertCircle className="h-4 w-4 text-red-400" />
+                  <AlertTitle className="text-white">Potential Risks</AlertTitle>
+                  <AlertDescription className="text-gray-300">
+                    {financial_advice.risks}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-              <Alert className="bg-green-900/30 border-green-600/30 border">
-                <LineChartIcon className="h-4 w-4 text-green-400" />
-                <AlertTitle className="text-white">Long Term Insights</AlertTitle>
-                <AlertDescription className="text-gray-300">
-                  {data.financial_advice.long_term_insights}
-                </AlertDescription>
-              </Alert>
+              {financial_advice.long_term_insights && (
+                <Alert className="bg-green-900/30 border-green-600/30 border">
+                  <LineChartIcon className="h-4 w-4 text-green-400" />
+                  <AlertTitle className="text-white">Long Term Insights</AlertTitle>
+                  <AlertDescription className="text-gray-300">
+                    {financial_advice.long_term_insights}
+                  </AlertDescription>
+                </Alert>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -315,31 +331,45 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
         <TabsContent value="goals">
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
-              <CardTitle className="text-white">Budget Goals</CardTitle>
-              <CardDescription className="text-gray-300">
-                Recommended financial targets based on your situation
-              </CardDescription>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-white">Budget Goals</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Recommended financial targets based on your situation
+                  </CardDescription>
+                </div>
+                <AddGoalDialog userId={userId} goal={budget_goals[0]} />
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {data.budget_goals?.map((goal, i) => (
-                <div key={i} className="p-4 border border-gray-600 rounded-lg">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-medium text-white">
-                        {goal.time_period.replace(/\b\w/g, l => l.toUpperCase())}
-                      </h3>
-                      {goal.description && (
-                        <p className="text-sm text-gray-300 mt-1">{goal.description}</p>
-                      )}
-                    </div>
-                    {goal.amount && (
+              {budget_goals?.length > 0 ? (
+                budget_goals.map((goal, i) => (
+                  <div key={i} className="p-4 border border-gray-600 rounded-lg">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="text-lg font-medium text-white">
+                          {goal.time_period ? `${goal.time_period.charAt(0).toUpperCase()}${goal.time_period.slice(1)} Goal` : `Goal ${i + 1}`}
+                        </h3>
+                        {goal.description && (
+                          <p className="text-sm text-gray-300 mt-1">{goal.description}</p>
+                        )}
+                        {/* {goal.deadline && (
+                          <p className="text-xs text-gray-400 mt-1">
+                            Deadline: {new Date(goal.deadline).toLocaleDateString()}
+                          </p>
+                        )} */}
+                      </div>
                       <Badge className="bg-blue-600">
-                        ${goal.amount.toFixed(2)}
+                        ${goal.amount?.toFixed(2) || '0.00'}
                       </Badge>
-                    )}
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-400">No budget goals available</p>
                 </div>
-              ))}
+              )}
             </CardContent>
           </Card>
         </TabsContent>

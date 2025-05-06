@@ -7,8 +7,9 @@ export interface Transaction {
     user_id: string;
     amount: number;
     category: string;
-    reason: string;
+    date: string;
     created_at: string;
+    reason: string;
     type: string;
 }
 
@@ -27,6 +28,7 @@ export interface TransactionCreate {
     amount: number;
     category: string;
     reason: string;
+    date: string;
     created_at: string;
     type: string;
 }
@@ -35,6 +37,7 @@ export interface TransactionUpdate {
     amount?: number;
     category?: string;
     reason?: string;
+    date?: string;
     created_at?: string;
     type?: string;
 }
@@ -67,9 +70,35 @@ export interface TransactionSummary {
 }
 
 export interface PredictionResponse {
-    predictions: any;
-    financial_advice: string;
-    budget_goals: any[];
+    predictions: {
+        today_income: number;
+        today_expense: number;
+        this_week_income: number;
+        this_week_expense: number;
+        this_month_income: number;
+        this_month_expense: number;
+        income_next_day: number;
+        income_next_week: number;
+        income_next_month: number;
+        expense_next_day: number;
+        expense_next_week: number;
+        expense_next_month: number;
+        income: Record<string, number>;
+        expense: Record<string, number>;
+    };
+    financial_advice: {
+        observations: string;
+        daily_actions: string;
+        weekly_actions: string;
+        monthly_actions: string;
+        risks: string;
+        long_term_insights: string;
+    };
+    budget_goals: {
+        time_period: string;
+        amount: number;
+        description: string;
+    }[];
 }
 
 export interface BudgetReportResponse {
@@ -171,6 +200,7 @@ export const BudgetApi = {
     },
 
     async createTransaction(transaction: TransactionCreate): Promise<Transaction> {
+        console.log(transaction);
         return fetchApi('/transactions', {
             method: 'POST',
             body: JSON.stringify(transaction),
