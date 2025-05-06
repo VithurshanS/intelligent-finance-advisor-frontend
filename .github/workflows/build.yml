@@ -24,6 +24,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      - run: npm i lightningcss-linux-x64-gnu
       - run: npm ci
         # Rebuild native dependencies to ensure compatibility with the CI environment
       - name: Rebuild native dependencies
