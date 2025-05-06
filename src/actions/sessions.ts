@@ -30,8 +30,16 @@ export async function createSession(loginResponse: LoginResponse) {
 
 export async function deleteSession() {
     const cookieStore = await cookies();
+    // Clear all auth cookies with the same options used when setting them
+    cookieStore.delete({
+        name: 'token',
+        path: '/',
+        domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
+    });
 
-    // Clear all auth cookies
-    cookieStore.delete('token');
-    cookieStore.delete('user');
+    cookieStore.delete({
+        name: 'user',
+        path: '/',
+        domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
+    });
 }
