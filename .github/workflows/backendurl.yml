@@ -9,19 +9,19 @@ on:
 jobs:
   replace-file:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write  # Needed for pushing changes
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Replace const.ts with production_const.ts
         run: |
           cp src/lib/production_const.ts src/lib/const.ts
-
+          
       - name: Commit and Push Replaced File
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add src/lib/const.ts
-          git commit -m "Auto-replace const.ts with production_const.ts on production branch"
+          git commit -m "Auto-replace const.ts with production_const.ts on production branch" || echo "No changes to commit"
           git push
-        continue-on-error: true  # In case there's nothing to commit (no changes)
