@@ -1,18 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { LineChart, PieChart } from "@/app/(dashboard)/dashboard/budget/components/charts"
-import { BudgetReports } from "@/app/(dashboard)/dashboard/budget/components/budget-reports"
-import { BudgetGoals } from "@/app/(dashboard)/dashboard/budget/components/budget-goals"
-import { BudgetPredictions } from "@/app/(dashboard)/dashboard/budget/components/budget-predictions"
-import { AIChat } from "@/app/(dashboard)/dashboard/budget/components/ai-chat"
-import { DollarSign, TrendingUp, PieChartIcon, Target } from "lucide-react"
-import { BudgetApi, CategoryBreakdown } from "@/lib/budget-lib/budget_api" // Import our API functions
-import { getCurrentUser } from "@/actions/auth"
-import { calculateBalanceTrendScore, calculateOverallScore, calculateSavingsScore, calculateSpendingScore } from "@/app/(dashboard)/dashboard/budget/utils/utils"
+import {useEffect, useState} from "react"
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {Progress} from "@/components/ui/progress"
+import {LineChart, PieChart} from "@/app/(dashboard)/dashboard/budget/_components/charts"
+import {BudgetReports} from "@/app/(dashboard)/dashboard/budget/_components/budget-reports"
+import {BudgetGoals} from "@/app/(dashboard)/dashboard/budget/_components/budget-goals"
+import {BudgetPredictions} from "@/app/(dashboard)/dashboard/budget/_components/budget-predictions"
+import {AIChat} from "@/app/(dashboard)/dashboard/budget/_components/ai-chat"
+import {DollarSign, TrendingUp, PieChartIcon, Target} from "lucide-react"
+import {BudgetApi, CategoryBreakdown} from "@/lib/budget-lib/budget_api" // Import our API functions
+import {getCurrentUser} from "@/actions/auth"
+import {
+    calculateBalanceTrendScore,
+    calculateOverallScore,
+    calculateSavingsScore,
+    calculateSpendingScore
+} from "@/app/(dashboard)/dashboard/budget/_utils/utils"
 
 export interface TransactionSummary {
     income: number;
@@ -92,7 +97,8 @@ export default function Home() {
             <div className="min-h-screen bg-gray-900 text-gray-100">
 
                 <div className="flex flex-col items-center justify-center h-[70vh]">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <div
+                        className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
                     <p className="text-gray-300">Loading your financial data...</p>
                 </div>
 
@@ -108,28 +114,28 @@ export default function Home() {
                         value="dashboard"
                         className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <DollarSign className="h-4 w-4" />
+                        <DollarSign className="h-4 w-4"/>
                         <span className="hidden sm:inline">Dashboard</span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="goals"
                         className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <Target className="h-4 w-4" />
+                        <Target className="h-4 w-4"/>
                         <span className="hidden sm:inline">Budget Goals</span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="reports"
                         className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <PieChartIcon className="h-4 w-4" />
+                        <PieChartIcon className="h-4 w-4"/>
                         <span className="hidden sm:inline">Budget Reports</span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="predictions"
                         className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <TrendingUp className="h-4 w-4" />
+                        <TrendingUp className="h-4 w-4"/>
                         <span className="hidden sm:inline">Predictions</span>
                     </TabsTrigger>
                 </TabsList>
@@ -139,11 +145,13 @@ export default function Home() {
                         <Card className="bg-gray-800 border-gray-700 shadow-md">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-lg text-white">Monthly Balance</CardTitle>
-                                <CardDescription className="text-gray-300">Your current financial status</CardDescription>
+                                <CardDescription className="text-gray-300">Your current financial
+                                    status</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-3xl font-bold text-white">${summaryData.balance}</div>
-                                <div className="text-sm text-green-400 mt-1" style={summaryData.balance > summaryData.previousBalance ? { color: "green" } : { color: "red" }}>{summaryData.previousBalance === 0 ? "" : `${handleSummaryValues(summaryData.balance, summaryData.previousBalance)} from last month`}</div>
+                                <div className="text-sm text-green-400 mt-1"
+                                     style={summaryData.balance > summaryData.previousBalance ? {color: "green"} : {color: "red"}}>{summaryData.previousBalance === 0 ? "" : `${handleSummaryValues(summaryData.balance, summaryData.previousBalance)} from last month`}</div>
                             </CardContent>
                         </Card>
                         <Card className="bg-gray-800 border-gray-700 shadow-md">
@@ -153,7 +161,8 @@ export default function Home() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-3xl font-bold text-white">${summaryData.income}</div>
-                                <div className="text-sm text-green-400 mt-1" style={summaryData.income > summaryData.previousIncome ? { color: "green" } : { color: "red" }}>{summaryData.previousIncome === 0 ? "" : `${handleSummaryValues(summaryData.income, summaryData.previousIncome)} from last month`}</div>
+                                <div className="text-sm text-green-400 mt-1"
+                                     style={summaryData.income > summaryData.previousIncome ? {color: "green"} : {color: "red"}}>{summaryData.previousIncome === 0 ? "" : `${handleSummaryValues(summaryData.income, summaryData.previousIncome)} from last month`}</div>
                             </CardContent>
                         </Card>
                         <Card className="bg-gray-800 border-gray-700 shadow-md">
@@ -163,7 +172,8 @@ export default function Home() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-3xl font-bold text-white">${summaryData.expense}</div>
-                                <div className="text-sm text-green-400 mt-1" style={summaryData.expense <= summaryData.previousExpense ? { color: "green" } : { color: "red" }}>{summaryData.previousExpense === 0 ? "" : `${handleSummaryValues(summaryData.expense, summaryData.previousExpense)} from last month`}</div>
+                                <div className="text-sm text-green-400 mt-1"
+                                     style={summaryData.expense <= summaryData.previousExpense ? {color: "green"} : {color: "red"}}>{summaryData.previousExpense === 0 ? "" : `${handleSummaryValues(summaryData.expense, summaryData.previousExpense)} from last month`}</div>
                             </CardContent>
                         </Card>
                     </div>
@@ -172,10 +182,11 @@ export default function Home() {
                         <Card className="bg-gray-800 border-gray-700 shadow-md">
                             <CardHeader>
                                 <CardTitle className="text-white">Financial Overview</CardTitle>
-                                <CardDescription className="text-gray-300">Your financial balance per each day at a glance</CardDescription>
+                                <CardDescription className="text-gray-300">Your financial balance per each day at a
+                                    glance</CardDescription>
                             </CardHeader>
                             <CardContent className="flex items-center justify-center h-full">
-                                <div className="relative w-full" style={{ height: '300px' }}>
+                                <div className="relative w-full" style={{height: '300px'}}>
                                     <LineChart
                                         darkMode={true}
                                         data={summaryData.transactions.map(t => t.balance)}
@@ -190,14 +201,14 @@ export default function Home() {
                                 <CardDescription className="text-gray-300">Where your money is going</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <PieChart darkMode={true} data={categories[0]} />
+                                <PieChart darkMode={true} data={categories[0]}/>
                             </CardContent>
                             <CardHeader>
                                 <CardTitle className="text-white">Income Breakdown</CardTitle>
                                 <CardDescription className="text-gray-300">Where your money is coming</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <PieChart darkMode={true} data={categories[1]} />
+                                <PieChart darkMode={true} data={categories[1]}/>
                             </CardContent>
                         </Card>
                     </div>
@@ -276,20 +287,20 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="goals">
-                    <BudgetGoals userId={userId} />
+                    <BudgetGoals userId={userId}/>
                 </TabsContent>
 
                 <TabsContent value="reports">
-                    <BudgetReports userId={userId} />
+                    <BudgetReports userId={userId}/>
                 </TabsContent>
 
                 <TabsContent value="predictions">
-                    <BudgetPredictions userId={userId} />
+                    <BudgetPredictions userId={userId}/>
                 </TabsContent>
             </Tabs>
 
             {/* Floating AI Chat Button */}
-            <AIChat />
+            <AIChat/>
         </div>
     )
 }
