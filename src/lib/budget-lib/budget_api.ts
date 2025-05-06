@@ -159,6 +159,7 @@ async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> 
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include', // Include cookies with every request
         ...options,
     });
 
