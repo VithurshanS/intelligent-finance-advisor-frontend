@@ -3,14 +3,13 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { LineChart } from "./charts"
 import { BudgetApi } from "@/lib/budget-lib/budget_api"
-import { BudgetGoal, BudgetGoalCreate, BudgetGoalUpdate } from "@/lib/budget-lib/budget_api"
+import { BudgetGoal, BudgetGoalCreate } from "@/lib/budget-lib/budget_api"
 import {
   Dialog,
   DialogContent,
@@ -18,10 +17,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
 } from "@/components/ui/dialog"
 import { Calendar, Check, X } from "lucide-react"
-import { title } from "process"
 
 interface BudgetGoalsProps {
   userId: string
@@ -79,7 +76,7 @@ export function BudgetGoals({ userId }: BudgetGoalsProps) {
         title: "FALSE:" + newGoal.title,
       }
 
-      const createdGoal = await BudgetApi.createBudgetGoal(goalToCreate)
+      await BudgetApi.createBudgetGoal(goalToCreate)
       const goals = await BudgetApi.getBudgetGoals(userId)
       const filtered = goals.filter(g => g.title != "")
       setGoals(filtered)
@@ -147,7 +144,6 @@ export function BudgetGoals({ userId }: BudgetGoalsProps) {
   }
 
   const categories = ["Savings", "Housing", "Education", "Retirement", "Lifestyle", "Debt", "Other"]
-  const priorities = ["High", "Medium", "Low"]
 
   const today = new Date()
   const overdueGoals = goals.filter(goal => new Date(goal.deadline) < today && goal.title.startsWith("FALSE"))

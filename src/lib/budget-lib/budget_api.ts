@@ -66,7 +66,10 @@ export interface TransactionSummary {
     previous_balance: number;
     previous_income: number;
     previous_expense: number;
-    transactions: Transaction[];
+    transactions: {
+        date: string;
+        balance: number;
+    }[];
 }
 
 export interface PredictionResponse {

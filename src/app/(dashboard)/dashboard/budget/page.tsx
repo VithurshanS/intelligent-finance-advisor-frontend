@@ -10,7 +10,7 @@ import { BudgetGoals } from "@/app/(dashboard)/dashboard/budget/components/budge
 import { BudgetPredictions } from "@/app/(dashboard)/dashboard/budget/components/budget-predictions"
 import { AIChat } from "@/app/(dashboard)/dashboard/budget/components/ai-chat"
 import { DollarSign, TrendingUp, PieChartIcon, Target } from "lucide-react"
-import { BudgetApi, CategoryBreakdown, Transaction } from "@/lib/budget-lib/budget_api" // Import our API functions
+import { BudgetApi, CategoryBreakdown } from "@/lib/budget-lib/budget_api" // Import our API functions
 import { getCurrentUser } from "@/actions/auth"
 import { calculateBalanceTrendScore, calculateOverallScore, calculateSavingsScore, calculateSpendingScore } from "@/app/(dashboard)/dashboard/budget/utils/utils"
 
@@ -21,7 +21,10 @@ export interface TransactionSummary {
     previousIncome: number;
     previousExpense: number;
     previousBalance: number;
-    transactions: any[];
+    transactions: {
+        date: string;
+        balance: number;
+    }[];
 }
 
 export default function Home() {
@@ -218,8 +221,7 @@ export default function Home() {
                                     </div>
                                     <Progress
                                         value={calculateOverallScore(summaryData)}
-                                        className="h-2 bg-gray-700"
-                                        indicatorclassname="bg-blue-500"
+                                        className="h-2 bg-gray-700 text-blue-500"
                                     />
 
                                     {/* Breakdown */}
@@ -234,8 +236,7 @@ export default function Home() {
                                             </div>
                                             <Progress
                                                 value={calculateSavingsScore(summaryData)}
-                                                className="h-2 bg-gray-700"
-                                                indicatorclassname="bg-blue-500"
+                                                className="h-2 bg-gray-700 text-blue-500"
                                             />
                                         </div>
 
@@ -249,8 +250,7 @@ export default function Home() {
                                             </div>
                                             <Progress
                                                 value={calculateSpendingScore(summaryData)}
-                                                className="h-2 bg-gray-700"
-                                                indicatorclassname="bg-blue-500"
+                                                className="h-2 bg-gray-700 text-blue-500"
                                             />
                                         </div>
 
@@ -264,8 +264,7 @@ export default function Home() {
                                             </div>
                                             <Progress
                                                 value={calculateBalanceTrendScore(summaryData)}
-                                                className="h-2 bg-gray-700"
-                                                indicatorclassname="bg-blue-500"
+                                                className="h-2 bg-gray-700 text-blue-500"
                                             />
                                         </div>
                                     </div>

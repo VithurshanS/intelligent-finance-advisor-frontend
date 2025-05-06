@@ -1,22 +1,21 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { Transaction, TransactionSummary } from "@/lib/budget-lib/budget_api" // Import your types
 
 // Shared types
-interface ChartDataPoint {
-  value: number
-  label: string
-  color?: string
-}
+// interface ChartDataPoint {
+//   value: number
+//   label: string
+//   color?: string
+// }
 
-interface ChartProps {
-  darkMode?: boolean
-  data?: ChartDataPoint[] | number[]
-  labels?: string[]
-  width?: number
-  height?: number
-}
+// interface ChartProps {
+//   darkMode?: boolean
+//   data?: ChartDataPoint[] | number[]
+//   labels?: string[]
+//   width?: number
+//   height?: number
+// }
 
 // Shared utility functions
 const useResponsiveCanvas = (ref: React.RefObject<HTMLCanvasElement>) => {
@@ -49,7 +48,7 @@ export function LineChart({
   labels: string[];
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  useResponsiveCanvas(canvasRef);
+  useResponsiveCanvas(canvasRef as React.RefObject<HTMLCanvasElement>);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -209,7 +208,7 @@ export function PieChart({
   colors = DEFAULT_COLORS
 }: PieChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  useResponsiveCanvas(canvasRef)
+  useResponsiveCanvas(canvasRef as React.RefObject<HTMLCanvasElement>)
 
   useEffect(() => {
     const canvas = canvasRef.current

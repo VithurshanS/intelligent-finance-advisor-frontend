@@ -1,12 +1,10 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { AlertCircle, ArrowUpRight, TrendingUp, TrendingDown, LineChartIcon } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { LineChart } from "./charts"
 import { useEffect, useState } from "react"
 import { BudgetApi } from "@/lib/budget-lib/budget_api"
 import { PredictionResponse } from "@/lib/budget-lib/budget_api"
@@ -72,7 +70,7 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
         <AlertCircle className="h-4 w-4 text-blue-400" />
         <AlertTitle className="text-white">No Data Available</AlertTitle>
         <AlertDescription className="text-gray-300">
-          We couldn't find any prediction data for your account.
+          {"We couldn't find any prediction data for your account."}
         </AlertDescription>
       </Alert>
     )
