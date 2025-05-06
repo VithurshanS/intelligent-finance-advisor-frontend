@@ -130,7 +130,14 @@ export interface EsgRiskResponse {
     esg_risk_score?: number | null;
 }
 
-export interface anomalyFlag {
+export interface HistoricalDataPoint {
+    date: string;
+    close: number;
+    volume: number;
+    percent_change?: number | null;
+}
+
+export interface AnomalyFlag {
     type?: string | null;
     date?: string | null;
     description?: string | null;
@@ -138,8 +145,9 @@ export interface anomalyFlag {
 }
 
 export interface AnomalyDetectionResponse {
-    flags?: anomalyFlag[] | null;
+    flags?: AnomalyFlag[] | null;
     anomaly_score?: number | null;  // Range: 0 to 10
+    historical_data?: HistoricalDataPoint[] | null;  // Historical price and volume data for plotting
 }
 
 export type OverallRiskResponse = {
