@@ -4,9 +4,9 @@ import {SidebarInset, SidebarProvider, SidebarTrigger,} from "@/components/ui/si
 import {Bell, LogOut} from "lucide-react"
 import {ModeToggle} from "@/components/ThemeProvider";
 import {Button} from "@/components/ui/button";
-import {logout} from "@/actions/auth";
 import React, {Suspense} from "react";
 import {SidebarSkeleton} from "@/app/(dashboard)/_components/sidebar-skeleton";
+import Link from "next/link";
 
 export default function DashboardLayout({children}: { children: React.ReactNode }) {
     return (
@@ -15,7 +15,8 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
                 <AppSidebar/>
             </Suspense>
             <SidebarInset>
-                <header className="flex h-16 items-center justify-between transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b-1 shadow-sm">
+                <header
+                    className="flex h-16 items-center justify-between transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b-1 shadow-sm">
                     <div className="flex items-center gap-2 px-4">
                         <SidebarTrigger className="-ml-1"/>
                     </div>
@@ -31,9 +32,11 @@ export default function DashboardLayout({children}: { children: React.ReactNode 
                             orientation="vertical"
                             className="data-[orientation=vertical]:h-4"
                         />
-                        <Button variant={'ghost'} size={'icon'} onClick={logout}>
-                            <LogOut size={16}/>
-                        </Button>
+                        <Link href="/logout" passHref >
+                            <button className={'cursor-pointer hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 w-8 h-8 rounded-sm flex items-center justify-center transition-colors'}>
+                                <LogOut size={16}/>
+                            </button>
+                        </Link>
                     </div>
                 </header>
                 <div className="flex-1 overflow-auto">
