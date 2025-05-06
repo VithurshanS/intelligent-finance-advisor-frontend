@@ -46,7 +46,7 @@ const AnomalySection = ({
     const sortedFlags = anomalyRisk?.flags?.sort((a, b) => {
         const dateA = new Date(a.date || 0);
         const dateB = new Date(b.date || 0);
-        return dateA.getTime() - dateB.getTime(); // Sort in descending order
+        return dateA.getTime() - dateB.getTime(); // Sort in ascending order
     });
 
     return (
