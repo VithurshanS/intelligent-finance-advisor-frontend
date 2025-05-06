@@ -4,10 +4,10 @@ import {useSearchParams} from "next/navigation";
 import {motion} from "framer-motion";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {OptimizedPortfolioResult} from "@/lib/types/profile";
-import {PieChart, Pie, Cell, Tooltip, ResponsiveContainer} from "recharts";
+import {PieChart, Pie, Cell, Tooltip as TooltipComponent, ResponsiveContainer} from "recharts";
 import {Badge} from "@/components/ui/badge";
 import {Separator} from "@/components/ui/separator";
-import {ArrowUpRight, TrendingUp, AlertTriangle, Target, PieChart as PieChartIcon} from "lucide-react";
+import {ArrowUpRight, TrendingUp, AlertTriangle, Target, PieChart as PieChartIcon,Info} from "lucide-react";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -15,6 +15,8 @@ import {
     BreadcrumbList,
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
+
+import PortfolioExplanation from "@/components/portfolio/PortfolioExplanation";
 
 export default function PortfolioResultsPage() {
     const searchParams = useSearchParams();
@@ -69,7 +71,7 @@ export default function PortfolioResultsPage() {
                     transition={{duration: 0.5}}
                 >
                     <h1 className="text-3xl font-bold mb-6">Portfolio Optimization Results</h1>
-
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Portfolio Allocation Chart */}
                         <Card>
@@ -97,7 +99,7 @@ export default function PortfolioResultsPage() {
                                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
                                                 ))}
                                             </Pie>
-                                            <Tooltip/>
+                                            <TooltipComponent/>
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -205,8 +207,12 @@ export default function PortfolioResultsPage() {
                                 </div>
                             </CardContent>
                         </Card>
+                        
                     </div>
                 </motion.div>
+                <div>
+                <PortfolioExplanation portfolioData={result} />
+                </div>
             </div>
         );
     } catch (error) {

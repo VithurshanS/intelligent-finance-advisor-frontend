@@ -42,3 +42,14 @@ export async function optimizePortfolio(
         };
     }
 }
+
+
+export async function getPortfolioExplanation(portfolioData: any) {
+    try {
+      const response = await AxiosInstance.post("/portfolio-explanation/explain", portfolioData);
+      return { success: true, data: response.data };
+    } catch (error: any) {
+      console.error("Server Action Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  }
