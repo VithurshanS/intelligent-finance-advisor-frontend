@@ -1,6 +1,7 @@
 // budgetApi.ts
+import {BACKEND_BASE_URL as BURL} from "@/lib/const";
 
-const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || "http://localhost:8000";
+const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || BURL;
 
 export interface Transaction {
     id: number;
@@ -121,6 +122,7 @@ export interface BudgetReportResponse {
         alerts: string[];
     };
 }
+
 export interface BudgetReport {
     summary: {
         total_income: number;
@@ -231,8 +233,7 @@ export const BudgetApi = {
     },
 
     async getTransactionSummary(userId: string): Promise<TransactionSummary> {
-        const res: Promise<TransactionSummary> = fetchApi(`/transactions/summary/${userId}`);
-        return res;
+        return fetchApi(`/transactions/summary/${userId}`);
     },
 
     // Budget Goal CRUD operations
