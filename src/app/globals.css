@@ -182,68 +182,68 @@
     }
 }
 
-/* Add to globals.css */
-.gemini-logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
+/*!* Add to globals.css *!*/
+/*.gemini-logo-container {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    cursor: pointer;*/
+/*}*/
 
-.gemini-logo-svg {
-    width: 100%;
-    height: 100%;
-    animation: gemini-rotate 10s infinite cubic-bezier(0.22, 1, 0.36, 1);
-}
+/*.gemini-logo-svg {*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    animation: gemini-rotate 10s infinite cubic-bezier(0.22, 1, 0.36, 1);*/
+/*}*/
 
-.gemini-animated-path {
-    animation: gemini-gradient-move 5s infinite linear;
-}
+/*.gemini-animated-path {*/
+/*    animation: gemini-gradient-move 5s infinite linear;*/
+/*}*/
 
-.gemini-tooltip-content {
-    max-width: 250px;
-    text-align: center;
-    padding: 12px;
-    background: var(--muted);
-}
+/*.gemini-tooltip-content {*/
+/*    max-width: 250px;*/
+/*    text-align: center;*/
+/*    padding: 12px;*/
+/*    background: var(--muted);*/
+/*}*/
 
-.gemini-gradient-text {
-    font-weight: 600;
-    font-size: 0.9rem;
-    background: linear-gradient(45deg, #9168C0, #5684D1, #1BA1E3);
-    background-size: 200% 200%;
-    animation: gemini-gradient-move 5s infinite linear;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 4px;
-}
+/*.gemini-gradient-text {*/
+/*    font-weight: 600;*/
+/*    font-size: 0.9rem;*/
+/*    background: linear-gradient(45deg, #9168C0, #5684D1, #1BA1E3);*/
+/*    background-size: 200% 200%;*/
+/*    animation: gemini-gradient-move 5s infinite linear;*/
+/*    -webkit-background-clip: text;*/
+/*    background-clip: text;*/
+/*    color: transparent;*/
+/*    margin-bottom: 4px;*/
+/*}*/
 
-.gemini-caution-text {
-    font-size: 0.75rem;
-    color: var(--muted-foreground);
-}
+/*.gemini-caution-text {*/
+/*    font-size: 0.75rem;*/
+/*    color: var(--muted-foreground);*/
+/*}*/
 
-@keyframes gemini-rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    30% {
-        transform: rotate(360deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
+/*@keyframes gemini-rotate {*/
+/*    0% {*/
+/*        transform: rotate(0deg);*/
+/*    }*/
+/*    30% {*/
+/*        transform: rotate(360deg);*/
+/*    }*/
+/*    100% {*/
+/*        transform: rotate(360deg);*/
+/*    }*/
+/*}*/
 
-@keyframes gemini-gradient-move {
-    0% {
-        background-position: 0 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0 50%;
-    }
-}
+/*@keyframes gemini-gradient-move {*/
+/*    0% {*/
+/*        background-position: 0 50%;*/
+/*    }*/
+/*    50% {*/
+/*        background-position: 100% 50%;*/
+/*    }*/
+/*    100% {*/
+/*        background-position: 0 50%;*/
+/*    }*/
+/*}*/

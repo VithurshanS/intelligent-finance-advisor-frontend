@@ -401,13 +401,15 @@ const QuantEsgSection = ({
                                                             />
                                                         </div>
                                                     </TooltipTrigger>
-                                                    <TooltipContent className="gemini-tooltip-content" side={'right'}>
+                                                    <TooltipContent className="max-w-[250px] text-center p-3 bg-muted"
+                                                                    side="right">
                                                         <div>
-                                                            <div className="gemini-gradient-text">Powered Writer Palmyra
-                                                                Finance
+                                                            <div
+                                                                className="font-semibold text-[0.9rem] text-primary mb-1">
+                                                                Powered Wtiter Palmyra Finance
                                                             </div>
-                                                            <div className="gemini-caution-text">AI can make mistakes.
-                                                                Use with caution.
+                                                            <div className="text-[0.75rem] text-muted-foreground">
+                                                                AI can make mistakes. Use with caution.
                                                             </div>
                                                         </div>
                                                     </TooltipContent>
