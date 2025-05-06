@@ -35,6 +35,7 @@ const StatusManager = ({
     asset: Asset;
 }) => {
     const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState<AssetStatus>(asset.db?.status as AssetStatus || 'Active');
 
     const handleStatusChange = async (status: AssetStatus) => {
         if (!asset.db?.asset_id) {
@@ -71,6 +72,7 @@ const StatusManager = ({
                     autoClose: 3000,
                     isLoading: false
                 });
+                setStatus(asset.db.status as AssetStatus || 'Active'); // Reset to previous status
             }
         } catch (error) {
             // Handle unexpected errors
@@ -82,6 +84,7 @@ const StatusManager = ({
                 autoClose: 3000,
                 isLoading: false
             });
+            setStatus(asset.db.status as AssetStatus || 'Active');
         } finally {
             setLoading(false);
         }
@@ -138,12 +141,19 @@ const StatusManager = ({
     return (
         <div className="flex flex-col sm:flex-row gap-4 mt-4">
             <Select
-                disabled={loading}
-                onValueChange={(value) => handleStatusChange(value as AssetStatus)}
-                defaultValue={asset.db?.status || undefined}
+                disabled={loading || asset.db?.status === 'Pending'}
+                value={status}  // Use controlled value from state
+                onValueChange={(value) => {
+                    setStatus(value as AssetStatus);  // Update local state
+                    handleStatusChange(value as AssetStatus);  // Call the action
+                }}
             >
                 <SelectTrigger className="w-full sm:w-48 border-gray-300 dark:border-gray-600">
-                    <SelectValue placeholder="Change Status"/>
+                    <SelectValue placeholder="Change Status">
+                        {/* Display the current status with icon */}
+                        {statusOptions.find(option => option.value === status)?.icon}
+                        {statusOptions.find(option => option.value === status)?.label || "Change Status"}
+                    </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                     {statusOptions.map(({value, label, icon}) => (
