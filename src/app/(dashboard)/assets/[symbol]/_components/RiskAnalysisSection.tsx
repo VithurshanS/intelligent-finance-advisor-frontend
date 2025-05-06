@@ -21,12 +21,22 @@ import NewsSection from './NewsSection';
 import QuantEsgSection from './QuantEsgSection';
 import AnomalySection from './AnomalySection';
 import OverallRiskSection from './OverallRiskSection';
-import { BACKEND_BASE_URL } from '@/lib/const';
+import {BACKEND_BASE_URL} from '@/lib/const';
+import {refetchNewsSentimentAnalysis} from "../_utils/actions";
 
 interface RiskAnalysisSectionProps {
     ticker: string;
     inDb: boolean;
     asset: Asset;
+}
+
+interface SectionErrors {
+    news: string | null;
+    sentiment: string | null;
+    quant: string | null;
+    esg: string | null;
+    anomaly: string | null;
+    overall: string | null;
 }
 
 const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) => {
@@ -51,7 +61,7 @@ const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) =>
 
     // Error states
     const [error, setError] = useState<string | null>(null);
-    const [sectionErrors, setSectionErrors] = useState({
+    const [sectionErrors, setSectionErrors] = useState<SectionErrors>({
         news: null,
         sentiment: null,
         quant: null,
@@ -151,6 +161,36 @@ const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) =>
         };
     }, [ticker, inDb]);
 
+    async function regenerateNewsSentiment() {
+        try {
+            setSectionLoading(prev => ({...prev, sentiment: true}));
+            setSectionErrors(prev => ({...prev, sentiment: null}));
+
+            const result = await refetchNewsSentimentAnalysis(ticker);
+
+            if (!result.success) {
+                setSectionErrors(prev => ({
+                    ...prev,
+                    sentiment: result.message || "Failed to regenerate sentiment analysis"
+                }));
+                setSectionLoading(prev => ({...prev, sentiment: false}));
+            } else if (result.data) {
+                // Update the data directly if it was returned
+                setNewsSentiment(result.data);
+                setSectionLoading(prev => ({...prev, sentiment: false}));
+            }
+            // If no immediate data is returned, the loading state remains true
+            // and will be updated by the SSE stream when new data arrives
+        } catch (error) {
+            console.error("Error regenerating sentiment analysis:", error);
+            setSectionErrors(prev => ({
+                ...prev,
+                sentiment: "An unexpected error occurred when regenerating sentiment"
+            }));
+            setSectionLoading(prev => ({...prev, sentiment: false}));
+        }
+    }
+
     if (!inDb) {
         return (
             <div className="mb-6 p-6 border ">
@@ -225,6 +265,7 @@ const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) =>
                             errorSentiment={sectionErrors.sentiment}
                             newsArticles={newsArticles}
                             newsSentiment={newsSentiment}
+                            regenerateNewsSentiment={regenerateNewsSentiment}
                         />
                     </section>
 
