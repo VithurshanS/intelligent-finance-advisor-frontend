@@ -19,10 +19,10 @@ const Page = async ({
 
     return (
         <div className="flex flex-col px-5 py-4 items-center justify-center">
-            <div className="flex items-center justify-between mb-5 w-full max-w-[64rem]">
+            <div className="flex items-center justify-between mb-5 w-full">
                 <h1 className="text-2xl font-semibold">System Assets</h1>
             </div>
-            <div className="flex flex-col gap-4 w-full max-w-[64rem]">
+            <div className="flex flex-col gap-4 w-full">
                 <Suspense key={page} fallback={<AssetsTableSkeleton/>}>
                     <AssetsTable page={page} result_per_page={result_per_page}/>
                 </Suspense>
