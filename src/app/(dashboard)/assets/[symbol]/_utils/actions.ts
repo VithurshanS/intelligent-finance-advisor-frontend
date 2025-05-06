@@ -7,7 +7,7 @@ import {HTTPValidationError} from "@/lib/types/register";
 import {
     Asset,
     AssetErrorResponse,
-    AssetStatus,
+    AssetStatus, SentimentAnalysisResponse,
     UpdateStockStatusResponse
 } from "@/app/(dashboard)/assets/[symbol]/_utils/definitions";
 
@@ -176,3 +176,54 @@ export async function deleteStockAction(stockId: number): Promise<{ success: boo
     }
 }
 
+export async function refetchNewsSentimentAnalysis(ticker: string): Promise<{
+    success: boolean;
+    message?: string;
+    data?: SentimentAnalysisResponse;
+}> {
+    try {
+        const response = await AxiosInstance.get(`/risk-analysis/${ticker}/regenerate-news-analysis`);
+        return {
+            success: true,
+            message: "News sentiment analysis regenerated successfully",
+            data: response.data as SentimentAnalysisResponse,
+        };
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const status = error.response?.status;
+            console.error('Regenerate news sentiment analysis API error:', error.response?.data, 'status', status);
+            const errorData = error.response?.data as HTTPValidationError | { detail?: string };
+
+            // Handle validation errors
+            if (Array.isArray(errorData?.detail) && errorData.detail.length > 0) {
+                return {
+                    success: false,
+                    message: errorData.detail[0].msg,
+                };
+            }
+            // Handle string error messages
+            else if (typeof errorData?.detail === 'string') {
+                return {
+                    success: false,
+                    message: errorData.detail,
+                };
+            }
+            // Handle other errors
+            else {
+                console.error('Regenerate news sentiment analysis API error:', error.response?.data);
+                return {
+                    success: false,
+                    message: 'Failed to regenerate news sentiment analysis. Please try again.',
+                };
+            }
+        }
+
+        // Log non-Axios errors
+        console.error('Unexpected error regenerating news sentiment analysis:', error);
+
+        return {
+            success: false,
+            message: 'An unexpected error occurred. Please try again.',
+        };
+    }
+}

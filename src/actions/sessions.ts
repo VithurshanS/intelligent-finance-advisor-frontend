@@ -11,20 +11,20 @@ export async function createSession(loginResponse: LoginResponse) {
 
     cookieStore.set('token', token, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.ENV === 'production',
         maxAge: 60 * 60 * 24, // 1 day
         path: '/',
         sameSite: 'strict',
-        domain: "shancloudservice.com"
+        domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
     });
 
     cookieStore.set('user', JSON.stringify(loginResponse), {
         httpOnly: true,
-        secure: true,
+        secure: process.env.ENV === 'production',
         maxAge: 60 * 60 * 24, // 1 day
         path: '/',
         sameSite: 'strict',
-        domain: "shancloudservice.com"
+        domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
     });
 }
 
