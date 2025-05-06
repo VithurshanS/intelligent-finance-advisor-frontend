@@ -13,6 +13,9 @@ jobs:
       contents: write  # Needed for pushing changes
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
       
       - name: Replace const.ts with production_const.ts
         run: |
@@ -24,4 +27,10 @@ jobs:
           git config user.email "action@github.com"
           git add src/lib/const.ts
           git commit -m "Auto-replace const.ts with production_const.ts on production branch" || echo "No changes to commit"
-          git push
+          
+          # Only push if we're on a branch (not in detached HEAD from PR)
+          if [ "${{ github.event_name }}" = "push" ]; then
+            git push
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            git push origin HEAD:${{ github.head_ref }}
+          fi
