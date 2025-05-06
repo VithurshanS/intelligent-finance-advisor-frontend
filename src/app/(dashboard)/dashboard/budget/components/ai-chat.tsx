@@ -7,7 +7,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { MessageCircle, X, Send, Bot, User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import MarkdownRenderer from "@/components/budget-ui/markdown_renderer"
+import MarkdownRenderer from "@/app/(dashboard)/dashboard/budget/components/markdown_renderer"
+import { BudgetApi } from "@/lib/budget-lib/budget_api"
 
 export function AIChat() {
   const [isOpen, setIsOpen] = useState(false)
@@ -37,33 +38,21 @@ export function AIChat() {
     setInput("")
 
     try {
-      const encodedPrompt = encodeURIComponent(userMessage.content);
-      const url = `${process.env.BACKEND_BASE_URL}/budget/chat?prompt=${encodedPrompt}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data.response) {
-        throw new Error('Invalid response format: missing text property');
-      }
+      const response = await BudgetApi.chat(input)
 
       const botMessage = {
         role: "bot",
-        content: data.response,
+        content: response.response,
         timestamp: new Date(),
-      };
+      }
       setMessages((prev) => [...prev, botMessage])
     } catch (error) {
-      console.error('Error fetching bot response:', error);
+      console.error('Error fetching bot response:', error)
       const botMessage = {
         role: "bot",
         content: "Sorry, I encountered an error while processing your request.",
         timestamp: new Date(),
-      };
+      }
       setMessages((prev) => [...prev, botMessage])
     }
   }

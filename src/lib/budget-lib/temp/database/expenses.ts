@@ -114,8 +114,8 @@ export async function getSummaryByUserId(userId: string): Promise<TransactionSum
 
         // console.log(incomeData, expenseData)
 
-        const income = incomeData?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
-        const expense = expenseData?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
+        const income = incomeData?.reduce((sum: any, t: { amount: any }) => sum + (t.amount || 0), 0) || 0;
+        const expense = expenseData?.reduce((sum: any, t: { amount: any }) => sum + (t.amount || 0), 0) || 0;
 
         // Get income for last 30 days
         const { data: incomeDataP } = await supabase
@@ -137,8 +137,8 @@ export async function getSummaryByUserId(userId: string): Promise<TransactionSum
 
         // console.log(incomeData, expenseData)
 
-        const incomep = incomeDataP?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
-        const expensep = expenseDataP?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0;
+        const incomep = incomeDataP?.reduce((sum: any, t: { amount: any }) => sum + (t.amount || 0), 0) || 0;
+        const expensep = expenseDataP?.reduce((sum: any, t: { amount: any }) => sum + (t.amount || 0), 0) || 0;
 
         const { data: transactions } = await supabase
             .from('transactions')
@@ -148,7 +148,7 @@ export async function getSummaryByUserId(userId: string): Promise<TransactionSum
             .order('created_at', { ascending: true });
 
         // Calculate daily balances
-        const dailyBalances = transactions?.reduce((acc, transaction) => {
+        const dailyBalances = transactions?.reduce((acc: { [x: string]: number }, transaction: { created_at: string | number | Date; type: string; amount: number }) => {
             const date = new Date(transaction.created_at).toISOString().split('T')[0]; // Get just the date part
 
             if (!acc[date]) {

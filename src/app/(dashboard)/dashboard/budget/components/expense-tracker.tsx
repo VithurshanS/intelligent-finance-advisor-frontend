@@ -1,0 +1,256 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { PieChart } from "./charts"
+
+export function ExpenseTracker() {
+  const [expenses, setExpenses] = useState([
+    { id: 1, date: "2023-04-01", category: "Housing", description: "Rent", amount: 1200 },
+    { id: 2, date: "2023-04-02", category: "Food", description: "Groceries", amount: 150 },
+    { id: 3, date: "2023-04-05", category: "Transportation", description: "Gas", amount: 45 },
+    { id: 4, date: "2023-04-10", category: "Utilities", description: "Electricity", amount: 85 },
+    { id: 5, date: "2023-04-15", category: "Entertainment", description: "Movie tickets", amount: 30 },
+  ])
+
+  const [newExpense, setNewExpense] = useState({
+    date: new Date().toISOString().split("T")[0],
+    category: "",
+    description: "",
+    amount: "",
+  })
+
+  const handleAddExpense = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!newExpense.category || !newExpense.description || !newExpense.amount) {
+      return
+    }
+
+    setExpenses([
+      ...expenses,
+      {
+        id: expenses.length + 1,
+        date: newExpense.date,
+        category: newExpense.category,
+        description: newExpense.description,
+        amount: Number.parseFloat(newExpense.amount),
+      },
+    ])
+
+    setNewExpense({
+      date: new Date().toISOString().split("T")[0],
+      category: "",
+      description: "",
+      amount: "",
+    })
+  }
+
+  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0)
+
+  const categories = [
+    "Housing",
+    "Food",
+    "Transportation",
+    "Utilities",
+    "Entertainment",
+    "Healthcare",
+    "Education",
+    "Shopping",
+    "Other",
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Total Expenses</CardTitle>
+            <CardDescription>Current month</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">${totalExpenses.toFixed(2)}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Budget Remaining</CardTitle>
+            <CardDescription>Current month</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">$850.00</div>
+            <div className="text-sm text-amber-600 mt-1">28% of budget remaining</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Largest Expense</CardTitle>
+            <CardDescription>Current month</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">Housing</div>
+            <div className="text-sm text-gray-500 mt-1">$1,200.00 (42% of total)</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="list">
+        <TabsList className="mb-4">
+          <TabsTrigger value="list">Expense List</TabsTrigger>
+          <TabsTrigger value="add">Add Expense</TabsTrigger>
+          <TabsTrigger value="analysis">Analysis</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="list">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Expenses</CardTitle>
+              <CardDescription>Track your spending</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <div className="grid grid-cols-5 bg-slate-50 p-4 font-medium">
+                  <div>Date</div>
+                  <div>Category</div>
+                  <div className="col-span-2">Description</div>
+                  <div className="text-right">Amount</div>
+                </div>
+                <div className="divide-y">
+                  {expenses.map((expense) => (
+                    <div key={expense.id} className="grid grid-cols-5 p-4">
+                      <div>{new Date(expense.date).toLocaleDateString()}</div>
+                      <div>{expense.category}</div>
+                      <div className="col-span-2">{expense.description}</div>
+                      <div className="text-right">${expense.amount.toFixed(2)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="add">
+          <Card>
+            <CardHeader>
+              <CardTitle>Add New Expense</CardTitle>
+              <CardDescription>Record your spending</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleAddExpense} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date">Date</Label>
+                    <Input
+                      id="date"
+                      type="date"
+                      value={newExpense.date}
+                      onChange={(e) => setNewExpense({ ...newExpense, date: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Category</Label>
+                    <Select
+                      value={newExpense.category}
+                      onValueChange={(value) => setNewExpense({ ...newExpense, category: value })}
+                    >
+                      <SelectTrigger id="category">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Input
+                    id="description"
+                    value={newExpense.description}
+                    onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="amount">Amount ($)</Label>
+                  <Input
+                    id="amount"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={newExpense.amount}
+                    onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })}
+                  />
+                </div>
+
+                <Button type="submit" className="w-full">
+                  Add Expense
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analysis">
+          <Card>
+            <CardHeader>
+              <CardTitle>Expense Analysis</CardTitle>
+              <CardDescription>Understand your spending patterns</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Spending by Category</h3>
+                  <PieChart data={expenses} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Monthly Trends</h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span>Housing</span>
+                      <span className="font-medium">$1,200.00</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Food</span>
+                      <span className="font-medium">$450.00</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Transportation</span>
+                      <span className="font-medium">$250.00</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Utilities</span>
+                      <span className="font-medium">$180.00</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>Entertainment</span>
+                      <span className="font-medium">$120.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" className="w-full">
+                Download Expense Report
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}

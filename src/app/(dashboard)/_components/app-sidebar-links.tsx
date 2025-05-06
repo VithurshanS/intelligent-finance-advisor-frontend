@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import {NavMain} from "@/app/(dashboard)/_components/nav-main";
-import {NavGuides} from "@/app/(dashboard)/_components/nav-guides";
-import {Role} from "@/lib/types/user";
-import {SidebarData} from "@/app/(dashboard)/_utils/types";
+import { NavMain } from "@/app/(dashboard)/_components/nav-main";
+import { NavGuides } from "@/app/(dashboard)/_components/nav-guides";
+import { Role } from "@/lib/types/user";
+import { SidebarData } from "@/app/(dashboard)/_utils/types";
 import {
     ChartCandlestickIcon,
     Earth,
@@ -21,6 +21,11 @@ const userSidebar: SidebarData = {
             url: "/dashboard/portfolio",
             icon: PieChart,
         },
+        {
+            title: "Budget Tracker",
+            url: "/dashboard/budget",
+            icon: ChartCandlestickIcon,
+        }
     ],
     guides: [
         {
@@ -84,12 +89,12 @@ const adminSidebar: SidebarData = {
     ],
 }
 
-const AppSidebarLinks = ({role}: { role: Role }) => {
+const AppSidebarLinks = ({ role }: { role: Role }) => {
     const sidebar = role === 'admin' ? adminSidebar : userSidebar;
     return (
         <>
-            <NavMain items={sidebar.navMain}/>
-            <NavGuides projects={sidebar.guides}/>
+            <NavMain items={sidebar.navMain} />
+            <NavGuides projects={sidebar.guides} />
         </>
     );
 };
