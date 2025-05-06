@@ -175,3 +175,4 @@ export async function deleteStockAction(stockId: number): Promise<{ success: boo
         };
     }
 }
+

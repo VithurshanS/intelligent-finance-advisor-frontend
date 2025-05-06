@@ -21,7 +21,7 @@ import NewsSection from './NewsSection';
 import QuantEsgSection from './QuantEsgSection';
 import AnomalySection from './AnomalySection';
 import OverallRiskSection from './OverallRiskSection';
-import {BACKEND_BASE_URL} from "@/lib/const";
+import { BACKEND_BASE_URL } from '@/lib/const';
 
 interface RiskAnalysisSectionProps {
     ticker: string;
@@ -86,7 +86,7 @@ const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) =>
             try {
                 // Create EventSource for SSE
                 const eventSource = new EventSource(`${BACKEND_BASE_URL}/risk-analysis/${ticker}/stream`, {
-                    withCredentials: false,
+                    withCredentials: true,
                 });
 
                 eventSource.onmessage = (event) => {
