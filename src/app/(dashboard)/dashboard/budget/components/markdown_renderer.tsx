@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 
-const MarkdownRenderer = ({ content }: { content: string }) => {
+const MarkdownRenderer = ({content}: { content: string }) => {
     return (
         <div className="markdown-content">
             <ReactMarkdown>

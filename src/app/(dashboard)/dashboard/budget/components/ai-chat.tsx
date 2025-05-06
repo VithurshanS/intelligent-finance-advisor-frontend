@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { MessageCircle, X, Send, Bot, User } from "lucide-react"
 import { Avatar } from "@/components/ui/avatar"
-import MarkdownRenderer from "@/app/(dashboard)/dashboard/budget/components/markdown_renderer"
+// import MarkdownRenderer from "@/app/(dashboard)/dashboard/budget/components/markdown_renderer"
 import { BudgetApi } from "@/lib/budget-lib/budget_api"
 
 export function AIChat() {
@@ -106,7 +106,7 @@ export function AIChat() {
                       : "bg-secondary text-secondary-foreground border border-border"
                       }`}
                   >
-                    <MarkdownRenderer content={message.content} />
+                    {/*<MarkdownRenderer content={message.content} />*/}
                     <p className="text-xs opacity-70 mt-1">
                       {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </p>
