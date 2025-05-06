@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import Image from "next/image";
 import {motion} from "framer-motion";
+import styles from "@/app/(dashboard)/assets/[symbol]/_components/GeminiLogo.module.css";
 import React from "react";
 
 
@@ -401,15 +402,13 @@ const QuantEsgSection = ({
                                                             />
                                                         </div>
                                                     </TooltipTrigger>
-                                                    <TooltipContent className="max-w-[250px] text-center p-3 bg-muted"
-                                                                    side="right">
+                                                    <TooltipContent className={styles.tooltipContent} side={'right'}>
                                                         <div>
-                                                            <div
-                                                                className="font-semibold text-[0.9rem] text-primary mb-1">
-                                                                Powered Wtiter Palmyra Finance
+                                                            <div className={styles.gradientText}>Powered Writer Palmyra
+                                                                Finance
                                                             </div>
-                                                            <div className="text-[0.75rem] text-muted-foreground">
-                                                                AI can make mistakes. Use with caution.
+                                                            <div className={styles.cautionText}>AI can make mistakes.
+                                                                Use with caution.
                                                             </div>
                                                         </div>
                                                     </TooltipContent>
