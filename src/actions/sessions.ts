@@ -30,7 +30,6 @@ export async function createSession(loginResponse: LoginResponse) {
 
 export async function deleteSession() {
     const cookieStore = await cookies();
-
     // Clear all auth cookies with the same options used when setting them
     cookieStore.delete({
         name: 'token',
