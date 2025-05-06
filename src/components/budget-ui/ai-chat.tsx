@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { MessageCircle, X, Send, Bot, User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import MarkdownRenderer from "./markdown_renderer"
+import MarkdownRenderer from "@/components/budget-ui/markdown_renderer"
 
 export function AIChat() {
   const [isOpen, setIsOpen] = useState(false)
