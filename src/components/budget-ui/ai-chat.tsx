@@ -38,7 +38,7 @@ export function AIChat() {
 
     try {
       const encodedPrompt = encodeURIComponent(userMessage.content);
-      const url = `${process.env.NEXT_PUBLIC_MAIN_LLM_API_ENDPOINT}?prompt=${encodedPrompt}`;
+      const url = `${process.env.BACKEND_BASE_URL}/budget/chat?prompt=${encodedPrompt}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -113,8 +113,8 @@ export function AIChat() {
                   )}
                   <div
                     className={`rounded-lg px-4 py-2 ${message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground border border-border"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground border border-border"
                       }`}
                   >
                     <MarkdownRenderer content={message.content} />
