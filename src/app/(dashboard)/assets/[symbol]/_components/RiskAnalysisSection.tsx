@@ -28,6 +28,7 @@ interface RiskAnalysisSectionProps {
     ticker: string;
     inDb: boolean;
     asset: Asset;
+    isAdmin: boolean;
 }
 
 interface SectionErrors {
@@ -39,7 +40,7 @@ interface SectionErrors {
     overall: string | null;
 }
 
-const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) => {
+const RiskAnalysisSection = ({ticker, inDb, asset, isAdmin}: RiskAnalysisSectionProps) => {
     // State for each section of data
     const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
     const [newsSentiment, setNewsSentiment] = useState<SentimentAnalysisResponse | null>(null);
@@ -191,23 +192,27 @@ const RiskAnalysisSection = ({ticker, inDb, asset}: RiskAnalysisSectionProps) =>
         }
     }
 
+    // Inside RiskAnalysisSection.tsx
     if (!inDb) {
         return (
-            <div className="mb-6 p-6 border ">
+            <div className="mb-6 p-6 border">
                 <h2 className="text-2xl font-bold mb-1">Risk Analysis</h2>
                 <p className="text-muted-foreground mb-6">
-                    Add this stock to the system to view comprehensive risk analysis
+                    {isAdmin
+                        ? "To access comprehensive risk analysis, please add this stock to the system using the 'Add Stock' button below. This will enable detailed metrics, news sentiment analysis, and more."
+                        : "Advanced risk analysis data is restricted to assets in the risk watchlist. Please contact your system administrator to request adding this asset to the watchlist for detailed insights."}
                 </p>
 
                 <div className="flex flex-col items-center text-center p-6">
-                    <div className="mb-4">
+                    <div className="mb-4 flex flex-col items-center">
                         <AlertCircle className="h-12 w-12 text-muted-foreground mb-2"/>
                         <p className="text-muted-foreground mb-6">
-                            Risk analysis data is only available for stocks that have been added to the system.
-                            Add this stock to access detailed risk metrics, news sentiment analysis, and more.
+                            {isAdmin
+                                ? "Risk analysis data is only available for stocks that have been added to the system. Add this stock to access detailed risk metrics, news sentiment analysis, and more."
+                                : "This asset is not currently in our risk watchlist. Risk analysis data including metrics, news sentiment, and price trends are only available for assets being actively monitored."}
                         </p>
                     </div>
-                    <AddStock stock={asset}/>
+                    {isAdmin && <AddStock stock={asset}/>}
                 </div>
             </div>
         );
