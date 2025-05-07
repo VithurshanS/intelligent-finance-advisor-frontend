@@ -199,8 +199,8 @@ const RiskAnalysisSection = ({ticker, inDb, asset, isAdmin}: RiskAnalysisSection
                 <h2 className="text-2xl font-bold mb-1">Risk Analysis</h2>
                 <p className="text-muted-foreground mb-6">
                     {isAdmin
-                        ? "Add this stock to the system to view comprehensive risk analysis"
-                        : "Advanced risk analysis is only available for assets in the risk watchlist"}
+                        ? "To access comprehensive risk analysis, please add this stock to the system using the 'Add Stock' button below. This will enable detailed metrics, news sentiment analysis, and more."
+                        : "Advanced risk analysis data is restricted to assets in the risk watchlist. Please contact your system administrator to request adding this asset to the watchlist for detailed insights."}
                 </p>
 
                 <div className="flex flex-col items-center text-center p-6">
