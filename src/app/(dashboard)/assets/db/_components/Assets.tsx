@@ -36,7 +36,7 @@ const AssetsTable = async ({page, result_per_page = 10}: ScreenTableProps): Prom
         );
     }
 
-    const sortedStocks = stocks.sort((a, b) => {
+    const sortedStocks = [...stocks].sort((a, b) => {
         const dateA = new Date(a.updated_at || 0);
         const dateB = new Date(b.updated_at || 0);
         return dateB.getTime() - dateA.getTime();
