@@ -6,7 +6,7 @@ import {NavGuides} from "@/app/(dashboard)/_components/nav-guides";
 import {Role} from "@/lib/types/user";
 import {SidebarData} from "@/app/(dashboard)/_utils/types";
 import {
-    ChartCandlestickIcon,
+    ChartCandlestickIcon, DollarSign,
     Earth,
     FolderGit2,
     LayoutGrid,
@@ -17,11 +17,20 @@ import {
 const userSidebar: SidebarData = {
     navMain: [
         {
+            title: "Dashboard",
+            url: "/dashboard",
+            icon: LayoutGrid,
+        },
+        {
+            title: "Budget Tracker",
+            url: "/dashboard/budget",
+            icon: DollarSign,
+        },
+        {
             title: "Portfolio Optimization",
             url: "/dashboard/portfolio",
-            icon: PieChart,
-        },
-    ],
+            icon: PieChart
+        },],
     guides: [
         {
             name: "ML Model Notebook",
