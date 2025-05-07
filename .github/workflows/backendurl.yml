@@ -3,18 +3,14 @@ name: Replace File on Production Merge
 on:
   push:
     branches: [ "production" ]
-  pull_request:
-    branches: [ "production" ]
 
 jobs:
   replace-file:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Needed for pushing changes
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.ADMIN_PAT }}  # PAT with admin rights
           fetch-depth: 0
       
       - name: Replace const.ts with production_const.ts
@@ -27,10 +23,4 @@ jobs:
           git config user.email "action@github.com"
           git add src/lib/const.ts
           git commit -m "Auto-replace const.ts with production_const.ts on production branch" || echo "No changes to commit"
-          
-          # Only push if we're on a branch (not in detached HEAD from PR)
-          if [ "${{ github.event_name }}" = "push" ]; then
-            git push
-          elif [ "${{ github.event_name }}" = "pull_request" ]; then
-            git push origin HEAD:${{ github.head_ref }}
-          fi
+          git push
