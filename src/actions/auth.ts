@@ -130,7 +130,7 @@ export const registerUser = async (
 
 export async function logout(): Promise<void> {
     await deleteSession();
-    redirect('/login');
+    redirect('/');
 }
 
 export async function getCurrentUser(): Promise<User | null> {

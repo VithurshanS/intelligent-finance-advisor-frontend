@@ -118,7 +118,7 @@ const OverallRiskSection = ({
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.4, delay: 0.2 }}
                     >
-                        <CardHeader className={`flex p-2 ${
+                        <CardHeader className={`flex px-4 py-2 ${
                             overallRisk.risk_level === 'High' ? 'border-l-4 border-red-500' :
                                 overallRisk.risk_level === 'Medium' ? 'border-l-4 border-yellow-500' :
                                     'border-l-4 border-green-500'
@@ -142,7 +142,7 @@ const OverallRiskSection = ({
                             </div>
                         </CardHeader>
                     </motion.div>
-                    <CardContent className="pt-4">
+                    <CardContent className="">
                         <div className="space-y-4">
                             {overallRisk.components && (
                                 <motion.div

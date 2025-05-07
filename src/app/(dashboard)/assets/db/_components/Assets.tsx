@@ -13,7 +13,7 @@ import StatusBadge from "@/app/(dashboard)/_components/StatusBadge";
 import {ArrowUpDown} from "lucide-react";
 import Link from "next/link";
 import {Skeleton} from "@/components/ui/skeleton";
-import { formatDistanceToNow } from 'date-fns';
+import {formatDistanceToNow} from 'date-fns';
 
 // Main component type definition
 interface ScreenTableProps {
@@ -72,11 +72,11 @@ const AssetsTable = async ({page, result_per_page = 10}: ScreenTableProps): Prom
                                     {stock.ticker_symbol}
                                 </Link>
                             </TableCell>
-                            <TableCell className="max-w-xs truncate py-3">{stock.asset_name || '-'}</TableCell>
+                            <TableCell className="max-w-[10rem] truncate py-3">{stock.asset_name || '-'}</TableCell>
                             <TableCell className="text-xs py-3">{stock.exchange || '-'}</TableCell>
                             <TableCell className="text-xs py-3">{stock.sectorDisp || '-'}</TableCell>
                             <TableCell
-                                className="text-xs max-w-xs truncate py-3">{stock.industryDisp || '-'}</TableCell>
+                                className="text-xs max-w-[10rem] truncate py-3">{stock.industryDisp || '-'}</TableCell>
                             <TableCell className="text-xs py-3">{stock.type || '-'}</TableCell>
                             <TableCell className="py-3">
                                 <StatusBadge status={stock.status}/>
@@ -87,7 +87,7 @@ const AssetsTable = async ({page, result_per_page = 10}: ScreenTableProps): Prom
                             </TableCell>
                             <TableCell className="text-xs text-right text-muted-foreground py-3">
                                 {stock.updated_at
-                                    ? formatDistanceToNow(new Date(stock.updated_at), { addSuffix: true })
+                                    ? formatDistanceToNow(new Date(stock.updated_at), {addSuffix: true})
                                     : '-'}
                             </TableCell>
                         </TableRow>

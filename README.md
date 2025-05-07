@@ -40,6 +40,7 @@ Create a `.env` file in the root directory.
 - **`BACKEND_BASE_URL`**: Base URL for the API (e.g., `https://api.example.com`)..
 - For local development, you can use `http://localhost:8000` if your FastAPI server is running locally. If localhost not
   working try http://127.0.0.1:8000
+- **`ENV`**: Environment type (e.g., `development`, `production`).
 
 ### 🗂️ App Directory Convention
 
