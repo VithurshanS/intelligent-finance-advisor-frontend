@@ -404,8 +404,12 @@ const QuantEsgSection = ({
                                                     </TooltipTrigger>
                                                     <TooltipContent className={styles.tooltipContent} side={'right'}>
                                                         <div>
-                                                            <div className={styles.gradientText}>Powered Writer Palmyra Finance</div>
-                                                            <div className={styles.cautionText}>AI can make mistakes. Use with caution.</div>
+                                                            <div className={styles.gradientText}>Powered Writer Palmyra
+                                                                Finance
+                                                            </div>
+                                                            <div className={styles.cautionText}>AI can make mistakes.
+                                                                Use with caution.
+                                                            </div>
                                                         </div>
                                                     </TooltipContent>
                                                 </Tooltip>
