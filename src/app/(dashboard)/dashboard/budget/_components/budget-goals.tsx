@@ -179,7 +179,7 @@ export function BudgetGoals({ userId }: BudgetGoalsProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-gray-800 border-gray-700">
           <CardHeader className="pb-2">
