@@ -1,4 +1,5 @@
 "use server";
+import { OptimizedPortfolioResult } from "@/lib/types/profile";
 
 import { BackendResultsWithSuccessAndMessage } from "@/lib/types/profile";
 import { z } from "zod";
@@ -44,7 +45,7 @@ export async function optimizePortfolio(
 }
 
 
-export async function getPortfolioExplanation(portfolioData: Record<string, unknown>) {
+export async function getPortfolioExplanation(portfolioData: OptimizedPortfolioResult) {
     try {
         const response = await AxiosInstance.post("/portfolio-explanation/explain", portfolioData);
         return { success: true, data: response.data };

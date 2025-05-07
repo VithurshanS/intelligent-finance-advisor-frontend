@@ -7,7 +7,7 @@ import {OptimizedPortfolioResult} from "@/lib/types/profile";
 import {PieChart, Pie, Cell, Tooltip as TooltipComponent, ResponsiveContainer} from "recharts";
 import {Badge} from "@/components/ui/badge";
 import {Separator} from "@/components/ui/separator";
-import {ArrowUpRight, TrendingUp, AlertTriangle, Target, PieChart as PieChartIcon,Info} from "lucide-react";
+import {ArrowUpRight, TrendingUp, AlertTriangle, Target, PieChart as PieChartIcon} from "lucide-react";
 import {
     Breadcrumb,
     BreadcrumbItem,
