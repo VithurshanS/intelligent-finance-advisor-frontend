@@ -2,6 +2,8 @@ import React, {Suspense} from 'react';
 import {getStocksCount} from "@/app/(dashboard)/assets/db/_utils/actions";
 import {AssetsTable, AssetsTableSkeleton} from "@/app/(dashboard)/assets/db/_components/Assets";
 import Pagination from "@/app/(dashboard)/global-assets/[type]/_components/Pagination";
+import {getCurrentUser} from "@/actions/auth";
+import RiskWatchListBadge from "@/app/(dashboard)/_components/RiskWatchListBadge";
 
 // Make sure the searchParams has the correct type
 const Page = async ({
@@ -15,12 +17,25 @@ const Page = async ({
     const page = parseInt((await searchParams).page as string) || 1;
     const count = await getStocksCount();
     const result_per_page = 15;
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+        return (
+            <div className="rounded-md border p-6 text-center text-muted-foreground">
+                You must be logged in to view this content.
+            </div>
+        );
+    }
+
+    const isAdmin = currentUser.role === 'admin';
 
 
     return (
         <div className="flex flex-col px-5 py-4 items-center justify-center">
-            <div className="flex items-center justify-between mb-5 w-full">
-                <h1 className="text-2xl font-semibold">System Assets</h1>
+            <div className="flex items-center justify-start mb-5 w-full gap-2">
+                <h1 className="text-2xl font-semibold">
+                    {isAdmin ? "System Assets" : "Risk Watchlist"}
+                </h1>
+                {!isAdmin && (<RiskWatchListBadge/>)}
             </div>
             <div className="flex flex-col gap-4 w-full">
                 <Suspense key={page} fallback={<AssetsTableSkeleton/>}>

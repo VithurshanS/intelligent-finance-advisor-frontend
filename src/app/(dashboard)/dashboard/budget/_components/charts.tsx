@@ -106,12 +106,12 @@ export function LineChart({
       // Grid line
       ctx.beginPath();
       ctx.strokeStyle = gridColor;
-      ctx.moveTo(padding, y);
+      ctx.moveTo(padding + 5, y);
       ctx.lineTo(width - padding, y);
       ctx.stroke();
 
       // Label
-      ctx.fillText(value.toLocaleString(), padding - 10, y);
+      ctx.fillText(value.toLocaleString(), padding, y);
     }
 
     // Draw x-axis

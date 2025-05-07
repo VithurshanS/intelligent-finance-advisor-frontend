@@ -22,6 +22,32 @@ const userSidebar: SidebarData = {
             icon: LayoutGrid,
         },
         {
+            title: "Global Market",
+            url: '/assets',
+            icon: Earth,
+            initiallyExpanded: true,
+            items: [
+                {
+                    title: "Discover",
+                    url: "/global-assets/lookup",
+                },
+                {
+                    title: "Top Screens",
+                    url: "/global-assets/top-screens",
+                },
+                {
+                    title: "Sectors",
+                    url: "/global-assets/sectors",
+                },
+
+            ]
+        },
+        {
+            title: "Risk Watchlist",
+            url: '/assets/db',
+            icon: ChartCandlestickIcon,
+        },
+        {
             title: "Budget Tracker",
             url: "/dashboard/budget",
             icon: DollarSign,

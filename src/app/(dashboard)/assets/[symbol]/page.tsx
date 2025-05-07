@@ -9,7 +9,7 @@ import {Separator} from '@/components/ui/separator';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import Link from 'next/link';
-import StatusBadge from "@/app/(dashboard)/_components/StatusBadge";
+import StatusBadge, {UserStatusBadge} from "@/app/(dashboard)/_components/StatusBadge";
 import RiskBadge from "../../_components/RiskBadge";
 import StatusManager from "./_components/StatusManager";
 import {MarketDataSection, FinancialDataSection, CompanyInfoSection} from "./_components/AccordionItems";
@@ -18,12 +18,14 @@ import AddStock from "@/app/(dashboard)/assets/[symbol]/_components/AddStock";
 import {RiskScoreTooltip} from "@/app/(dashboard)/assets/[symbol]/_components/ShallowRiskTooltip";
 import RiskAnalysisSection from "@/app/(dashboard)/assets/[symbol]/_components/RiskAnalysisSection";
 import {AssetStatus} from "@/app/(dashboard)/assets/[symbol]/_utils/definitions";
+import {getCurrentUser} from "@/actions/auth";
+import RiskWatchListBadge from "@/app/(dashboard)/_components/RiskWatchListBadge";
 
 // Main page component
 const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }) => {
     const {symbol} = await params;
     const {data: asset, error} = await getAssetByTicker(symbol);
-
+    const currentUser = await getCurrentUser();
 
     // Error state
     if (error) {
@@ -41,6 +43,23 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
             </div>
         );
     }
+
+    // Check if user is logged in
+    if (!currentUser) {
+        return (
+            <div className="container mx-auto py-8 px-4">
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4"/>
+                    <AlertTitle>Access Denied</AlertTitle>
+                    <AlertDescription>
+                        You must be logged in to view this content.
+                    </AlertDescription>
+                </Alert>
+            </div>
+        );
+    }
+
+    const isAdmin = currentUser.role === 'admin';
 
     // Loading state or no data
     if (!asset) {
@@ -70,16 +89,24 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                     <div className="text-muted-foreground text-sm">
                         {asset.ticker} • {asset.exchange || 'Unknown Exchange'} • {asset.currency || 'Unknown Currency'}
                     </div>
-                    <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-bold">{asset.name || symbol}</h1>
-                        {asset.company_url && (
-                            <Link href={asset.company_url} target="_blank" rel="noopener noreferrer"
-                                  className="text-blue-600 hover:text-blue-800">
-                                <ExternalLink size={16}/>
-                            </Link>
-                        )}
+                    <div className="flex items-center gap-2 justify-between w-full">
+                        <div className={"flex items-center gap-2"}>
+                            <h1 className="text-2xl font-bold">{asset.name || symbol}</h1>
+                            {!isAdmin && asset.db?.in_db && <RiskWatchListBadge/>}
+                            {asset.company_url && (
+                                <Link href={asset.company_url} target="_blank" rel="noopener noreferrer"
+                                      className="text-blue-600 hover:text-blue-800">
+                                    <ExternalLink size={16}/>
+                                </Link>
+
+                            )}
+                        </div>
                         <div className="flex flex-wrap gap-2 items-center">
-                            {asset.db?.status && <StatusBadge status={asset.db.status as AssetStatus}/>}
+                            {asset.db?.status && (
+                                isAdmin
+                                    ? <StatusBadge status={asset.db.status as AssetStatus}/>
+                                    : <UserStatusBadge status={asset.db.status as AssetStatus}/>
+                            )}
                             {asset.db?.risk_score !== undefined && <RiskBadge score={asset.db.risk_score}/>}
                             {asset.db?.risk_score !== null && <RiskScoreTooltip/>}
                         </div>
@@ -96,22 +123,24 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                         }
                         }/>
 
-
-                        {/* DB Action Buttons */}
-                        <div>
-                            {asset.db?.in_db ? (
-                                <StatusManager
-                                    asset={asset}
-                                />
-                            ) : (
-                                <div className={'flex flex-col items-end text-end max-w-52 gap-2'}>
-                                    <AddStock stock={asset}/>
-                                    <span className={'text-muted-foreground shadow-muted text-xs'}>
-                                        To view advanced analytics and risk metrics, please add this stock to the system.
-                                    </span>
-                                </div>
-                            )}
-                        </div>
+                        {/* DB Action Buttons - Only show for admin users */}
+                        {isAdmin && (
+                            <div>
+                                {asset.db?.in_db ? (
+                                    <StatusManager
+                                        asset={asset}
+                                    />
+                                ) : (
+                                    <div className={'flex flex-col items-end text-end max-w-52 gap-2'}>
+                                        <AddStock stock={asset}/>
+                                        <span className={'text-muted-foreground shadow-muted text-xs'}>
+                                            To view advanced analytics and risk metrics, please add this stock to the
+                                            system.
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <Separator/>
@@ -124,8 +153,8 @@ const StockDetailPage = async ({params}: { params: Promise<{ symbol: string }> }
                     </Accordion>
                 </div>
             </section>
-            <Separator />
-            <RiskAnalysisSection ticker={asset.ticker} inDb={asset.db?.in_db || false} asset={asset}/>
+            <Separator/>
+            <RiskAnalysisSection ticker={asset.ticker} inDb={asset.db?.in_db || false} asset={asset} isAdmin={isAdmin}/>
         </div>
     );
 };
