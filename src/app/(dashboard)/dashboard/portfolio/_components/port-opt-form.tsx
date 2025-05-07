@@ -609,30 +609,31 @@ export default function PortfolioOptimizationPage() {
                     </SelectContent>
                   </Select>
 
-                  {optimizationMethod === "custom_risk" &&
-                    !riskScorePercent && (
+                  {optimizationMethod === "custom_risk" && (
+                    <div className="space-y-2">
+                      {/* If we’ve got a score, show it */}
+                      {riskScorePercent != null && (
+                        <p>
+                          Your risk score: <strong>{riskScorePercent}%</strong>
+                        </p>
+                      )}
+
+                      {/* Always show a single button whose text toggles */}
                       <Button
                         type="button"
-                        onClick={() =>
-                          router.push(
-                            `/dashboard/portfolio/quiz?` +
-                              `tickers=${encodeURIComponent(
-                                JSON.stringify(selectedTickers)
-                              )}&` +
-                              `years=${years}&` +
-                              `inv=${investmentAmount}&` +
-                              `tgt=${targetAmount}`
-                          )
-                        }
+                        onClick={() => {
+                          const qs = new URLSearchParams({
+                            tickers: JSON.stringify(selectedTickers),
+                            years,
+                            inv: investmentAmount,
+                            tgt: targetAmount,
+                          }).toString();
+                          router.push(`/dashboard/portfolio/quiz?${qs}`);
+                        }}
                       >
-                        Take Quiz
+                        {riskScorePercent != null ? "Retake Quiz" : "Take Quiz"}
                       </Button>
-                    )}
-
-                  {optimizationMethod === "custom_risk" && riskScorePercent && (
-                    <p>
-                      Your risk score: <strong>{riskScorePercent}%</strong>
-                    </p>
+                    </div>
                   )}
                 </motion.div>
               )}
