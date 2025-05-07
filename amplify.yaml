@@ -4,6 +4,8 @@ frontend:
     preBuild:
       commands:
         - npm ci --cache .npm --prefer-offline
+        # Copy production configuration file
+        - if [ "$ENV" = "production" ]; then cp src/lib/production_const.ts src/lib/const.ts; fi
     build:
       commands:
         - env | grep -e BACKEND_BASE_URL >> .env
