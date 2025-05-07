@@ -6,6 +6,7 @@ export interface BackendResultsWithSuccessAndMessage {
 
 
 export interface OptimizedPortfolioResult {
+    method_used: string;
     optimal_weights: {
         [key: string]: number;
     };

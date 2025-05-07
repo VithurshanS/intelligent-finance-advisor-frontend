@@ -31,9 +31,7 @@ export default function PortfolioResultsPage() {
   }
 
   try {
-    const result = JSON.parse(
-      decodeURIComponent(encodedData)
-    ) as OptimizedPortfolioResult;
+    const result = JSON.parse(encodedData) as OptimizedPortfolioResult;
 
     // Prepare data for pie chart
     const pieData = Object.entries(result.optimal_weights)
@@ -49,6 +47,7 @@ export default function PortfolioResultsPage() {
       hidden: { opacity: 0, y: 20 },
       visible: { opacity: 1, y: 0 },
     };
+    console.log(result.method_used);
 
     return (
       <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -179,6 +178,14 @@ export default function PortfolioResultsPage() {
                   <div className="flex items-center gap-2">
                     <Target className="h-5 w-5" />
                     <span className="text-lg">{result.goal}</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Optimization Method
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{result.method_used}</span>
                   </div>
                 </div>
               </CardContent>

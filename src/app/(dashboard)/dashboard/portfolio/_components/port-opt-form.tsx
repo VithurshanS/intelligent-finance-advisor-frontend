@@ -160,23 +160,23 @@ export default function PortfolioOptimizationPage() {
     setCurrentStep((prev) => prev - 1);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("tickers", JSON.stringify(selectedTickers));
-    formData.append("years", years);
-    formData.append("investmentAmount", investmentAmount);
-    formData.append("targetAmount", targetAmount);
+  // const handleSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append("tickers", JSON.stringify(selectedTickers));
+  //   formData.append("years", years);
+  //   formData.append("investmentAmount", investmentAmount);
+  //   formData.append("targetAmount", targetAmount);
 
-    // Custom Risk Logic
-    if (optimizationMethod === "custom_risk" && riskScorePercent !== null) {
-      formData.append("use_risk_score", "true");
-      formData.append("risk_score_percent", riskScorePercent.toString());
-    } else {
-      formData.append("use_risk_score", "false");
-    }
-    formAction(formData);
-  };
+  //   // Custom Risk Logic
+  //   if (optimizationMethod === "custom_risk" && riskScorePercent !== null) {
+  //     formData.append("use_risk_score", "true");
+  //     formData.append("risk_score_percent", riskScorePercent.toString());
+  //   } else {
+  //     formData.append("use_risk_score", "false");
+  //   }
+  //   formAction(formData);
+  // };
 
   useEffect(() => {
     if (state.success && state.data) {
@@ -274,7 +274,34 @@ export default function PortfolioOptimizationPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form action={formAction} className="space-y-6">
+            {/* Hidden inputs to carry React state into the form */}
+            <input
+              type="hidden"
+              name="tickers"
+              value={JSON.stringify(selectedTickers)}
+            />
+            <input type="hidden" name="years" value={years} />
+            <input
+              type="hidden"
+              name="investmentAmount"
+              value={investmentAmount}
+            />
+            <input type="hidden" name="targetAmount" value={targetAmount} />
+            <input
+              type="hidden"
+              name="use_risk_score"
+              value={optimizationMethod === "custom_risk" ? "true" : "false"}
+            />
+            {optimizationMethod === "custom_risk" &&
+              riskScorePercent != null && (
+                <input
+                  type="hidden"
+                  name="risk_score_percent"
+                  value={riskScorePercent.toString()}
+                />
+              )}
+
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <motion.div
@@ -447,7 +474,7 @@ export default function PortfolioOptimizationPage() {
                   </div>
                   <Input
                     id="years"
-                    name="years"
+                    name="year_s"
                     type="number"
                     step="0.1"
                     min="0.1"
