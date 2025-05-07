@@ -175,11 +175,7 @@ export default function PortfolioOptimizationPage() {
     } else {
       formData.append("use_risk_score", "false");
     }
-    console.log("cvfgbh");
-    // Wrap formAction in startTransition
-    startTransition(() => {
-      formAction(formData);
-    });
+    formAction(formData);
   };
 
   useEffect(() => {
