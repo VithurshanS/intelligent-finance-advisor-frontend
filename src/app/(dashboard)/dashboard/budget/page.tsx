@@ -237,11 +237,11 @@ export default function Home() {
                                             <div className="flex justify-between text-gray-200">
                                                 <span>Overall Score</span>
                                                 <span className="font-medium">
-                                                    {calculateOverallScore(summaryData)}/100
+                                                    {summaryData.transactions.length !== 0 ? calculateOverallScore(summaryData) : 0}/100
                                                 </span>
                                             </div>
                                             <Progress
-                                                value={calculateOverallScore(summaryData)}
+                                                value={summaryData.transactions.length !== 0 ? calculateOverallScore(summaryData) : 0}
                                                 className="h-2 bg-gray-700 text-blue-500"
                                             />
 
@@ -252,11 +252,11 @@ export default function Home() {
                                                     <div className="flex justify-between text-gray-200">
                                                         <span>Savings</span>
                                                         <span className="font-medium">
-                                                            {calculateSavingsScore(summaryData)}/100
+                                                            {summaryData.transactions.length !== 0 ? calculateSavingsScore(summaryData) : 0}/100
                                                         </span>
                                                     </div>
                                                     <Progress
-                                                        value={calculateSavingsScore(summaryData)}
+                                                        value={summaryData.transactions.length !== 0 ? calculateSavingsScore(summaryData) : 0}
                                                         className="h-2 bg-gray-700 text-blue-500"
                                                     />
                                                 </div>
@@ -266,11 +266,11 @@ export default function Home() {
                                                     <div className="flex justify-between text-gray-200">
                                                         <span>Spending</span>
                                                         <span className="font-medium">
-                                                            {calculateSpendingScore(summaryData)}/100
+                                                            {summaryData.transactions.length !== 0 ? calculateSpendingScore(summaryData) : 0}/100
                                                         </span>
                                                     </div>
                                                     <Progress
-                                                        value={calculateSpendingScore(summaryData)}
+                                                        value={summaryData.transactions.length !== 0 ? calculateSpendingScore(summaryData) : 0}
                                                         className="h-2 bg-gray-700 text-blue-500"
                                                     />
                                                 </div>
@@ -280,11 +280,11 @@ export default function Home() {
                                                     <div className="flex justify-between text-gray-200">
                                                         <span>Balance Trend</span>
                                                         <span className="font-medium">
-                                                            {calculateBalanceTrendScore(summaryData)}/100
+                                                            {summaryData.transactions.length !== 0 ? calculateBalanceTrendScore(summaryData) : 0}/100
                                                         </span>
                                                     </div>
                                                     <Progress
-                                                        value={calculateBalanceTrendScore(summaryData)}
+                                                        value={summaryData.transactions.length !== 0 ? calculateBalanceTrendScore(summaryData) : 0}
                                                         className="h-2 bg-gray-700 text-blue-500"
                                                     />
                                                 </div>

@@ -344,7 +344,7 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
                 </TabsContent>
 
                 <TabsContent value="goals">
-                    <Card className="bg-gray-800 border-gray-700">
+                    {budget_goals?.length > 0 && <Card className="bg-gray-800 border-gray-700">
                         <CardHeader>
                             <div className="flex justify-between items-start">
                                 <div>
@@ -386,7 +386,7 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
                                 </div>
                             )}
                         </CardContent>
-                    </Card>
+                    </Card>}
                 </TabsContent>
             </Tabs>
         </div>
