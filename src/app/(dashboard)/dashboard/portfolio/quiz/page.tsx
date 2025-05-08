@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Sparkles } from "lucide-react";
+
 
 type Option = {
   label: string;
@@ -347,7 +343,7 @@ export default function RiskAssessment() {
                       {riskProfile.type} Investor
                     </span>
                     <p className="mt-4 text-sm text-muted-foreground">
-                      Based on your answers, we've determined your investor
+                      Based on your answers, we&apos;ve determined your investor
                       profile. This can help guide your investment strategy.
                     </p>
                   </div>
