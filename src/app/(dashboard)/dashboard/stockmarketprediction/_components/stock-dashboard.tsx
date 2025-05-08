@@ -16,12 +16,15 @@ import ModelMetadata from "./model-metadata"
 //import {getStockData, getPredictionData, getModelMetadata} from "@/lib/data"
 import {exportToCSV} from "@/lib/export"
 import {PredictionData, StockData, ModelMetadataType} from "@/lib/types/stock_prediction";
-import {DateRange} from "react-day-picker";
 // import { number } from "zod"
 
 type companyType = {
     value: string
     label: string
+}
+interface DateRange {
+  from: Date | null;
+  to: Date | null;
 }
 
 const formatDate = (date: Date) => {
