@@ -3,7 +3,7 @@
 import React, {useActionState} from 'react';
 import {z} from 'zod';
 import {registerUser} from "@/actions/auth";
-import {Lock, User, Mail, ImageIcon, BadgeInfo, Calendar, Users} from 'lucide-react';
+import {Lock, User, Mail, ImageIcon, BadgeInfo, Calendar, Users, EyeOff, Eye} from 'lucide-react';
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Alert, AlertDescription} from "@/components/ui/alert";
@@ -17,6 +17,7 @@ import {
 
 import {Gender} from "@/lib/types/user";
 import {registerSchema} from "@/lib/types/register";
+import {TermsAndConditionsDialog} from './TermsDialog';
 
 // Type for the form data based on the Zod schema
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -39,6 +40,12 @@ function RegisterForm() {
     const [validationErrors, setValidationErrors] = React.useState<Record<string, string>>({});
     const [state, formAction] = useActionState(registerUser, initialState);
     const [isPending, startTransition] = React.useTransition();
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
+
+    const [termsDialogOpen, setTermsDialogOpen] = React.useState(false);
+    const [termsAccepted, setTermsAccepted] = React.useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const {name, value} = e.target;
@@ -67,6 +74,11 @@ function RegisterForm() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!termsAccepted) {
+            setTermsDialogOpen(true);
+            return;
+        }
+
         if (validateForm()) {
             const formDataObj = new FormData();
 
@@ -81,6 +93,29 @@ function RegisterForm() {
                 formAction(formDataObj);
             });
         }
+    };
+
+    const handleAcceptTerms = () => {
+        setTermsAccepted(true);
+        setTermsDialogOpen(false);
+
+        // Automatically submit the form after accepting terms
+        if (validateForm()) {
+            const formDataObj = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    formDataObj.append(key, value.toString());
+                }
+            });
+
+            startTransition(() => {
+                formAction(formDataObj);
+            });
+        }
+    };
+
+    const handleDeclineTerms = () => {
+        setTermsDialogOpen(false);
     };
 
     // If registration was successful, show a success message
@@ -282,15 +317,30 @@ function RegisterForm() {
                         <Input
                             id="password"
                             name="password"
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             required
                             value={formData.password || ''}
                             onChange={handleChange}
-                            className={`w-full pl-10 pr-4 py-2 ${errors?.password ? 'border-destructive' : ''}`}
+                            className={`w-full pl-10 pr-10 py-2 ${errors?.password ? 'border-destructive' : ''}`}
                             placeholder="••••••••"
                             aria-invalid={errors?.password ? "true" : "false"}
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                            tabIndex={-1}
+                        >
+                            {showPassword ?
+                                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/> :
+                                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                            }
+                        </button>
                     </div>
+                    <p className="text-xs text-muted-foreground">
+                        Password must be at least 8 characters and include at least one uppercase letter,
+                        one lowercase letter, and one number.
+                    </p>
                     {errors?.password && (
                         <p className="text-sm text-destructive">{errors.password}</p>
                     )}
@@ -307,19 +357,49 @@ function RegisterForm() {
                         <Input
                             id="confirmPassword"
                             name="confirmPassword"
-                            type="password"
+                            type={showConfirmPassword ? "text" : "password"}
                             required
                             value={formData.confirmPassword || ''}
                             onChange={handleChange}
-                            className={`w-full pl-10 pr-4 py-2 ${errors?.confirmPassword ? 'border-destructive' : ''}`}
+                            className={`w-full pl-10 pr-10 py-2 ${errors?.confirmPassword ? 'border-destructive' : ''}`}
                             placeholder="••••••••"
                             aria-invalid={errors?.confirmPassword ? "true" : "false"}
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                            tabIndex={-1}
+                        >
+                            {showConfirmPassword ?
+                                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/> :
+                                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                            }
+                        </button>
                     </div>
                     {errors?.confirmPassword && (
                         <p className="text-sm text-destructive">{errors.confirmPassword}</p>
                     )}
                 </div>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+                <input
+                    type="checkbox"
+                    id="termsAccepted"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="termsAccepted" className="text-sm">
+                    I accept the{" "}
+                    <button
+                        type="button"
+                        onClick={() => setTermsDialogOpen(true)}
+                        className="text-primary underline underline-offset-2"
+                    >
+                        Terms and Conditions
+                    </button>
+                </label>
             </div>
 
             <Button
@@ -328,7 +408,7 @@ function RegisterForm() {
                 className="w-full relative mt-4"
             >
                 <span className={`flex items-center justify-center ${isPending ? 'opacity-0' : 'opacity-100'}`}>
-                  Register
+                    Register
                 </span>
                 {isPending && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -344,6 +424,13 @@ function RegisterForm() {
                     Log in
                 </a>
             </div>
+
+            <TermsAndConditionsDialog
+                open={termsDialogOpen}
+                onOpenChange={setTermsDialogOpen}
+                onAccept={handleAcceptTerms}
+                onDecline={handleDeclineTerms}
+            />
         </form>
     );
 }

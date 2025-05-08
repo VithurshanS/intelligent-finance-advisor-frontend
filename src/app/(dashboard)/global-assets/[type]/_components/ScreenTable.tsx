@@ -14,6 +14,8 @@ import AddStockDialog from "./AddStockDialog";
 import {formatMarketCap, formatPercent} from "../_utils/utils";
 import RatingDisplay from "./RatingDisplay";
 import Link from "next/link";
+import {getCurrentUser} from "@/actions/auth";
+import RiskWatchListBadge from "@/app/(dashboard)/_components/RiskWatchListBadge";
 
 // Price change component
 const PriceChange = ({change}: { change: number | null }): JSX.Element => {
@@ -39,6 +41,17 @@ interface ScreenTableProps {
 // Main component
 const ScreenTable = async ({filter, page, result_per_page = 10}: ScreenTableProps): Promise<JSX.Element> => {
     const stocks = await getScreenStocks({result_per_page, filter, page});
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+        return (
+            <div className="rounded-md border p-6 text-center text-muted-foreground">
+                You must be logged in to view this content.
+            </div>
+        );
+    }
+
+    const isAdmin = currentUser.role === 'admin';
 
     return (
         <div className="rounded-md border">
@@ -52,20 +65,24 @@ const ScreenTable = async ({filter, page, result_per_page = 10}: ScreenTableProp
                         <TableHead className={'text-right'}>Analyst Rating</TableHead>
                         <TableHead className={'text-right'}>Risk</TableHead>
                         <TableHead className="text-right">Market Cap</TableHead>
-                        <TableHead className="w-[80px]"></TableHead>
+                        {isAdmin && <TableHead className="w-[80px]"></TableHead>}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {stocks.success ? (
                         stocks.data.quotes.length > 0 ? (
                             stocks.data.quotes.map((stock) => (
-
                                 <TableRow key={stock.symbol}>
                                     <TableCell className="font-bold text-primary">
-                                        <Link href={`/assets/${stock.symbol} `}
-                                              className={' hover:underline cursor-pointer'}>
-                                            {stock.symbol}
-                                        </Link>
+                                        <div className="flex items-center gap-1">
+                                            <Link href={`/assets/${stock.symbol}`}
+                                                  className="hover:underline cursor-pointer">
+                                                {stock.symbol}
+                                            </Link>
+                                            {!isAdmin && stock.in_db && (
+                                                <RiskWatchListBadge/>
+                                            )}
+                                        </div>
                                     </TableCell>
                                     <TableCell className="max-w-[150px] truncate" title={stock.name}>
                                         {stock.name}
@@ -81,21 +98,23 @@ const ScreenTable = async ({filter, page, result_per_page = 10}: ScreenTableProp
                                         <RiskBadge score={stock.risk_score} showIcon={false} showValue={false}/>
                                     </TableCell>
                                     <TableCell className="text-right">{formatMarketCap(stock.marketCap)}</TableCell>
-                                    <TableCell>
-                                        <AddStockDialog stock={stock} in_db={stock.in_db ? stock.in_db : false}/>
-                                    </TableCell>
+                                    {isAdmin && (
+                                        <TableCell>
+                                            <AddStockDialog stock={stock} in_db={stock.in_db ? stock.in_db : false}/>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
+                                <TableCell colSpan={isAdmin ? 8 : 7} className="text-center py-6 text-muted-foreground">
                                     No stocks match your criteria
                                 </TableCell>
                             </TableRow>
                         )
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={8} className="text-center py-6 text-muted-foreground">
+                            <TableCell colSpan={isAdmin ? 8 : 7} className="text-center py-6 text-muted-foreground">
                                 Error: {stocks.error}
                             </TableCell>
                         </TableRow>

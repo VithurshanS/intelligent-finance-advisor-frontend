@@ -1,4 +1,5 @@
 "use server";
+import { OptimizedPortfolioResult } from "@/lib/types/profile";
 
 import { BackendResultsWithSuccessAndMessage } from "@/lib/types/profile";
 import { z } from "zod";
@@ -52,5 +53,17 @@ export async function optimizePortfolio(
             success: false,
             message: errorMessage,
         };
+    }
+}
+
+
+export async function getPortfolioExplanation(portfolioData: OptimizedPortfolioResult) {
+    try {
+        const response = await AxiosInstance.post("/portfolio-explanation/explain", portfolioData);
+        return { success: true, data: response.data };
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        console.error("Server Action Error:", errorMessage);
+        return { success: false, error: errorMessage };
     }
 }
