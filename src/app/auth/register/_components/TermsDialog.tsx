@@ -167,7 +167,7 @@ export function TermsAndConditionsDialog({
                                 <h4 className="font-medium">14. Contact</h4>
                                 <ul className="list-disc pl-5 text-muted-foreground">
                                     <li>For any questions about these terms, please contact:
-                                        intelligentadvisorSE@gmail.com
+                                        intellifinance.grouj@gmail.com
                                     </li>
                                 </ul>
                             </div>
