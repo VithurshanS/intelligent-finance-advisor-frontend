@@ -11,7 +11,8 @@ import {
     FolderGit2,
     LayoutGrid,
     PieChart,
-    Users
+    Users,
+    ChartColumnIncreasing
 } from "lucide-react";
 
 const userSidebar: SidebarData = {
@@ -56,7 +57,12 @@ const userSidebar: SidebarData = {
             title: "Portfolio Optimization",
             url: "/dashboard/portfolio",
             icon: PieChart
-        },],
+        },
+        {
+            title: "StockMarket Prediction",
+            url: "/dashboard/stockmarketprediction",
+            icon: ChartColumnIncreasing
+        }],
     guides: [
         {
             name: "ML Model Notebook",

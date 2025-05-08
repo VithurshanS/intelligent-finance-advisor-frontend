@@ -27,6 +27,11 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
 
                 if (cachedPrediction) {
                     predictionData = JSON.parse(cachedPrediction);
+                    if (predictionData.predictions.uid != userId) {
+                        const response = await BudgetApi.getPredictions(userId);
+                        predictionData = response;
+                        localStorage.setItem('prediction', JSON.stringify(response));
+                    }
                 } else {
                     const response = await BudgetApi.getPredictions(userId);
                     predictionData = response;
@@ -339,7 +344,7 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
                 </TabsContent>
 
                 <TabsContent value="goals">
-                    <Card className="bg-gray-800 border-gray-700">
+                    {budget_goals?.length > 0 && <Card className="bg-gray-800 border-gray-700">
                         <CardHeader>
                             <div className="flex justify-between items-start">
                                 <div>
@@ -381,7 +386,7 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
                                 </div>
                             )}
                         </CardContent>
-                    </Card>
+                    </Card>}
                 </TabsContent>
             </Tabs>
         </div>

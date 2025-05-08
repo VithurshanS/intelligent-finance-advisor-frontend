@@ -1,5 +1,5 @@
 // budgetApi.ts
-import {BACKEND_BASE_URL as BURL} from "@/lib/const";
+import { BACKEND_BASE_URL as BURL } from "@/lib/const";
 
 const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || BURL;
 
@@ -75,6 +75,7 @@ export interface TransactionSummary {
 
 export interface PredictionResponse {
     predictions: {
+        uid: string;
         today_income: number;
         today_expense: number;
         this_week_income: number;
