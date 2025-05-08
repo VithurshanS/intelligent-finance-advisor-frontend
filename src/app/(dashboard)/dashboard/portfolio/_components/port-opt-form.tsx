@@ -1,51 +1,94 @@
 "use client";
 
 import {useState, useEffect, Suspense} from "react";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/components/ui/card";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
-import {X, Sparkles, DollarSign, Clock, Briefcase, AlertCircle, Info, Loader2} from "lucide-react";
+import {
+    X,
+    Sparkles,
+    DollarSign,
+    Clock,
+    Briefcase,
+    AlertCircle,
+    Info,
+    Loader2,
+} from "lucide-react";
 import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
-    BreadcrumbSeparator
+    BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {useActionState} from "react";
 import {optimizePortfolio} from "@/actions/profile";
 import {BackendResultsWithSuccessAndMessage} from "@/lib/types/profile";
 import {motion, AnimatePresence} from "framer-motion";
 import {Skeleton} from "@/components/ui/skeleton";
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {useAPI} from "@/hooks/useAPI";
 import {cn} from "@/lib/utils";
+import {getCurrentUser} from "@/actions/auth";
+import {User} from "@/lib/types/user";
 
+
+//interfaces
 interface Ticker {
     ticker_symbol: string;
     asset_name: string;
     sectorDisp: string;
     currency: string;
-    status: 'Active' | 'Pending' | 'Warning';
+    status: "Active" | "Pending" | "Warning";
 }
 
 interface TickerResponse {
     tickers: Ticker[];
 }
 
+interface budgetData {
+    income: number;
+    expense: number;
+    balance: number;
+    previous_income: number;
+    previous_expense: number;
+    previous_balance: number;
+    transactions: {
+        date: string;
+        balance: number;
+    }[];
+}
+
 const STATUS_COLORS = {
     Active: "text-green-500",
     Pending: "text-amber-500",
-    Warning: "text-red-500"
+    Warning: "text-red-500",
 } as const;
 
 const STATUS_DESCRIPTIONS = {
     Active: "Stock is actively trading and data is up to date",
     Pending: "Stock data is being updated",
-    Warning: "Stock may have limited or outdated data"
+    Warning: "Stock may have limited or outdated data",
 } as const;
 
 const initialState: BackendResultsWithSuccessAndMessage = {
@@ -60,48 +103,86 @@ const LoadingSelect = () => (
     </div>
 );
 
+
 export default function PortfolioOptimizationPage() {
     const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
     const [currentStep, setCurrentStep] = useState(1);
-    const [state, formAction, pending] = useActionState(optimizePortfolio, initialState);
+    const [state, formAction, pending] = useActionState(
+        optimizePortfolio,
+        initialState
+    );
     const router = useRouter();
-
-    const {data: tickerData, error, isLoading} = useAPI<TickerResponse>('/profile/get_portfolio');
-
+    const searchParams = useSearchParams();
+    const [user, setUser] = useState<User | null>(null);
+    const [userError, setUserError] = useState<string | null>(null);
     const [years, setYears] = useState("");
     const [investmentAmount, setInvestmentAmount] = useState("");
     const [targetAmount, setTargetAmount] = useState("");
+    const [balanceWarning, setBalanceWarning] = useState(false);
+    // New states
+    const [optimizationMethod, setOptimizationMethod] = useState("max_sharpe");
+    const [riskScorePercent, setRiskScorePercent] = useState<number | null>(null);
+    const [exceedsBalance, setExceedsBalance] = useState(false);
 
-    const handleTickerSelect = (ticker: string) => {
-        if (!selectedTickers.includes(ticker)) {
-            setSelectedTickers([...selectedTickers, ticker]);
+    //fetching tickers
+    const {
+        data: tickerData,
+        error,
+        isLoading,
+    } = useAPI<TickerResponse>("/profile/get_portfolio");
+
+
+    //Getting current user
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await getCurrentUser();
+                setUser(userData);
+            } catch (error) {
+                setUserError(error instanceof Error ? error.message : "Failed to fetch user");
+            }
+        };
+
+        fetchUser();
+    }, []);
+
+    //fetching users budget related data
+    const {
+        data: userData,
+        error: userDataError,
+        
+    } = useAPI<budgetData>(`/budget/transactions/summary/${user?.user_id}`);
+
+
+
+    //related to quiz
+    useEffect(() => {
+        // 1) Step & quiz score
+        const stepParam = searchParams.get("step");
+        if (stepParam) setCurrentStep(parseInt(stepParam, 10));
+
+        const quizScore = searchParams.get("risk_score_percent");
+        if (quizScore) {
+            setRiskScorePercent(parseFloat(quizScore));
+            setOptimizationMethod("custom_risk");
         }
-    };
 
-    const handleRemoveTicker = (tickerToRemove: string) => {
-        setSelectedTickers(selectedTickers.filter((ticker) => ticker !== tickerToRemove));
-    };
-
-    const handleNextStep = () => {
-        if (selectedTickers.length >= 2) {
-            setCurrentStep(prev => prev + 1);
+        // 2) Restore form fields
+        const tickersParam = searchParams.get("tickers");
+        if (tickersParam) {
+            setSelectedTickers(JSON.parse(decodeURIComponent(tickersParam)));
         }
-    };
+        const yearsParam = searchParams.get("years");
+        if (yearsParam) setYears(yearsParam);
 
-    const handlePrevStep = () => {
-        setCurrentStep(prev => prev - 1);
-    };
+        const invParam = searchParams.get("inv");
+        if (invParam) setInvestmentAmount(invParam);
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append('tickers', JSON.stringify(selectedTickers));
-        formData.append('years', years);
-        formData.append('investmentAmount', investmentAmount);
-        formData.append('targetAmount', targetAmount);
-        formAction(formData);
-    };
+        const tgtParam = searchParams.get("tgt");
+        if (tgtParam) setTargetAmount(tgtParam);
+    }, [searchParams]);
 
+    //If form submission is successful direct to results page with the results got from the server action encoded in the URL
     useEffect(() => {
         if (state.success && state.data) {
             const encodedData = encodeURIComponent(JSON.stringify(state.data));
@@ -109,7 +190,46 @@ export default function PortfolioOptimizationPage() {
         }
     }, [state.success, state.data, router]);
 
+
+    //handlers
+    const handleTickerSelect = (ticker: string) => {
+        if (!selectedTickers.includes(ticker)) {
+            setSelectedTickers([...selectedTickers, ticker]);
+        }
+    };
+
+    const handleRemoveTicker = (tickerToRemove: string) => {
+        setSelectedTickers(
+            selectedTickers.filter((ticker) => ticker !== tickerToRemove)
+        );
+    };
+
+    const handleNextStep = () => {
+        if (currentStep === 1 && selectedTickers.length < 2) return;
+        if (currentStep === 2 && !years) return;
+        if (currentStep === 3 && (!investmentAmount || !targetAmount)) return;
+        if (currentStep === 3 && exceedsBalance) return;
+
+        setCurrentStep((prev) => Math.min(prev + 1, 4));
+    };
+
+    const handlePrevStep = () => {
+        setCurrentStep((prev) => prev - 1);
+    };
+
+    const handleInvestmentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseFloat(e.target.value);
+        setInvestmentAmount(e.target.value);
+
+        if (userData?.balance) {
+            setBalanceWarning(value === userData.balance);
+            setExceedsBalance(value > userData.balance);
+        }
+    };
+
     if (error) return <div>Failed to load tickers</div>;
+    if (userError) return <div>Failed to fetch user data</div>
+    if (userDataError) return <div>Failed to fetch user&#39;s budget data</div>
 
     return (
         <div className="space-y-6">
@@ -120,7 +240,10 @@ export default function PortfolioOptimizationPage() {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator/>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/dashboard/portfolio" className="text-foreground font-medium">
+                        <BreadcrumbLink
+                            href="/dashboard/portfolio"
+                            className="text-foreground font-medium"
+                        >
                             Portfolio Optimization
                         </BreadcrumbLink>
                     </BreadcrumbItem>
@@ -134,50 +257,109 @@ export default function PortfolioOptimizationPage() {
                         <CardTitle>Investment Portfolio Optimizer</CardTitle>
                     </div>
                     <CardDescription className="text-base space-y-2">
-                        <p>Create your optimal investment portfolio by selecting stocks and defining your investment
-                            goals.</p>
+                        <p>
+                            Create your optimal investment portfolio by selecting stocks and
+                            defining your investment goals.
+                        </p>
                         <div className="flex flex-col gap-2 text-sm bg-muted/50 p-3 rounded-lg">
                             <p className="flex items-center gap-2">
                                 <AlertCircle className="w-4 h-4"/>
-                                Our algorithm will help you find the best portfolio allocation based on historical data
-                                and modern portfolio theory.
+                                Our algorithm will help you find the best portfolio allocation
+                                based on historical data and modern portfolio theory.
                             </p>
                             <div className="flex flex-col gap-1 mt-2">
                                 <p className="font-medium">Stock Status Indicators:</p>
                                 <div className="grid grid-cols-1 gap-1 text-xs">
-                                    <span className={cn("flex items-center gap-1", STATUS_COLORS.Active)}>
-                                        ● Active: {STATUS_DESCRIPTIONS.Active}
-                                    </span>
-                                    <span className={cn("flex items-center gap-1", STATUS_COLORS.Pending)}>
-                                        ● Pending: {STATUS_DESCRIPTIONS.Pending}
-                                    </span>
-                                    <span className={cn("flex items-center gap-1", STATUS_COLORS.Warning)}>
-                                        ● Warning: {STATUS_DESCRIPTIONS.Warning}
-                                    </span>
+                  <span
+                      className={cn(
+                          "flex items-center gap-1",
+                          STATUS_COLORS.Active
+                      )}
+                  >
+                    ● Active: {STATUS_DESCRIPTIONS.Active}
+                  </span>
+                                    <span
+                                        className={cn(
+                                            "flex items-center gap-1",
+                                            STATUS_COLORS.Pending
+                                        )}
+                                    >
+                    ● Pending: {STATUS_DESCRIPTIONS.Pending}
+                  </span>
+                                    <span
+                                        className={cn(
+                                            "flex items-center gap-1",
+                                            STATUS_COLORS.Warning
+                                        )}
+                                    >
+                    ● Warning: {STATUS_DESCRIPTIONS.Warning}
+                  </span>
                                 </div>
                             </div>
                         </div>
                         <div className="flex justify-between text-sm mt-4">
-                            <span>Step {currentStep} of 3</span>
-                            <span>{currentStep === 1 ? 'Select Stocks' : currentStep === 2 ? 'Investment Period' : 'Investment Details'}</span>
+                            <span>Step {currentStep} of 4</span>
+                            <span>
+                {currentStep === 1
+                    ? "Select Stocks"
+                    : currentStep === 2
+                        ? "Investment Period"
+                        : currentStep === 3
+                            ? "Investment Details"
+                            : "Optimization Method"}
+              </span>
                         </div>
                         <div className="w-full bg-muted h-2 rounded-full mt-2">
-                            <div className="bg-primary h-2 rounded-full transition-all duration-300"
-                                 style={{width: `${(currentStep / 3) * 100}%`}}/>
+                            <div
+                                className="bg-primary h-2 rounded-full transition-all duration-300"
+                                style={{width: `${(currentStep / 4) * 100}%`}}
+                            />
                         </div>
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form action={formAction} className="space-y-6">
+                        {/* Hidden inputs to carry React state into the form */}
+                        <input
+                            type="hidden"
+                            name="tickers"
+                            value={JSON.stringify(selectedTickers)}
+                        />
+                        <input type="hidden" name="years" value={years}/>
+                        <input
+                            type="hidden"
+                            name="investmentAmount"
+                            value={investmentAmount}
+                        />
+                        <input type="hidden" name="targetAmount" value={targetAmount}/>
+                        <input
+                            type="hidden"
+                            name="use_risk_score"
+                            value={optimizationMethod === "custom_risk" ? "true" : "false"}
+                        />
+                        {optimizationMethod === "custom_risk" &&
+                            riskScorePercent != null && (
+                                <input
+                                    type="hidden"
+                                    name="risk_score_percent"
+                                    value={riskScorePercent.toString()}
+                                />
+                            )}
+
                         <AnimatePresence mode="wait">
                             {currentStep === 1 && (
-                                <motion.div key="step1"
-                                            initial={{opacity: 0, x: 20}}
-                                            animate={{opacity: 1, x: 0}}
-                                            exit={{opacity: 0, x: -20}}
-                                            className="space-y-2">
+                                <motion.div
+                                    key="step1"
+                                    initial={{opacity: 0, x: 20}}
+                                    animate={{opacity: 1, x: 0}}
+                                    exit={{opacity: 0, x: -20}}
+                                    className="space-y-2"
+                                >
                                     <div className="flex items-center justify-between">
-                                        <Label htmlFor="tickers" className="flex items-center gap-2">
+                                        <Label
+                                            htmlFor="tickers"
+                                            className="flex items-center gap-2"
+                                        >
                                             <Briefcase className="w-4 h-4"/>
                                             Select Stocks
                                         </Label>
@@ -192,18 +374,24 @@ export default function PortfolioOptimizationPage() {
                                             </Tooltip>
                                         </TooltipProvider>
                                     </div>
+
                                     <Suspense fallback={<LoadingSelect/>}>
                                         {isLoading ? (
                                             <LoadingSelect/>
                                         ) : (
-                                            <Select onValueChange={value => handleTickerSelect(value)}>
+                                            <Select
+                                                onValueChange={(value) => handleTickerSelect(value)}
+                                            >
                                                 <SelectTrigger className="bg-background">
                                                     <SelectValue
                                                         placeholder="Choose stocks to include in your portfolio"/>
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {tickerData?.tickers
-                                                        .filter((ticker) => !selectedTickers.includes(ticker.ticker_symbol))
+                                                        .filter(
+                                                            (ticker) =>
+                                                                !selectedTickers.includes(ticker.ticker_symbol)
+                                                        )
                                                         .map((ticker) => (
                                                             <SelectItem
                                                                 key={ticker.ticker_symbol}
@@ -213,9 +401,13 @@ export default function PortfolioOptimizationPage() {
                                                                 <div className="font-medium flex items-center gap-2">
                                                                     {ticker.ticker_symbol} - {ticker.asset_name}
                                                                     <span
-                                                                        className={cn("text-xs", STATUS_COLORS[ticker.status])}>
-                                                                        ● {ticker.status}
-                                                                    </span>
+                                                                        className={cn(
+                                                                            "text-xs",
+                                                                            STATUS_COLORS[ticker.status]
+                                                                        )}
+                                                                    >
+                                    ● {ticker.status}
+                                  </span>
                                                                 </div>
                                                                 <div className="text-sm text-muted-foreground">
                                                                     {ticker.sectorDisp} | {ticker.currency}
@@ -236,7 +428,9 @@ export default function PortfolioOptimizationPage() {
                                                 className="flex flex-wrap gap-2 mt-2"
                                             >
                                                 {selectedTickers.map((ticker) => {
-                                                    const tickerInfo = tickerData?.tickers.find(t => t.ticker_symbol === ticker);
+                                                    const tickerInfo = tickerData?.tickers.find(
+                                                        (t) => t.ticker_symbol === ticker
+                                                    );
                                                     return (
                                                         <motion.div
                                                             key={ticker}
@@ -249,25 +443,37 @@ export default function PortfolioOptimizationPage() {
                                                                 <div>
                                                                     <div
                                                                         className="font-medium flex items-center gap-2">
-                                                                        {tickerInfo?.ticker_symbol} - {tickerInfo?.asset_name}
+                                                                        {tickerInfo?.ticker_symbol} -{" "}
+                                                                        {tickerInfo?.asset_name}
                                                                         {tickerInfo && (
                                                                             <TooltipProvider>
                                                                                 <Tooltip>
                                                                                     <TooltipTrigger>
-                                                                                        <span
-                                                                                            className={cn("text-xs", STATUS_COLORS[tickerInfo.status])}>
-                                                                                            ● {tickerInfo.status}
-                                                                                        </span>
+                                            <span
+                                                className={cn(
+                                                    "text-xs",
+                                                    STATUS_COLORS[tickerInfo.status]
+                                                )}
+                                            >
+                                              ● {tickerInfo.status}
+                                            </span>
                                                                                     </TooltipTrigger>
                                                                                     <TooltipContent>
-                                                                                        <p>{STATUS_DESCRIPTIONS[tickerInfo.status]}</p>
+                                                                                        <p>
+                                                                                            {
+                                                                                                STATUS_DESCRIPTIONS[
+                                                                                                    tickerInfo.status
+                                                                                                    ]
+                                                                                            }
+                                                                                        </p>
                                                                                     </TooltipContent>
                                                                                 </Tooltip>
                                                                             </TooltipProvider>
                                                                         )}
                                                                     </div>
                                                                     <div className="text-muted-foreground text-xs">
-                                                                        {tickerInfo?.sectorDisp} | {tickerInfo?.currency}
+                                                                        {tickerInfo?.sectorDisp} |{" "}
+                                                                        {tickerInfo?.currency}
                                                                     </div>
                                                                 </div>
                                                                 <button
@@ -314,7 +520,7 @@ export default function PortfolioOptimizationPage() {
                                     </div>
                                     <Input
                                         id="years"
-                                        name="years"
+                                        name="year_s"
                                         type="number"
                                         step="0.1"
                                         min="0.1"
@@ -337,7 +543,10 @@ export default function PortfolioOptimizationPage() {
                                 >
                                     <div className="space-y-2">
                                         <div className="flex items-center justify-between">
-                                            <Label htmlFor="investmentAmount" className="flex items-center gap-2">
+                                            <Label
+                                                htmlFor="investmentAmount"
+                                                className="flex items-center gap-2"
+                                            >
                                                 <DollarSign className="w-4 h-4"/>
                                                 Initial Investment
                                             </Label>
@@ -352,22 +561,44 @@ export default function PortfolioOptimizationPage() {
                                                 </Tooltip>
                                             </TooltipProvider>
                                         </div>
-                                        <Input
-                                            id="investmentAmount"
-                                            name="investmentAmount"
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            required
-                                            className="bg-background"
-                                            placeholder="e.g., 10000"
-                                            value={investmentAmount}
-                                            onChange={(e) => setInvestmentAmount(e.target.value)}
-                                        />
+                                        <>
+                                            <Input
+                                                id="investmentAmount"
+                                                name="investmentAmount"
+                                                type="number"
+                                                min="0"
+                                                max={userData?.balance || 0}
+                                                step="0.01"
+                                                required
+                                                className={cn("bg-background",
+                                                    balanceWarning && "border-amber-500",
+                                                    exceedsBalance && "border-destructive"
+                                                )}
+                                                placeholder="e.g., 10000"
+                                                value={investmentAmount}
+                                                onChange={handleInvestmentAmountChange}
+                                            />
+                                            <div className="text-sm text-muted-foreground mt-1">
+                                                Available Balance: ${userData?.balance?.toFixed(2) || '0.00'}
+                                            </div>
+                                            {balanceWarning && (
+                                                <div className="text-sm text-amber-500 mt-1">
+                                                    Warning: You are about to invest your entire available balance
+                                                </div>
+                                            )}
+                                            {exceedsBalance && (
+                                                <div className="text-sm text-destructive mt-1">
+                                                    Error: Amount exceeds your available balance
+                                                </div>
+                                            )}
+                                        </>
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex items-center justify-between">
-                                            <Label htmlFor="targetAmount" className="flex items-center gap-2">
+                                            <Label
+                                                htmlFor="targetAmount"
+                                                className="flex items-center gap-2"
+                                            >
                                                 <DollarSign className="w-4 h-4"/>
                                                 Target Amount
                                             </Label>
@@ -377,8 +608,10 @@ export default function PortfolioOptimizationPage() {
                                                         <Info className="w-4 h-4 text-muted-foreground"/>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
-                                                        <p>Your desired portfolio value at the end of the investment
-                                                            period</p>
+                                                        <p>
+                                                            Your desired portfolio value at the end of the
+                                                            investment period
+                                                        </p>
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </TooltipProvider>
@@ -398,6 +631,77 @@ export default function PortfolioOptimizationPage() {
                                     </div>
                                 </motion.div>
                             )}
+
+                            {currentStep === 4 && (
+                                <motion.div
+                                    key="step4"
+                                    initial={{opacity: 0, x: 20}}
+                                    animate={{opacity: 1, x: 0}}
+                                    exit={{opacity: 0, x: -20}}
+                                    className="space-y-2"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="years" className="flex items-center gap-2">
+                                            <Clock className="w-4 h-4"/>
+                                            Optimization Method
+                                        </Label>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    <Info className="w-4 h-4 text-muted-foreground"/>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Select your prefered optimizarion method</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
+
+                                    <Select
+                                        value={optimizationMethod}
+                                        onValueChange={setOptimizationMethod}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue/>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="max_sharpe">
+                                                Max Sharpe Ratio
+                                            </SelectItem>
+                                            <SelectItem value="custom_risk">
+                                                Custom Risk Level (Quiz)
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                    {optimizationMethod === "custom_risk" && (
+                                        <div className="space-y-2">
+                                            {/* If we've got a score, show it */}
+                                            {riskScorePercent != null && (
+                                                <p>
+                                                    Your risk score: <strong>{riskScorePercent}%</strong>
+                                                </p>
+                                            )}
+
+                                            {/* Always show a single button whose text toggles */}
+                                            <Button
+                                                type="button"
+                                                onClick={() => {
+                                                    const qs = new URLSearchParams({
+                                                        tickers: JSON.stringify(selectedTickers),
+                                                        years,
+                                                        inv: investmentAmount,
+                                                        tgt: targetAmount,
+                                                    }).toString();
+                                                    router.push(`/dashboard/portfolio/quiz?${qs}`);
+                                                }}
+                                            >
+                                                {riskScorePercent != null ? "Retake Quiz" : "Take Quiz"}
+                                            </Button>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            )}
                         </AnimatePresence>
 
                         {selectedTickers.length === 0 && currentStep === 1 && (
@@ -410,22 +714,33 @@ export default function PortfolioOptimizationPage() {
 
                         <div className="flex justify-between gap-4">
                             {currentStep > 1 && (
-                                <Button type="button" variant="outline" onClick={handlePrevStep}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handlePrevStep}
+                                >
                                     Previous
                                 </Button>
                             )}
 
-                            {currentStep < 3 ? (
+                            {currentStep < 4 ? (
                                 <Button
+                                    key="next"
                                     type="button"
                                     className="ml-auto"
                                     onClick={handleNextStep}
-                                    disabled={currentStep === 1 && selectedTickers.length < 2 || currentStep === 2 && !years}
+                                    disabled={
+                                        (currentStep === 1 && selectedTickers.length < 2) ||
+                                        (currentStep === 2 && !years) ||
+                                        (currentStep === 3 && (!investmentAmount || !targetAmount)) ||
+                                        (currentStep === 3 && exceedsBalance)
+                                    }
                                 >
                                     Next
                                 </Button>
                             ) : (
                                 <Button
+                                    key="submit"
                                     type="submit"
                                     className="ml-auto"
                                     disabled={
@@ -433,7 +748,9 @@ export default function PortfolioOptimizationPage() {
                                         selectedTickers.length < 2 ||
                                         !years ||
                                         !investmentAmount ||
-                                        !targetAmount
+                                        !targetAmount ||
+                                        exceedsBalance ||
+                                        (optimizationMethod === "custom_risk" && !riskScorePercent)
                                     }
                                 >
                                     {pending ? (
