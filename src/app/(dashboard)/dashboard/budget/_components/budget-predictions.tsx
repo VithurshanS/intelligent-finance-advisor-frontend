@@ -27,6 +27,11 @@ export function BudgetPredictions({ userId }: BudgetPredictionProps) {
 
                 if (cachedPrediction) {
                     predictionData = JSON.parse(cachedPrediction);
+                    if (predictionData.predictions.uid != userId) {
+                        const response = await BudgetApi.getPredictions(userId);
+                        predictionData = response;
+                        localStorage.setItem('prediction', JSON.stringify(response));
+                    }
                 } else {
                     const response = await BudgetApi.getPredictions(userId);
                     predictionData = response;
