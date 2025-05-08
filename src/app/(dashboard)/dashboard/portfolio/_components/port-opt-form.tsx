@@ -150,8 +150,10 @@ export default function PortfolioOptimizationPage() {
     const {
         data: userData,
         error: userDataError,
-        isLoading: userDataLoading
+        
     } = useAPI<budgetData>(`/budget/transactions/summary/${user?.user_id}`);
+
+
 
     //related to quiz
     useEffect(() => {
@@ -227,7 +229,7 @@ export default function PortfolioOptimizationPage() {
 
     if (error) return <div>Failed to load tickers</div>;
     if (userError) return <div>Failed to fetch user data</div>
-    if (userDataError) return <div>Failed to fetch user's budget data</div>
+    if (userDataError) return <div>Failed to fetch user&#39;s budget data</div>
 
     return (
         <div className="space-y-6">
