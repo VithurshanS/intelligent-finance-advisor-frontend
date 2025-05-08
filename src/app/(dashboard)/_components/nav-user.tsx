@@ -17,6 +17,7 @@ import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar} from "@/com
 import {Skeleton} from "@/components/ui/skeleton"
 import {getCurrentUser} from "@/actions/auth"
 import {User} from "@/lib/types/user";
+import Link from "next/link";
 
 export function NavUser() {
     const {isMobile} = useSidebar()
@@ -137,8 +138,10 @@ export function NavUser() {
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator/>
                                 <DropdownMenuItem>
-                                    <LogOut className="mr-2 h-4 w-4"/>
-                                    Log out
+                                    <Link href={'/logout'} className="flex items-center gap-2">
+                                        <LogOut className="mr-2 h-4 w-4"/>
+                                        Log out
+                                    </Link>
                                 </DropdownMenuItem>
                             </>
                         )}

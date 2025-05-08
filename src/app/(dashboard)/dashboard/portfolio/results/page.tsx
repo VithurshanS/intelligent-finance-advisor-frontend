@@ -4,7 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OptimizedPortfolioResult } from "@/lib/types/profile";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip as TooltipComponent,
+  ResponsiveContainer,
+} from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -21,6 +27,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+
+import PortfolioExplanation from "@/components/portfolio/PortfolioExplanation";
 
 export default function PortfolioResultsPage() {
   const searchParams = useSearchParams();
@@ -70,7 +78,6 @@ export default function PortfolioResultsPage() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-
         <motion.div
           initial="hidden"
           animate="visible"
@@ -111,7 +118,7 @@ export default function PortfolioResultsPage() {
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <TooltipComponent />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -261,6 +268,9 @@ export default function PortfolioResultsPage() {
             </Card>
           </div>
         </motion.div>
+        <div>
+          <PortfolioExplanation portfolioData={result} />
+        </div>
       </div>
     );
   } catch (error) {

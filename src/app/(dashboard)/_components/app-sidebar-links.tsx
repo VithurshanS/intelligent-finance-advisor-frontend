@@ -11,7 +11,8 @@ import {
     FolderGit2,
     LayoutGrid,
     PieChart,
-    Users
+    Users,
+    ChartColumnIncreasing
 } from "lucide-react";
 
 const userSidebar: SidebarData = {
@@ -22,6 +23,32 @@ const userSidebar: SidebarData = {
             icon: LayoutGrid,
         },
         {
+            title: "Global Market",
+            url: '/assets',
+            icon: Earth,
+            initiallyExpanded: true,
+            items: [
+                {
+                    title: "Discover",
+                    url: "/global-assets/lookup",
+                },
+                {
+                    title: "Top Screens",
+                    url: "/global-assets/top-screens",
+                },
+                {
+                    title: "Sectors",
+                    url: "/global-assets/sectors",
+                },
+
+            ]
+        },
+        {
+            title: "Risk Watchlist",
+            url: '/assets/db',
+            icon: ChartCandlestickIcon,
+        },
+        {
             title: "Budget Tracker",
             url: "/dashboard/budget",
             icon: DollarSign,
@@ -30,7 +57,12 @@ const userSidebar: SidebarData = {
             title: "Portfolio Optimization",
             url: "/dashboard/portfolio",
             icon: PieChart
-        },],
+        },
+        {
+            title: "StockMarket Prediction",
+            url: "/dashboard/stockmarketprediction",
+            icon: ChartColumnIncreasing
+        }],
     guides: [
         {
             name: "ML Model Notebook",
