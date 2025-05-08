@@ -1,7 +1,7 @@
 "use client"
 
 import {useEffect, useState} from "react"
-import {Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, ComposedChart} from "recharts"
+import {Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart} from "recharts"
 import {format} from "date-fns"
 import {PredictionItem, StockHistoryItem} from "@/lib/types/stock_prediction";
 

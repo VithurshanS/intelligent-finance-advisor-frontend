@@ -17,7 +17,7 @@ import ModelMetadata from "./model-metadata"
 import {exportToCSV} from "@/lib/export"
 import {PredictionData, StockData, ModelMetadataType} from "@/lib/types/stock_prediction";
 import {DateRange} from "react-day-picker";
-import { number } from "zod"
+// import { number } from "zod"
 
 type companyType = {
     value: string
