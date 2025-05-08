@@ -17,6 +17,7 @@ import {
 
 import {Gender} from "@/lib/types/user";
 import {registerSchema} from "@/lib/types/register";
+import {TermsAndConditionsDialog} from './TermsDialog';
 
 // Type for the form data based on the Zod schema
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -39,6 +40,9 @@ function RegisterForm() {
     const [validationErrors, setValidationErrors] = React.useState<Record<string, string>>({});
     const [state, formAction] = useActionState(registerUser, initialState);
     const [isPending, startTransition] = React.useTransition();
+
+    const [termsDialogOpen, setTermsDialogOpen] = React.useState(false);
+    const [termsAccepted, setTermsAccepted] = React.useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const {name, value} = e.target;
@@ -67,6 +71,11 @@ function RegisterForm() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!termsAccepted) {
+            setTermsDialogOpen(true);
+            return;
+        }
+
         if (validateForm()) {
             const formDataObj = new FormData();
 
@@ -81,6 +90,29 @@ function RegisterForm() {
                 formAction(formDataObj);
             });
         }
+    };
+
+    const handleAcceptTerms = () => {
+        setTermsAccepted(true);
+        setTermsDialogOpen(false);
+
+        // Automatically submit the form after accepting terms
+        if (validateForm()) {
+            const formDataObj = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    formDataObj.append(key, value.toString());
+                }
+            });
+
+            startTransition(() => {
+                formAction(formDataObj);
+            });
+        }
+    };
+
+    const handleDeclineTerms = () => {
+        setTermsDialogOpen(false);
     };
 
     // If registration was successful, show a success message
@@ -321,6 +353,25 @@ function RegisterForm() {
                     )}
                 </div>
             </div>
+            <div className="flex items-center gap-2 mt-2">
+                <input
+                    type="checkbox"
+                    id="termsAccepted"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="termsAccepted" className="text-sm">
+                    I accept the{" "}
+                    <button
+                        type="button"
+                        onClick={() => setTermsDialogOpen(true)}
+                        className="text-primary underline underline-offset-2"
+                    >
+                        Terms and Conditions
+                    </button>
+                </label>
+            </div>
 
             <Button
                 type="submit"
@@ -328,7 +379,7 @@ function RegisterForm() {
                 className="w-full relative mt-4"
             >
                 <span className={`flex items-center justify-center ${isPending ? 'opacity-0' : 'opacity-100'}`}>
-                  Register
+                    Register
                 </span>
                 {isPending && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -344,6 +395,13 @@ function RegisterForm() {
                     Log in
                 </a>
             </div>
+
+            <TermsAndConditionsDialog
+                open={termsDialogOpen}
+                onOpenChange={setTermsDialogOpen}
+                onAccept={handleAcceptTerms}
+                onDecline={handleDeclineTerms}
+            />
         </form>
     );
 }
