@@ -178,7 +178,7 @@ export default function RiskAssessment() {
 
   return (
     <div className="space-y-6">
-      <Breadcrumb>
+      <Breadcrumb className="mt-4 ml-4">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
@@ -222,7 +222,7 @@ export default function RiskAssessment() {
           </Button>
         </CardContent>
       </Card> */}
-      <div className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      <div className="-mt-20 min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
         <div className="w-full max-w-md bg-card rounded-lg shadow-xl overflow-hidden border border-border">
           <div className="bg-primary px-6 py-5">
             <h1 className="text-2xl font-bold text-primary-foreground">
