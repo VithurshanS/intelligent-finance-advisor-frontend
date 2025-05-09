@@ -106,7 +106,7 @@ export default function Home() {
     // }
 
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground py-6 px-8">
             <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid grid-cols-4 mb-8 bg-muted p-1 rounded-lg">
                     <TabsTrigger
@@ -149,8 +149,8 @@ export default function Home() {
                             </div>
 
                         </div> :
-                        <div className="space-y-6 p-8">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <Card>
                                     <CardHeader className="pb-2">
                                         <CardTitle className="text-lg text-white">Monthly Balance</CardTitle>
@@ -189,7 +189,7 @@ export default function Home() {
                                 </Card>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="text-white">Financial Overview</CardTitle>
@@ -246,7 +246,6 @@ export default function Home() {
                                             </div>
                                             <Progress
                                                 value={summaryData.transactions.length !== 0 ? calculateOverallScore(summaryData) : 0}
-                                                className="h-2 bg-gray-700 text-blue-500"
                                             />
 
                                             {/* Breakdown */}
@@ -261,7 +260,6 @@ export default function Home() {
                                                     </div>
                                                     <Progress
                                                         value={summaryData.transactions.length !== 0 ? calculateSavingsScore(summaryData) : 0}
-                                                        className="h-2 bg-gray-700 text-blue-500"
                                                     />
                                                 </div>
 
@@ -275,7 +273,6 @@ export default function Home() {
                                                     </div>
                                                     <Progress
                                                         value={summaryData.transactions.length !== 0 ? calculateSpendingScore(summaryData) : 0}
-                                                        className="h-2 bg-gray-700 text-blue-500"
                                                     />
                                                 </div>
 
@@ -289,7 +286,6 @@ export default function Home() {
                                                     </div>
                                                     <Progress
                                                         value={summaryData.transactions.length !== 0 ? calculateBalanceTrendScore(summaryData) : 0}
-                                                        className="h-2 bg-gray-700 text-blue-500"
                                                     />
                                                 </div>
                                             </div>
