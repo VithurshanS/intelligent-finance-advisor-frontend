@@ -85,7 +85,7 @@ export function AIChat() {
             {/* Chat window */}
             {isOpen && (
                 <Card
-                    className="fixed bottom-24 right-6 w-80 md:w-96 h-[500px] flex flex-col shadow-xl border-border bg-card">
+                    className="fixed bottom-24 right-6 w-80 md:w-96 h-[500px] flex flex-col shadow-xl border border-border bg-card">
                     <CardHeader className="bg-secondary py-3 border-b border-border">
                         <CardTitle className="text-lg flex items-center text-secondary-foreground">
                             <Bot className="mr-2 h-5 w-5"/>
