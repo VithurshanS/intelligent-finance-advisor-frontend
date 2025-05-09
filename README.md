@@ -7,7 +7,7 @@ Investment Assistant.
 
 ## Getting Started
 
-To start the development server:
+To start the development server :
 
 ```bash
 npm run dev
