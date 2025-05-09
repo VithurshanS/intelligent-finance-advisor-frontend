@@ -15,7 +15,7 @@ export async function createSession(loginResponse: LoginResponse) {
         maxAge: 60 * 60 * 24, // 1 day
         path: '/',
         sameSite: 'strict',
-        domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
+        // domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
     });
 
     cookieStore.set('user', JSON.stringify(loginResponse), {
@@ -24,7 +24,7 @@ export async function createSession(loginResponse: LoginResponse) {
         maxAge: 60 * 60 * 24, // 1 day
         path: '/',
         sameSite: 'strict',
-        domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
+        // domain: process.env.ENV === 'production' ? "shancloudservice.com" : undefined,
     });
 }
 
