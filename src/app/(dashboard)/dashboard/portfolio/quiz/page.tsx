@@ -10,7 +10,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-import { Sparkles } from "lucide-react";
 import AxiosInstance from "@/lib/client-fetcher";
 import { getCurrentUser } from "@/actions/auth";
 import { User } from "@/lib/types/user";
