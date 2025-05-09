@@ -179,7 +179,6 @@ export default function PortfolioOptimizationPage() {
 
     const quizScore = searchParams.get("risk_score_percent");
     if (quizScore) {
-      setRiskScorePercent(parseFloat(quizScore));
       setOptimizationMethod("custom_risk");
     }
 

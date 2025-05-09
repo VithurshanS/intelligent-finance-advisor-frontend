@@ -184,6 +184,7 @@ export default function RiskAssessment() {
       // 3) Rebuild the full query, adding the quiz score
       const params = new URLSearchParams({
         step: "4",
+        risk_score_percent: val.toString(),
         tickers: JSON.stringify(tickers),
         years,
         inv: investmentAmount,
