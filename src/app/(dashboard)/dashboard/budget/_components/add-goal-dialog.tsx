@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import {Button} from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -10,8 +10,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
 import {
     Select,
     SelectContent,
@@ -19,8 +19,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { BudgetApi } from "@/lib/budget-lib/budget_api"
-import { useState } from "react"
+import {BudgetApi} from "@/lib/budget-lib/budget_api"
+import {useState} from "react"
 
 interface AddGoalDialogProps {
     userId: string,
@@ -31,7 +31,7 @@ interface AddGoalDialogProps {
     }
 }
 
-export function AddGoalDialog({ userId, goal }: AddGoalDialogProps) {
+export function AddGoalDialog({userId, goal}: AddGoalDialogProps) {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -94,64 +94,64 @@ export function AddGoalDialog({ userId, goal }: AddGoalDialogProps) {
             <DialogTrigger asChild>
                 <Button variant="outline">Add Goal</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-gray-800 border-gray-700">
+            <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
-                        <DialogTitle className="text-white">Add Budget Goal</DialogTitle>
-                        <DialogDescription className="text-gray-300">
+                        <DialogTitle>Add Budget Goal</DialogTitle>
+                        <DialogDescription>
                             Set a new financial target to work towards.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="title" className="text-right text-gray-300">
+                            <Label htmlFor="title" className="text-right">
                                 Title
                             </Label>
                             <Input
                                 id="title"
                                 value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                className="col-span-3 bg-gray-700 border-gray-600 text-white"
+                                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                                className="col-span-3 "
                                 required
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="category" className="text-right text-gray-300">
+                            <Label htmlFor="category" className="text-right">
                                 Category
                             </Label>
                             <Input
                                 id="category"
                                 value={formData.category}
-                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                className="col-span-3 bg-gray-700 border-gray-600 text-white"
+                                onChange={(e) => setFormData({...formData, category: e.target.value})}
+                                className="col-span-3 "
                                 required
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="amount" className="text-right text-gray-300">
+                            <Label htmlFor="amount" className="text-right">
                                 Amount
                             </Label>
                             <Input
                                 id="amount"
                                 type="number"
                                 value={formData.amount}
-                                onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
-                                className="col-span-3 bg-gray-700 border-gray-600 text-white"
+                                onChange={(e) => setFormData({...formData, amount: parseFloat(e.target.value)})}
+                                className="col-span-3 "
                                 required
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="time_period" className="text-right text-gray-300">
+                            <Label htmlFor="time_period" className="text-right">
                                 Time Period
                             </Label>
                             <Select
                                 value={formData.time_period}
-                                onValueChange={(value) => setFormData({ ...formData, time_period: value })}
+                                onValueChange={(value) => setFormData({...formData, time_period: value})}
                             >
-                                <SelectTrigger className="col-span-3 bg-gray-700 border-gray-600 text-white">
-                                    <SelectValue placeholder="Select time period" />
+                                <SelectTrigger className="col-span-3 ">
+                                    <SelectValue placeholder="Select time period"/>
                                 </SelectTrigger>
-                                <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                                <SelectContent>
                                     <SelectItem value="daily">Daily</SelectItem>
                                     <SelectItem value="weekly">Weekly</SelectItem>
                                     <SelectItem value="monthly">Monthly</SelectItem>

@@ -1,17 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { LineChart, PieChart } from "@/app/(dashboard)/dashboard/budget/_components/charts"
-import { BudgetReports } from "@/app/(dashboard)/dashboard/budget/_components/budget-reports"
-import { BudgetGoals } from "@/app/(dashboard)/dashboard/budget/_components/budget-goals"
-import { BudgetPredictions } from "@/app/(dashboard)/dashboard/budget/_components/budget-predictions"
-import { AIChat } from "@/app/(dashboard)/dashboard/budget/_components/ai-chat"
-import { DollarSign, TrendingUp, PieChartIcon, Target } from "lucide-react"
-import { BudgetApi, CategoryBreakdown } from "@/lib/budget-lib/budget_api" // Import our API functions
-import { getCurrentUser } from "@/actions/auth"
+import {useEffect, useState} from "react"
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {Progress} from "@/components/ui/progress"
+import {LineChart, PieChart} from "@/app/(dashboard)/dashboard/budget/_components/charts"
+import {BudgetReports} from "@/app/(dashboard)/dashboard/budget/_components/budget-reports"
+import {BudgetGoals} from "@/app/(dashboard)/dashboard/budget/_components/budget-goals"
+import {BudgetPredictions} from "@/app/(dashboard)/dashboard/budget/_components/budget-predictions"
+import {AIChat} from "@/app/(dashboard)/dashboard/budget/_components/ai-chat"
+import {DollarSign, TrendingUp, PieChartIcon, Target} from "lucide-react"
+import {BudgetApi, CategoryBreakdown} from "@/lib/budget-lib/budget_api" // Import our API functions
+import {getCurrentUser} from "@/actions/auth"
 import {
     calculateBalanceTrendScore,
     calculateOverallScore,
@@ -94,109 +94,111 @@ export default function Home() {
 
     // if (isLoading) {
     //     return (
-    //         <div className="min-h-screen bg-gray-900 text-gray-100">
+    //         <div className="min-h-screen bg-background text-foreground">
 
     //             <div className="flex flex-col items-center justify-center h-[70vh]">
     //                 <div
     //                     className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-    //                 <p className="text-gray-300">Loading your financial data...</p>
+    //                 <p className="text-foreground">Loading your financial data...</p>
     //             </div>
-
     //         </div>
     //     )
     // }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-gray-100">
+        <div className="min-h-screen bg-background text-foreground">
             <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid grid-cols-4 mb-8 bg-gray-800 p-1 rounded-lg">
+                <TabsList className="grid grid-cols-4 mb-8 bg-muted p-1 rounded-lg">
                     <TabsTrigger
                         value="dashboard"
-                        className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                        className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <DollarSign className="h-4 w-4" />
+                        <DollarSign className="h-4 w-4"/>
                         <span className="hidden sm:inline">Dashboard</span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="goals"
-                        className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                        className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <Target className="h-4 w-4" />
+                        <Target className="h-4 w-4"/>
                         <span className="hidden sm:inline">Budget Goals</span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="reports"
-                        className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                        className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <PieChartIcon className="h-4 w-4" />
+                        <PieChartIcon className="h-4 w-4"/>
                         <span className="hidden sm:inline">Budget Reports</span>
                     </TabsTrigger>
                     <TabsTrigger
                         value="predictions"
-                        className="flex items-center gap-2 text-gray-200 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                        className="flex items-center gap-2 text-muted-foreground data-[state=active]:bg-blue-600 data-[state=active]:text-white"
                     >
-                        <TrendingUp className="h-4 w-4" />
+                        <TrendingUp className="h-4 w-4"/>
                         <span className="hidden sm:inline">Predictions</span>
                     </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="dashboard" className="space-y-6">
-                    {isLoading ? <div className="min-h-screen bg-gray-900 text-gray-100">
+                    {isLoading ? <div className="min-h-screen bg-background text-foreground">
 
-                        <div className="flex flex-col items-center justify-center h-[70vh]">
-                            <div
-                                className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-                            <p className="text-gray-300">Loading your financial data...</p>
-                        </div>
+                            <div className="flex flex-col items-center justify-center h-[70vh]">
+                                <div
+                                    className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                                <p className="text-foreground">Loading your financial data...</p>
+                            </div>
 
-                    </div> :
+                        </div> :
                         <div className="space-y-6 p-8">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <Card className="bg-gray-800 border-gray-700 shadow-md">
+                                <Card>
                                     <CardHeader className="pb-2">
                                         <CardTitle className="text-lg text-white">Monthly Balance</CardTitle>
-                                        <CardDescription className="text-gray-300">Your current financial
+                                        <CardDescription className="text-foreground">Your current financial
                                             status</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-3xl font-bold text-white">${summaryData.balance}</div>
                                         <div className="text-sm text-green-400 mt-1"
-                                            style={summaryData.balance > summaryData.previousBalance ? { color: "green" } : { color: "red" }}>{summaryData.previousBalance === 0 ? "" : `${handleSummaryValues(summaryData.balance, summaryData.previousBalance)} from last month`}</div>
+                                             style={summaryData.balance > summaryData.previousBalance ? {color: "green"} : {color: "red"}}>{summaryData.previousBalance === 0 ? "" : `${handleSummaryValues(summaryData.balance, summaryData.previousBalance)} from last month`}</div>
                                     </CardContent>
                                 </Card>
-                                <Card className="bg-gray-800 border-gray-700 shadow-md">
+                                <Card>
                                     <CardHeader className="pb-2">
                                         <CardTitle className="text-lg text-white">Monthly Income</CardTitle>
-                                        <CardDescription className="text-gray-300">Your income this month</CardDescription>
+                                        <CardDescription className="text-foreground">Your income this
+                                            month</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-3xl font-bold text-white">${summaryData.income}</div>
                                         <div className="text-sm text-green-400 mt-1"
-                                            style={summaryData.income > summaryData.previousIncome ? { color: "green" } : { color: "red" }}>{summaryData.previousIncome === 0 ? "" : `${handleSummaryValues(summaryData.income, summaryData.previousIncome)} from last month`}</div>
+                                             style={summaryData.income > summaryData.previousIncome ? {color: "green"} : {color: "red"}}>{summaryData.previousIncome === 0 ? "" : `${handleSummaryValues(summaryData.income, summaryData.previousIncome)} from last month`}</div>
                                     </CardContent>
                                 </Card>
-                                <Card className="bg-gray-800 border-gray-700 shadow-md">
+                                <Card>
                                     <CardHeader className="pb-2">
                                         <CardTitle className="text-lg text-white">Monthly Expenses</CardTitle>
-                                        <CardDescription className="text-gray-300">Your expenses this month</CardDescription>
+                                        <CardDescription className="text-foreground">Your expenses this
+                                            month</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <div className="text-3xl font-bold text-white">${summaryData.expense}</div>
                                         <div className="text-sm text-green-400 mt-1"
-                                            style={summaryData.expense <= summaryData.previousExpense ? { color: "green" } : { color: "red" }}>{summaryData.previousExpense === 0 ? "" : `${handleSummaryValues(summaryData.expense, summaryData.previousExpense)} from last month`}</div>
+                                             style={summaryData.expense <= summaryData.previousExpense ? {color: "green"} : {color: "red"}}>{summaryData.previousExpense === 0 ? "" : `${handleSummaryValues(summaryData.expense, summaryData.previousExpense)} from last month`}</div>
                                     </CardContent>
                                 </Card>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <Card className="bg-gray-800 border-gray-700 shadow-md">
+                                <Card>
                                     <CardHeader>
                                         <CardTitle className="text-white">Financial Overview</CardTitle>
-                                        <CardDescription className="text-gray-300">Your financial balance per each day at a
+                                        <CardDescription className="text-foreground">Your financial balance per each day
+                                            at a
                                             glance</CardDescription>
                                     </CardHeader>
                                     <CardContent className="flex items-center justify-center h-full">
-                                        <div className="relative w-full" style={{ height: '300px' }}>
+                                        <div className="relative w-full" style={{height: '300px'}}>
                                             <LineChart
                                                 darkMode={true}
                                                 data={summaryData.transactions.map(t => t.balance)}
@@ -205,28 +207,30 @@ export default function Home() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                                <Card className="bg-gray-800 border-gray-700 shadow-md">
+                                <Card>
                                     <CardHeader>
                                         <CardTitle className="text-white">Expense Breakdown</CardTitle>
-                                        <CardDescription className="text-gray-300">Where your money is going</CardDescription>
+                                        <CardDescription className="text-foreground">Where your money is
+                                            going</CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <PieChart darkMode={true} data={categories[0]} />
+                                        <PieChart darkMode={true} data={categories[0]}/>
                                     </CardContent>
                                     <CardHeader>
                                         <CardTitle className="text-white">Income Breakdown</CardTitle>
-                                        <CardDescription className="text-gray-300">Where your money is coming</CardDescription>
+                                        <CardDescription className="text-foreground">Where your money is
+                                            coming</CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <PieChart darkMode={true} data={categories[1]} />
+                                        <PieChart darkMode={true} data={categories[1]}/>
                                     </CardContent>
                                 </Card>
                             </div>
 
-                            <Card className="bg-gray-800 border-gray-700 shadow-md">
+                            <Card>
                                 <CardHeader>
                                     <CardTitle className="text-white">Financial Health Score</CardTitle>
-                                    <CardDescription className="text-gray-300">
+                                    <CardDescription className="text-foreground">
                                         Based on your spending, savings, and investments
                                     </CardDescription>
                                 </CardHeader>
@@ -234,7 +238,7 @@ export default function Home() {
                                     <CardContent>
                                         <div className="space-y-4">
                                             {/* Overall Score */}
-                                            <div className="flex justify-between text-gray-200">
+                                            <div className="flex justify-between text-muted-foreground">
                                                 <span>Overall Score</span>
                                                 <span className="font-medium">
                                                     {summaryData.transactions.length !== 0 ? calculateOverallScore(summaryData) : 0}/100
@@ -249,7 +253,7 @@ export default function Home() {
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                                                 {/* Savings Score */}
                                                 <div className="space-y-2">
-                                                    <div className="flex justify-between text-gray-200">
+                                                    <div className="flex justify-between text-muted-foreground">
                                                         <span>Savings</span>
                                                         <span className="font-medium">
                                                             {summaryData.transactions.length !== 0 ? calculateSavingsScore(summaryData) : 0}/100
@@ -263,7 +267,7 @@ export default function Home() {
 
                                                 {/* Spending Score */}
                                                 <div className="space-y-2">
-                                                    <div className="flex justify-between text-gray-200">
+                                                    <div className="flex justify-between text-muted-foreground">
                                                         <span>Spending</span>
                                                         <span className="font-medium">
                                                             {summaryData.transactions.length !== 0 ? calculateSpendingScore(summaryData) : 0}/100
@@ -277,7 +281,7 @@ export default function Home() {
 
                                                 {/* Balance Trend */}
                                                 <div className="space-y-2">
-                                                    <div className="flex justify-between text-gray-200">
+                                                    <div className="flex justify-between text-muted-foreground">
                                                         <span>Balance Trend</span>
                                                         <span className="font-medium">
                                                             {summaryData.transactions.length !== 0 ? calculateBalanceTrendScore(summaryData) : 0}/100
@@ -298,20 +302,20 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="goals">
-                    <BudgetGoals userId={userId} />
+                    <BudgetGoals userId={userId}/>
                 </TabsContent>
 
                 <TabsContent value="reports">
-                    <BudgetReports userId={userId} />
+                    <BudgetReports userId={userId}/>
                 </TabsContent>
 
                 <TabsContent value="predictions">
-                    <BudgetPredictions userId={userId} />
+                    <BudgetPredictions userId={userId}/>
                 </TabsContent>
             </Tabs>
 
             {/* Floating AI Chat Button */}
-            <AIChat />
+            <AIChat/>
         </div>
     )
 }
