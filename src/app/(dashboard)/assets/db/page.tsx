@@ -16,7 +16,7 @@ const Page = async ({
     // Example of excluding certain screener types if needed
     const page = parseInt((await searchParams).page as string) || 1;
     const count = await getStocksCount();
-    const result_per_page = 15;
+    const result_per_page = 10;
     const currentUser = await getCurrentUser();
     if (!currentUser) {
         return (
