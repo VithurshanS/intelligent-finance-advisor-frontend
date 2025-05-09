@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense, startTransition } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,11 @@ import {
 } from "@/components/ui/tooltip";
 import { useAPI } from "@/hooks/useAPI";
 import { cn } from "@/lib/utils";
+import { getCurrentUser } from "@/actions/auth";
+import { User } from "@/lib/types/user";
+import AxiosInstance from "@/lib/client-fetcher";
 
+//interfaces
 interface Ticker {
   ticker_symbol: string;
   asset_name: string;
@@ -60,6 +64,23 @@ interface Ticker {
 
 interface TickerResponse {
   tickers: Ticker[];
+}
+
+interface budgetData {
+  income: number;
+  expense: number;
+  balance: number;
+  previous_income: number;
+  previous_expense: number;
+  previous_balance: number;
+  transactions: {
+    date: string;
+    balance: number;
+  }[];
+}
+
+interface RiskScoreOut {
+  score: number;
 }
 
 const STATUS_COLORS = {
@@ -95,21 +116,62 @@ export default function PortfolioOptimizationPage() {
   );
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [user, setUser] = useState<User | null>(null);
+  const [userError, setUserError] = useState<string | null>(null);
+  const [years, setYears] = useState("");
+  const [investmentAmount, setInvestmentAmount] = useState("");
+  const [targetAmount, setTargetAmount] = useState("");
+  const [balanceWarning, setBalanceWarning] = useState(false);
+  // New states
+  const [optimizationMethod, setOptimizationMethod] = useState("max_sharpe");
+  const [riskScorePercent, setRiskScorePercent] = useState<number | null>(null);
+  const [exceedsBalance, setExceedsBalance] = useState(false);
 
+  //fetching tickers
   const {
     data: tickerData,
     error,
     isLoading,
   } = useAPI<TickerResponse>("/profile/get_portfolio");
 
-  const [years, setYears] = useState("");
-  const [investmentAmount, setInvestmentAmount] = useState("");
-  const [targetAmount, setTargetAmount] = useState("");
+  //Getting current user
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getCurrentUser();
+        setUser(userData);
+      } catch (error) {
+        setUserError(
+          error instanceof Error ? error.message : "Failed to fetch user"
+        );
+      }
+    };
 
-  // New states
-  const [optimizationMethod, setOptimizationMethod] = useState("max_sharpe");
-  const [riskScorePercent, setRiskScorePercent] = useState<number | null>(null);
+    fetchUser();
+  }, []);
 
+  //fetching users budget related data
+  const { data: userData, error: userDataError } = useAPI<budgetData>(
+    `/budget/transactions/summary/${user?.user_id}`
+  );
+
+  useEffect(() => {
+    if (!user) return;
+
+    AxiosInstance.get<RiskScoreOut>("/profile/risk_score", {
+      params: { user_id: user.user_id },
+    })
+      .then((res) => {
+        // 204 comes back with no body, so res.data === undefined
+        setRiskScorePercent(res.status === 204 ? null : res.data.score);
+      })
+      .catch((err) => {
+        console.error("could not load risk score", err);
+        // we’re deliberately not capturing error in state
+      });
+  }, [user]);
+
+  //related to quiz
   useEffect(() => {
     // 1) Step & quiz score
     const stepParam = searchParams.get("step");
@@ -136,6 +198,15 @@ export default function PortfolioOptimizationPage() {
     if (tgtParam) setTargetAmount(tgtParam);
   }, [searchParams]);
 
+  //If form submission is successful direct to results page with the results got from the server action encoded in the URL
+  useEffect(() => {
+    if (state.success && state.data) {
+      const encodedData = encodeURIComponent(JSON.stringify(state.data));
+      router.push(`/dashboard/portfolio/results?data=${encodedData}`);
+    }
+  }, [state.success, state.data, router]);
+
+  //handlers
   const handleTickerSelect = (ticker: string) => {
     if (!selectedTickers.includes(ticker)) {
       setSelectedTickers([...selectedTickers, ticker]);
@@ -152,6 +223,7 @@ export default function PortfolioOptimizationPage() {
     if (currentStep === 1 && selectedTickers.length < 2) return;
     if (currentStep === 2 && !years) return;
     if (currentStep === 3 && (!investmentAmount || !targetAmount)) return;
+    if (currentStep === 3 && exceedsBalance) return;
 
     setCurrentStep((prev) => Math.min(prev + 1, 4));
   };
@@ -160,32 +232,21 @@ export default function PortfolioOptimizationPage() {
     setCurrentStep((prev) => prev - 1);
   };
 
-  // const handleSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   const formData = new FormData();
-  //   formData.append("tickers", JSON.stringify(selectedTickers));
-  //   formData.append("years", years);
-  //   formData.append("investmentAmount", investmentAmount);
-  //   formData.append("targetAmount", targetAmount);
+  const handleInvestmentAmountChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = parseFloat(e.target.value);
+    setInvestmentAmount(e.target.value);
 
-  //   // Custom Risk Logic
-  //   if (optimizationMethod === "custom_risk" && riskScorePercent !== null) {
-  //     formData.append("use_risk_score", "true");
-  //     formData.append("risk_score_percent", riskScorePercent.toString());
-  //   } else {
-  //     formData.append("use_risk_score", "false");
-  //   }
-  //   formAction(formData);
-  // };
-
-  useEffect(() => {
-    if (state.success && state.data) {
-      const encodedData = encodeURIComponent(JSON.stringify(state.data));
-      router.push(`/dashboard/portfolio/results?data=${encodedData}`);
+    if (userData?.balance) {
+      setBalanceWarning(value === userData.balance);
+      setExceedsBalance(value > userData.balance);
     }
-  }, [state.success, state.data, router]);
+  };
 
   if (error) return <div>Failed to load tickers</div>;
+  if (userError) return <div>Failed to fetch user data</div>;
+  if (userDataError) return <div>Failed to fetch user&#39;s budget data</div>;
 
   return (
     <div className="space-y-6">
@@ -515,18 +576,40 @@ export default function PortfolioOptimizationPage() {
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <Input
-                      id="investmentAmount"
-                      name="investmentAmount"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      required
-                      className="bg-background"
-                      placeholder="e.g., 10000"
-                      value={investmentAmount}
-                      onChange={(e) => setInvestmentAmount(e.target.value)}
-                    />
+                    <>
+                      <Input
+                        id="investmentAmount"
+                        name="investmentAmount"
+                        type="number"
+                        min="0"
+                        max={userData?.balance || 0}
+                        step="0.01"
+                        required
+                        className={cn(
+                          "bg-background",
+                          balanceWarning && "border-amber-500",
+                          exceedsBalance && "border-destructive"
+                        )}
+                        placeholder="e.g., 10000"
+                        value={investmentAmount}
+                        onChange={handleInvestmentAmountChange}
+                      />
+                      <div className="text-sm text-muted-foreground mt-1">
+                        Available Balance: $
+                        {userData?.balance?.toFixed(2) || "0.00"}
+                      </div>
+                      {balanceWarning && (
+                        <div className="text-sm text-amber-500 mt-1">
+                          Warning: You are about to invest your entire available
+                          balance
+                        </div>
+                      )}
+                      {exceedsBalance && (
+                        <div className="text-sm text-destructive mt-1">
+                          Error: Amount exceeds your available balance
+                        </div>
+                      )}
+                    </>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -611,7 +694,7 @@ export default function PortfolioOptimizationPage() {
 
                   {optimizationMethod === "custom_risk" && (
                     <div className="space-y-2">
-                      {/* If we’ve got a score, show it */}
+                      {/* If we've got a score, show it */}
                       {riskScorePercent != null && (
                         <p>
                           Your risk score: <strong>{riskScorePercent}%</strong>
@@ -666,7 +749,9 @@ export default function PortfolioOptimizationPage() {
                   disabled={
                     (currentStep === 1 && selectedTickers.length < 2) ||
                     (currentStep === 2 && !years) ||
-                    (currentStep === 3 && (!investmentAmount || !targetAmount))
+                    (currentStep === 3 &&
+                      (!investmentAmount || !targetAmount)) ||
+                    (currentStep === 3 && exceedsBalance)
                   }
                 >
                   Next
@@ -682,6 +767,7 @@ export default function PortfolioOptimizationPage() {
                     !years ||
                     !investmentAmount ||
                     !targetAmount ||
+                    exceedsBalance ||
                     (optimizationMethod === "custom_risk" && !riskScorePercent)
                   }
                 >

@@ -1,11 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,7 +9,11 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+
 import { Sparkles } from "lucide-react";
+import AxiosInstance from "@/lib/client-fetcher";
+import { getCurrentUser } from "@/actions/auth";
+import { User } from "@/lib/types/user";
 
 type Option = {
   label: string;
@@ -90,6 +90,7 @@ const questions: Question[] = [
 export default function RiskAssessment() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [user, setUser] = useState<User | null>(null);
 
   // 1) Pull everything back out of the URL
   const tickersParam = searchParams.get("tickers") || "[]";
@@ -157,23 +158,42 @@ export default function RiskAssessment() {
 
   ///
 
-  //const [score, setScore] = useState("");
+  //Getting current user
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getCurrentUser();
+        setUser(userData);
+      } catch (error) {
+        console.error("Failed to fetch user", error);
+      }
+    };
+    fetchUser();
+  }, []);
 
-  const handleCompleteQuiz = () => {
+  const handleCompleteQuiz = async () => {
+    if (!user) return;
     const val = totalScore;
     if (val === null || isNaN(val)) return;
-
-    // 3) Rebuild the full query, adding the quiz score
-    const params = new URLSearchParams({
-      step: "4",
-      risk_score_percent: val.toString(),
-      tickers: JSON.stringify(tickers),
-      years,
-      inv: investmentAmount,
-      tgt: targetAmount,
-    });
-
-    router.push(`/dashboard/portfolio?${params.toString()}`);
+    const form = new URLSearchParams();
+    form.append("user_id", user.user_id);
+    form.append("score", val.toString());
+    try {
+      // 1) Persist it
+      await AxiosInstance.post("/profile/risk_score", form);
+      // 3) Rebuild the full query, adding the quiz score
+      const params = new URLSearchParams({
+        step: "4",
+        tickers: JSON.stringify(tickers),
+        years,
+        inv: investmentAmount,
+        tgt: targetAmount,
+      });
+      router.push(`/dashboard/portfolio?${params.toString()}`);
+    } catch (err) {
+      console.error("Failed to save risk score:", err);
+      // optionally show an error toast or inline message
+    }
   };
 
   return (
@@ -347,7 +367,7 @@ export default function RiskAssessment() {
                       {riskProfile.type} Investor
                     </span>
                     <p className="mt-4 text-sm text-muted-foreground">
-                      Based on your answers, we've determined your investor
+                      Based on your answers, we&apos;ve determined your investor
                       profile. This can help guide your investment strategy.
                     </p>
                   </div>
