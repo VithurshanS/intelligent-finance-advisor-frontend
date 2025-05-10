@@ -38,7 +38,7 @@ export default function ModelMetadata({ metadata }: ModelMetadataProps) {
           <Separator />
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-2">Training Data Points</p>
-            {/* <p className="text-lg font-semibold">{metadata.trainingDataPoints.toLocaleString()}</p> */}
+            <p className="text-lg font-semibold">{metadata.trainingDataPoints.toLocaleString()}</p>
           </div>
           <div>
             <p className="text-sm font-medium text-muted-foreground mb-2">Features Used</p>
