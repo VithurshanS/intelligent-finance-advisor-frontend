@@ -82,6 +82,7 @@ export default function StockDashboard() {
             try {
                 const response = await fetch(`${BASE_URL}/V2/get-predicted-prices`, {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
