@@ -14,6 +14,7 @@ import StockPredictionChart from "./stock-prediction-chart"
 import StockDataTable from "./stock-data-table"
 import ModelMetadata from "./model-metadata"
 //import {getStockData, getPredictionData, getModelMetadata} from "@/lib/data"
+import axios from "axios";
 import {exportToCSV} from "@/lib/export"
 import {PredictionData, StockData, ModelMetadataType} from "@/lib/types/stock_prediction";
 // import AxiosInstance from "@/lib/client-fetcher";
