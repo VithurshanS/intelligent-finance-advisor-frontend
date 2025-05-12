@@ -63,7 +63,8 @@ export default function StockDashboard() {
                 const data = response.data;
                 setCompanies(data.symbols);
                 setSelectedCompany(data.symbols[0].value);
-            } catch {
+            } catch (error) {
+                console.error("Error fetching company symbols:", error);
                 setError("Error fetching company symbols");
             } finally {
                 setIsLoading(false);
