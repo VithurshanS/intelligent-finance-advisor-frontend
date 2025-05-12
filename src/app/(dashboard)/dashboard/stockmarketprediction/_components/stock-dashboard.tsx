@@ -59,7 +59,9 @@ export default function StockDashboard() {
         const fetchCompanies = async () => {
             try {
                 setIsLoading(true);
-                const response = await AxiosInstance.get(`/get-active-symbols`);
+                const response = await axios.get('https://myapi-intellifinance.shancloudservice.com/get-active-symbols', {
+  withCredentials: true
+});
                 const data = response.data;
                 setCompanies(data.symbols);
                 setSelectedCompany(data.symbols[0].value);
