@@ -1,1 +1,1 @@
-export const BACKEND_BASE_URL = "https://finance-api.shancloudservice.com";
+export const BACKEND_BASE_URL = "https://fastapi.shancloudservice.com";
