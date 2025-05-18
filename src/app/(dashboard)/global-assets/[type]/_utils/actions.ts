@@ -116,8 +116,7 @@ export async function createStockAction(ticker: string): Promise<CreateStockResp
         const response = await AxiosInstance.post('/assets/create-stock', null, {
             params: {ticker},
         });
-        const res = await AxiosInstance.post('/train_model',{"ticker_symbol":ticker})
-        console.log(res.status)
+
 
         revalidatePath('/admin/stocks');
         revalidatePath('/assets');
