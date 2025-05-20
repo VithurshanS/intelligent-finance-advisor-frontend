@@ -60,7 +60,7 @@ export default function StockDashboard() {
         const fetchCompanies = async () => {
             try {
                 setIsLoading(true);
-                const response = await axios.get('https://fastapi.shancloudservice.com/get-active-symbols', {
+                const response = await axios.get('https://api-intellifinance.shancloudservice.com/get-active-symbols', {
   withCredentials: true
 });
                 const data = response.data;
